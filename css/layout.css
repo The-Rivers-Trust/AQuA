@@ -31,13 +31,10 @@ body {
   min-width: 0;
 }
 
+/* Every filter the same size, shrinking together when space is short. */
 .headerFilter {
   flex: 0 1 200px;
   min-width: 110px;
-}
-
-.headerFilter--season {
-  flex-basis: 150px;
 }
 
 /* Everything under the header: tab bar, then the views filling the rest. */
