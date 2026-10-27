@@ -1,0 +1,110 @@
+/* =====================================================================
+   SITE POP-UP
+   The map pop-up renders inside <arcgis-map>'s shadow DOM, which page
+   stylesheets can't reach - so this file is loaded from inside the
+   pop-up content itself (see sitePopupContent in js/tabs/map-tab.js).
+   The theme tokens (--surface-2 etc.) still work: custom properties
+   inherit through shadow boundaries.
+   ===================================================================== */
+.sitePopup {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.attributeTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.attributeTable th,
+.attributeTable td {
+  padding: var(--space-1) var(--space-2);
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.attributeTable th {
+  color: var(--text-secondary);
+  font-weight: 500;
+  width: 40%;
+}
+
+.detailsTitle {
+  margin: 0 0 var(--space-1);
+  font-size: 16px;
+}
+
+.detailsDescription {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.detailsSubhead {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.metricCards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.metricCard {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-2);
+  border-left: 4px solid var(--band-color);
+  border-radius: 2px;
+}
+
+.metricCardLabel {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.metricCardValue {
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.metricCardValue small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.metricCardBand {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.metricCardQa {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.metricCards--single {
+  grid-template-columns: 1fr;
+}
+
+/* Metals pop-up: every metal, current one highlighted. */
+.metalsTable tr.isCurrent th,
+.metalsTable tr.isCurrent td {
+  background: var(--surface-2);
+  font-weight: 600;
+}

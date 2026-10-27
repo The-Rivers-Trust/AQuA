@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="calcite-mode-dark" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AQuA Dashboard</title>
+
+  <link rel="stylesheet" id="arcgisThemeLink" href="https://js.arcgis.com/5.1/esri/themes/dark/main.css" />
+
+  <!-- Applies a saved light-mode choice before anything paints, so the page
+       never flashes dark and then switches. js/theme.js takes over once the
+       app is running. Keep the storage key in sync with THEME_STORAGE_KEY there. -->
+  <script>
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem("aquaDashboardTheme"); } catch (e) {}
+      if (saved === "light") {
+        document.documentElement.setAttribute("data-theme", "light");
+        document.documentElement.className = "calcite-mode-light";
+        document.getElementById("arcgisThemeLink").href = "https://js.arcgis.com/5.1/esri/themes/light/main.css";
+      }
+    })();
+  </script>
+
+  <!-- ArcGIS Maps SDK 5.1: this one module script loads the core API, the
+       map components (<arcgis-map> etc.) and Calcite components 5.1.1. -->
+  <link rel="stylesheet" href="https://js.arcgis.com/calcite-components/5.1.1/main.css" />
+  <script type="module" src="https://js.arcgis.com/5.1/"></script>
+
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+</head>
+
+<body>
+  <calcite-shell>
+    <calcite-navigation slot="header">
+      <calcite-navigation-logo slot="logo" heading="AQuA Dashboard" icon="beaker"></calcite-navigation-logo>
+      <div slot="content-end" class="headerActions">
+        <!-- Dashboard-wide filters: apply to every tab (js/filters.js). -->
+        <div class="headerFilters" role="group" aria-label="Filter data">
+          <calcite-select id="seasonFilter" class="headerFilter headerFilter--season" label="Season" scale="s" disabled>
+            <calcite-option value="">Loading…</calcite-option>
+          </calcite-select>
+          <calcite-combobox id="groupFilter" class="headerFilter" label="Citizen science group" placeholder="All groups"
+            selection-mode="single" clearable scale="s" disabled></calcite-combobox>
+          <calcite-combobox id="catchmentFilter" class="headerFilter" label="Catchment" placeholder="All catchments"
+            selection-mode="single" clearable scale="s" disabled></calcite-combobox>
+          <calcite-combobox id="riverFilter" class="headerFilter" label="River / waterbody" placeholder="All rivers"
+            selection-mode="single" clearable scale="s" disabled></calcite-combobox>
+          <calcite-button id="clearFilters" appearance="transparent" kind="neutral" scale="s" icon-start="x" hidden>Clear</calcite-button>
+        </div>
+        <calcite-action id="themeToggle" icon="brightness" text="Switch theme" title="Switch between dark and light"></calcite-action>
+      </div>
+    </calcite-navigation>
+
+    <!-- Tabs. Each data-view here pairs with a <section data-view> below and
+         a module in js/tabs/. Map views stay mounted when hidden so a map
+         isn't rebuilt every time you switch back to it; tabs other than the
+         first are only initialised the first time they're opened. -->
+    <div class="appBody">
+      <calcite-tab-nav class="viewTabs" id="viewTabs">
+        <calcite-tab-title data-view="map" selected>Citizen Science Map</calcite-tab-title>
+        <calcite-tab-title data-view="metals">Metals Map</calcite-tab-title>
+        <calcite-tab-title data-view="downstream">Downstream Plots</calcite-tab-title>
+        <calcite-tab-title data-view="data">Data</calcite-tab-title>
+      </calcite-tab-nav>
+
+      <main class="views">
+        <section class="view view--map" data-view="map">
+          <calcite-panel class="sidePanel" heading="Citizen Science">
+            <div class="sidePanelBody">
+              <div class="controlGroup">
+                <calcite-label>
+                  View
+                  <calcite-segmented-control id="csViewControl" width="full">
+                    <calcite-segmented-control-item value="map" checked icon-start="map">Map</calcite-segmented-control-item>
+                    <calcite-segmented-control-item value="league" icon-start="table">League table</calcite-segmented-control-item>
+                  </calcite-segmented-control>
+                </calcite-label>
+                <calcite-label>
+                  Show
+                  <calcite-segmented-control id="metricControl" width="full">
+                    <calcite-segmented-control-item value="sites" checked>Sites</calcite-segmented-control-item>
+                    <calcite-segmented-control-item value="phosphate">Phosphate</calcite-segmented-control-item>
+                    <calcite-segmented-control-item value="ecoli">E. coli</calcite-segmented-control-item>
+                  </calcite-segmented-control>
+                </calcite-label>
+              </div>
+
+              <div class="legend" id="mapLegend"></div>
+
+              <p class="muted hint" id="csHint">Click a site on the map to see its details.</p>
+            </div>
+          </calcite-panel>
+          <div class="leagueArea" id="csLeague" hidden></div>
+          <arcgis-map id="mainMap" class="siteMap">
+            <arcgis-zoom slot="top-left"></arcgis-zoom>
+            <arcgis-home slot="top-left"></arcgis-home>
+            <arcgis-search slot="top-right"></arcgis-search>
+            <arcgis-expand slot="top-right" expand-icon="layers" expand-tooltip="Layers">
+              <arcgis-layer-list></arcgis-layer-list>
+            </arcgis-expand>
+            <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
+          </arcgis-map>
+        </section>
+
+        <section class="view view--map" data-view="metals" hidden>
+          <calcite-panel class="sidePanel" heading="Metals">
+            <div class="sidePanelBody">
+              <div class="controlGroup">
+                <calcite-label>
+                  Show
+                  <calcite-select id="metalSelect" label="Metal" disabled>
+                    <calcite-option value="sites">Loading…</calcite-option>
+                  </calcite-select>
+                </calcite-label>
+              </div>
+
+              <div class="legend" id="metalsLegend"></div>
+
+              <p class="muted hint">Click a site on the map to see all its metals results.</p>
+            </div>
+          </calcite-panel>
+          <arcgis-map id="metalsMap" class="siteMap">
+            <arcgis-zoom slot="top-left"></arcgis-zoom>
+            <arcgis-home slot="top-left"></arcgis-home>
+            <arcgis-search slot="top-right"></arcgis-search>
+            <arcgis-expand slot="top-right" expand-icon="layers" expand-tooltip="Layers">
+              <arcgis-layer-list></arcgis-layer-list>
+            </arcgis-expand>
+            <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
+          </arcgis-map>
+        </section>
+
+        <section class="view view--map" data-view="downstream" hidden>
+          <calcite-panel class="sidePanel" heading="Downstream plots">
+            <div class="sidePanelBody">
+              <div class="controlGroup">
+                <calcite-label>
+                  Chart style
+                  <calcite-segmented-control id="downstreamStyle" width="full">
+                    <calcite-segmented-control-item value="lines" checked>Line charts</calcite-segmented-control-item>
+                    <calcite-segmented-control-item value="rivers">River diagrams</calcite-segmented-control-item>
+                  </calcite-segmented-control>
+                </calcite-label>
+                <calcite-label>
+                  Show
+                  <calcite-select id="downstreamMeasure" label="Measure" disabled>
+                    <calcite-option value="phosphate">Loading…</calcite-option>
+                  </calcite-select>
+                </calcite-label>
+              </div>
+              <p class="muted hint">One chart per catchment, sites in order from the top of the catchment (left) to the bottom (right). Use the filters at the top to narrow to a group, catchment or river.</p>
+              <p class="muted hint">Hover or tab to a site for its reading; each chart has a data table.</p>
+            </div>
+          </calcite-panel>
+          <div class="plotsArea" id="downstreamCharts"></div>
+          <div class="chartTooltip" id="downstreamTooltip" role="status" hidden></div>
+        </section>
+
+        <section class="view view--data" data-view="data" hidden>
+          <div class="viewInner" id="dataView"></div>
+        </section>
+      </main>
+    </div>
+  </calcite-shell>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

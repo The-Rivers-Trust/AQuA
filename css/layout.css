@@ -1,0 +1,664 @@
+/* =====================================================================
+   LAYOUT
+   Page structure only: shell, tabs, views, side panel. Styles for a
+   single tab's contents can go in their own file under css/ once they
+   grow beyond a few rules.
+   ===================================================================== */
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline-end: var(--space-2);
+}
+
+.headerFilters {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Filters shrink before anything overflows the header. */
+.headerFilters {
+  min-width: 0;
+}
+
+.headerFilter {
+  flex: 0 1 200px;
+  min-width: 110px;
+}
+
+.headerFilter--season {
+  flex-basis: 150px;
+}
+
+/* Everything under the header: tab bar, then the views filling the rest. */
+.appBody {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Calcite draws a focus box round a tab title whenever it has focus,
+   including after a mouse click. Its colour comes from this inherited
+   custom property, so it's made transparent after pointer input only
+   (class toggled in main.js) - keyboard users still see it. */
+.viewTabs.pointerFocus {
+  --calcite-color-focus: transparent;
+}
+
+.viewTabs {
+  flex: 0 0 auto;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border);
+  padding-inline: var(--space-4);
+}
+
+/* calcite-shell's default slot fills the remaining height; views stack
+   inside it and only the selected one is shown. */
+.views {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  min-height: 0;
+}
+
+.view[hidden] {
+  display: none;
+}
+
+.viewInner {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-6);
+}
+
+/* Map view: details panel on the left, map fills the rest. */
+.sidePanel {
+  flex: 0 0 340px;
+  border-inline-end: 1px solid var(--border);
+}
+
+.sidePanelBody {
+  padding: var(--space-4);
+}
+
+.siteMap {
+  flex: 1;
+  min-width: 0;
+}
+
+/* The map draws a blue focus ring round the whole view whenever it has
+   focus - including after every mouse click/drag, which reads as the
+   map being "selected". Same problem the NRS dashboard fixed, but in
+   SDK 5.x the ring lives inside <arcgis-map>'s shadow DOM, out of reach
+   of the old .esri-view-surface selectors. Its colour falls back to this
+   inherited custom property, so making it transparent hides the ring.
+   Applied only after pointer input (class toggled in map-tab.js) so
+   keyboard users still see where focus is. */
+.siteMap.pointerFocus {
+  --arcgis-internal-view-color-focus: transparent;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+/* <arcgis-map> sets its own display, which beats the browser's [hidden]
+   rule - force it, so the Map / League table switch works. */
+.siteMap[hidden],
+.leagueArea[hidden] {
+  display: none !important;
+}
+
+/* ---- Downstream plots ---- */
+.plotsArea {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: var(--space-6);
+  box-sizing: border-box;
+}
+
+.plotsHeader h2 {
+  margin: 0 0 2px;
+  font-size: 18px;
+}
+
+.plotsHeader {
+  margin-bottom: var(--space-4);
+}
+
+.plotCard {
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.chartFigure {
+  margin: 0;
+}
+
+.chartCaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: var(--space-2);
+}
+
+.chartTitle {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.chartSubtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.chartSvg {
+  display: block;
+  overflow: visible;
+}
+
+.chartGrid {
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+}
+
+.chartAxis {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.chartTick,
+.chartAxisLabel {
+  fill: var(--text-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chartLine {
+  fill: none;
+  stroke: var(--text-secondary);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* 2px surface ring so points stay legible over the line and each other. */
+.chartPoint {
+  stroke: var(--bg-page);
+  stroke-width: 2;
+  paint-order: stroke;
+}
+
+.chartPoint--lod {
+  fill: none;
+  stroke-width: 2;
+}
+
+.chartCrosshair {
+  stroke: var(--text-muted);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+.chartHit {
+  fill: transparent;
+  cursor: default;
+  outline: none;
+}
+
+.chartHit:focus-visible {
+  fill: var(--accent);
+  fill-opacity: 0.12;
+}
+
+.chartTable {
+  margin-top: var(--space-2);
+  font-size: 13px;
+}
+
+.chartTable summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.chartTooltip {
+  position: absolute;
+  z-index: 10;
+  max-width: 260px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.chartTooltipValue {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.chartTooltipBand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+}
+
+.chartTooltipKey {
+  width: 12px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.chartTooltipSite {
+  margin-top: var(--space-1);
+  color: var(--text-secondary);
+}
+
+.chartTooltipDesc {
+  color: var(--text-muted);
+}
+
+/* Colour key shared by every chart on the Downstream Plots page. */
+.plotsKey {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.plotsKey li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.plotsKeySwatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.plotsKeySwatch--ring,
+.plotsKeySwatch--none {
+  border: 2px solid;
+}
+
+.plotsKeySwatch--none {
+  border-color: var(--text-muted);
+}
+
+/* ---- River diagrams (metro-map style) ---- */
+.schemScroll {
+  overflow-x: auto;
+}
+
+.schemLine {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* Branch placed from site numbering (river not on the network). */
+.schemLine--approx {
+  stroke-dasharray: 2 9;
+}
+
+.schemLine--main {
+  stroke: var(--text-secondary);
+  stroke-width: 7;
+}
+
+.schemJunction {
+  fill: var(--text-secondary);
+}
+
+/* 2px surface ring, same as the line-chart points. */
+.schemStation {
+  stroke: var(--bg-page);
+  stroke-width: 2;
+  paint-order: stroke;
+}
+
+.schemStation--hollow {
+  fill: var(--bg-page);
+  stroke-width: 2.5;
+}
+
+.schemStation--none {
+  fill: var(--bg-page);
+  stroke: var(--text-muted);
+  stroke-width: 2;
+}
+
+.schemRiver {
+  fill: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.schemRiver--stretch {
+  font-weight: 500;
+  fill: var(--text-secondary);
+}
+
+.schemSite {
+  fill: var(--text-muted);
+  font-size: 11px;
+}
+
+.schemFlow {
+  fill: var(--text-muted);
+  font-size: 11px;
+}
+
+.schemHit:focus-visible {
+  fill: var(--accent);
+  fill-opacity: 0.18;
+}
+
+/* ---- League table (Citizen Science tab, in place of the map) ---- */
+.leagueArea {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: var(--space-6) var(--space-6);
+  box-sizing: border-box;
+}
+
+.leagueHeader h2 {
+  margin: 0 0 2px;
+  font-size: 18px;
+}
+
+.leagueSubtitle {
+  margin: 0 0 var(--space-2);
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.leagueHeader {
+  margin-bottom: var(--space-4);
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.leagueTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.leagueTable th,
+.leagueTable td {
+  padding: var(--space-2) var(--space-3);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.leagueTable th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-page);
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.leagueTable th:hover {
+  color: var(--accent);
+}
+
+.leagueTable th:focus-visible,
+.leagueTable tbody tr:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.leagueTable tbody tr {
+  cursor: pointer;
+}
+
+.leagueTable tbody tr:hover {
+  background: var(--surface-2);
+}
+
+.leagueColNum {
+  font-variant-numeric: tabular-nums;
+}
+
+.leagueRank {
+  font-weight: 600;
+}
+
+.leagueValue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.leagueBand {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  padding-left: 20px;
+}
+
+.sortArrow {
+  color: var(--accent);
+  font-size: 9px;
+}
+
+/* Phone width: stack the details panel under the map. */
+@media (max-width: 720px) {
+  .view--map {
+    flex-direction: column-reverse;
+  }
+
+  .sidePanel {
+    flex: 0 0 40%;
+    border-inline-end: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .viewTabs {
+    padding-inline: var(--space-2);
+  }
+
+  /* No room for the title next to three filters - the tab names and the
+     page title still say where you are. */
+  calcite-navigation-logo {
+    display: none;
+  }
+
+  .headerFilter {
+    min-width: 0;
+  }
+}
+
+/* Full-width segmented controls: equal-width buttons. Calcite sizes
+   each item from its label (flex-basis auto), so longer labels get wider
+   buttons - a zero basis shares the width out evenly instead. */
+calcite-segmented-control[width="full"] > calcite-segmented-control-item {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ---- Citizen Science Map side panel ---- */
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.legend {
+  margin: var(--space-2) 0 var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.legendTitle {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.legendList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.legendRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+}
+
+.legendSwatch {
+  flex: 0 0 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 1px var(--border);
+}
+
+.legendLabel {
+  flex: 1;
+}
+
+.legendCount {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Metric band rows are toggle buttons that filter the map. */
+.legendRow--toggle {
+  width: 100%;
+  margin: 0;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.legendRow--toggle:hover {
+  background: var(--surface-2);
+}
+
+.legendRow--toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.legendRow--toggle[aria-pressed="true"] {
+  background: var(--surface-2);
+  border-color: var(--accent);
+}
+
+.legendRow--toggle.isDimmed {
+  opacity: 0.45;
+}
+
+.legendShowAll {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Hollow ring = below limit of detection (metals map). */
+.legendSwatch--ring {
+  background: transparent;
+  border: 2px solid;
+  box-shadow: none;
+}
+
+/* Metals size key: example circles at real map size. */
+.sizeKey {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.sizeKeyItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.sizeKeyCircle {
+  display: block;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  opacity: 0.85;
+}
+
+.sizeKeyLabel {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.legendNote {
+  margin: var(--space-2) 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+}

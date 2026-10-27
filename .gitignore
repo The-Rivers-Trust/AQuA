@@ -1,0 +1,8 @@
+node_modules/
+.env
+.venv/
+__pycache__/
+*.pkl
+.DS_Store
+Thumbs.db
+.claude/settings.local.json
