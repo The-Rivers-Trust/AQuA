@@ -22,6 +22,7 @@ js/
   main.js             start-up: theme, tab switching, each tab's init
   config.js           service URLs, field names, metric thresholds, map start position
   metrics.js          classify(metric, value) → band, using thresholds in config.js
+  shortcuts.js        keyboard shortcuts on the map tabs: R river network, F flow, S storm overflows, E EDM
   filters.js          header filters (season, group, catchment, river) shared by every tab;
                       site filters narrow left to right
   layers.js           builds extra static FeatureLayers from config.js; getLayer(id)

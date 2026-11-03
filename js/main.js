@@ -12,6 +12,7 @@
 
 import { initTheme } from "./theme.js";
 import { initFilters } from "./filters.js";
+import { initShortcuts } from "./shortcuts.js";
 import { fetchSites, fetchCitizenScience, fetchMetals, listSeasons } from "./data/aqua-service.js";
 import { initCitizenScienceMap } from "./tabs/citizen-science-map.js";
 import { initMetalsMap } from "./tabs/metals-map.js";
@@ -99,7 +100,45 @@ async function initHeaderFilters() {
   });
 }
 
+// A dropdown or filter box shouldn't stay selected (highlighted, list open)
+// once a choice is made: close it and let go of focus. Waits a tick so the
+// choice's own handlers run first.
+function releaseFocusAfterSelect() {
+  const release = (event) => {
+    const box = event.target;
+    setTimeout(() => {
+      if ("open" in box) box.open = false;
+      box.blur?.();
+      if (document.activeElement && box.contains(document.activeElement)) document.activeElement.blur();
+    });
+  };
+  document.addEventListener("calciteComboboxChange", release);
+  document.addEventListener("calciteSelectChange", release);
+}
+
+// Clicking a switch, tick box, button or tab with the mouse leaves it
+// focused, which Calcite draws as a blue ring. After pointer input, let go
+// of focus on those (keyboard use is untouched: no pointer event, so the
+// ring still shows where focus is). Text-entry components keep focus.
+const RELEASE_AFTER_POINTER = [
+  "calcite-switch", "calcite-checkbox", "calcite-radio-button", "calcite-button", "calcite-action",
+  "calcite-segmented-control", "calcite-segmented-control-item", "calcite-tab-title", "calcite-list-item",
+  "calcite-chip", "calcite-navigation-logo",
+].join(",");
+
+function releaseFocusAfterPointer() {
+  document.addEventListener("pointerup", () => {
+    setTimeout(() => {
+      const active = document.activeElement;
+      if (active?.matches?.(RELEASE_AFTER_POINTER)) active.blur();
+    }, 60);
+  }, true);
+}
+
 initTheme(document.getElementById("themeToggle"));
+releaseFocusAfterSelect();
+releaseFocusAfterPointer();
+initShortcuts();
 filtersReady = initHeaderFilters();
 filtersReady.catch((error) => console.error("AQuA dashboard: filters failed to start:", error));
 initViewSwitching();
