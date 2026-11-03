@@ -66,7 +66,7 @@ export async function addRiverNetwork(mapEl, index) {
     flow = new FlowLayer({
       title: RIVER_NETWORK.flowTitle,
       visible: false,
-      minScale: RIVER_NETWORK.minScale,
+      minScale: RIVER_NETWORK.flowMinScale,
     });
     mapEl.map.add(flow, index + 1);
   } catch (error) {
@@ -87,18 +87,38 @@ export async function addRiverNetwork(mapEl, index) {
   let requestToken = 0;
   const view = mapEl.view;
   reactiveUtils.when(() => view.stationary, refresh);
+  // The network's tiles arrive a moment after the map settles - re-read
+  // the segments once they have.
+  view.whenLayerView(network).then((networkView) => {
+    reactiveUtils.watch(() => networkView.updating, (updating) => {
+      if (!updating && flow.visible) refresh();
+    });
+  });
 
   return { network, flow };
 
-  async function refresh() {
-    const token = ++requestToken;
-    const active = flow.visible && view.scale <= RIVER_NETWORK.minScale;
-    if (!active) {
-      flow.graphics.removeAll();
-      return;
+  // The segments in view, taken from the network layer's own already
+  // loaded tiles (milliseconds) rather than asked of the service again
+  // (a second or more every time the map moved). Falls back to the
+  // service if the layer view can't be read.
+  async function segmentsInView() {
+    try {
+      const networkView = await view.whenLayerView(network);
+      await reactiveUtils.whenOnce(() => !networkView.updating);
+      const result = await networkView.queryFeatures({
+        geometry: view.extent,
+        returnGeometry: true,
+        outFields: ["OBJECTID", "Strahler"],
+      });
+      return result.features.slice(0, MAX_SEGMENTS);
+    } catch (error) {
+      return null;
     }
-    const collected = [];
-    for (let start = 0; collected.length < MAX_SEGMENTS; ) {
+  }
+
+  async function segmentsFromService(token) {
+    const features = [];
+    for (let start = 0; features.length < MAX_SEGMENTS; ) {
       const result = await network.queryFeatures({
         geometry: view.extent,
         spatialRelationship: "intersects",
@@ -108,19 +128,28 @@ export async function addRiverNetwork(mapEl, index) {
         num: 2000,
         start,
       });
-      if (token !== requestToken) return; // superseded by a newer refresh
-      for (const f of result.features) {
-        if (collected.length >= MAX_SEGMENTS) break;
-        collected.push({
-          attributes: { color: FLOW_COLOR, halfWidth: flowHalfWidth(f.attributes.Strahler) },
-          geometry: { type: "polyline", paths: f.geometry.paths, spatialReference: f.geometry.spatialReference },
-        });
-      }
+      if (token !== requestToken) return null; // superseded by a newer refresh
+      features.push(...result.features);
       if (!result.exceededTransferLimit) break;
       start += result.features.length;
     }
+    return features.slice(0, MAX_SEGMENTS);
+  }
+
+  async function refresh() {
+    const token = ++requestToken;
+    const active = flow.visible && view.scale <= RIVER_NETWORK.flowMinScale;
+    if (!active) {
+      if (flow.graphics.length) flow.graphics.removeAll();
+      return;
+    }
+    const features = (await segmentsInView()) ?? (await segmentsFromService(token));
+    if (token !== requestToken || !features) return; // superseded by a newer refresh
     flow.graphics.removeAll();
-    flow.graphics.addMany(collected);
+    flow.graphics.addMany(features.map((f) => ({
+      attributes: { color: FLOW_COLOR, halfWidth: flowHalfWidth(f.attributes.Strahler) },
+      geometry: { type: "polyline", paths: f.geometry.paths, spatialReference: f.geometry.spatialReference },
+    })));
   }
 }
 

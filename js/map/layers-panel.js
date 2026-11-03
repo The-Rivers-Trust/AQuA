@@ -50,7 +50,7 @@ const state = {
   recent: false, // storm overflows: only discharging / discharged lately
   edm: false,
 };
-const maps = new Set(); // each map's { apply }
+const maps = new Set(); // each map's { apply, view, canFlow }
 
 // A switch changed in one panel: update the shared state, keep it
 // consistent, and have every map follow.
@@ -67,8 +67,10 @@ function change(patch) {
 // Panel
 // ---------------------------------------------------------------------
 
-const DESCRIPTIONS = { network: "Width by stream order", soil: "Soilscapes, LandIS" };
+// The keys that switch overlays (js/shortcuts.js) are noted in the rows.
+const DESCRIPTIONS = { network: "Width by stream order · key R", soil: "Soilscapes, LandIS" };
 const ZOOM_IN = "Zoom in to view";
+const FLOW_LABEL = "Animate flow direction (key F)";
 
 function panelMarkup() {
   const wfdOptions = WFD_CATCHMENTS.fields
@@ -98,11 +100,11 @@ function panelMarkup() {
             <div slot="content-bottom" class="layerOptions" data-flow-options hidden>
               <calcite-label layout="inline" scale="s">
                 <calcite-checkbox data-flow scale="s"></calcite-checkbox>
-                Animate flow direction
+                <span data-flow-label>Animate flow direction (key F)</span>
               </calcite-label>
             </div>
           </calcite-list-item>
-          <calcite-list-item label="Storm overflows" description="Live from water companies">
+          <calcite-list-item label="Storm overflows" description="Live from water companies · key S">
             <calcite-switch slot="content-end" data-storm scale="s" label="Storm overflows"></calcite-switch>
             <div slot="content-bottom" class="layerOptions" data-storm-options hidden>
               <calcite-label layout="inline" scale="s">
@@ -111,7 +113,7 @@ function panelMarkup() {
               </calcite-label>
             </div>
           </calcite-list-item>
-          <calcite-list-item label="${escapeHtml(EDM_2025.title)}" description="Annual spill returns, sized by spill count">
+          <calcite-list-item label="${escapeHtml(EDM_2025.title)}" description="Annual spill returns, sized by spill count · key E">
             <calcite-switch slot="content-end" data-edm scale="s" label="${escapeHtml(EDM_2025.title)}"></calcite-switch>
           </calcite-list-item>
         </calcite-list-item-group>
@@ -150,6 +152,7 @@ export async function setupLayersPanel(mapEl) {
     network: q("[data-network]"),
     networkItem: q("[data-network-item]"),
     flow: q("[data-flow]"),
+    flowLabel: q("[data-flow-label]"),
     flowOptions: q("[data-flow-options]"),
     storm: q("[data-storm]"),
     stormOptions: q("[data-storm-options]"),
@@ -203,6 +206,11 @@ export async function setupLayersPanel(mapEl) {
     el.networkItem.description = ok ? DESCRIPTIONS.network : ZOOM_IN;
     el.soilItem.description = ok ? DESCRIPTIONS.soil : ZOOM_IN;
     el.flowOptions.hidden = !(ok && state.network && flow);
+    // Flow only runs zoomed in much further; once on it can always be
+    // switched off.
+    const close = mapEl.view.scale <= RIVER_NETWORK.flowMinScale;
+    el.flow.disabled = !close && !state.flow;
+    el.flowLabel.textContent = close || state.flow ? FLOW_LABEL : "Zoom in further to animate flow direction";
   }
 
   function applyLegend() {
@@ -260,10 +268,42 @@ export async function setupLayersPanel(mapEl) {
     applyLegend();
   }
 
-  maps.add({ apply });
+  maps.add({ apply, view: mapEl.view, canFlow: !!flow });
   reactiveUtils.watch(() => mapEl.view.scale, applyScaleGating);
   apply();
   initMapClicks(mapEl, network);
+}
+
+// ---------------------------------------------------------------------
+// Keyboard shortcuts (js/shortcuts.js)
+// Each key flips the same shared switch the panel does: "network" (R),
+// "flow" (F - only once the network is on), "storm" (S), "edm" (E). The
+// network only draws zoomed in, and flow only starts zoomed in much
+// further (RIVER_NETWORK.flowMinScale), as in the panel; switching either
+// off always works. Returns false when the key had no effect.
+// ---------------------------------------------------------------------
+
+export function toggleOverlay(key, mapEl) {
+  const scale = mapEl?.view?.scale;
+  const drawing = scale <= RIVER_NETWORK.minScale;
+  const close = scale <= RIVER_NETWORK.flowMinScale;
+  const map = [...maps].find((m) => m.view === mapEl?.view);
+  switch (key) {
+    case "network":
+      if (!drawing && !state.network) return false;
+      change({ network: !state.network });
+      return true;
+    case "flow":
+      if (!state.flow && (!close || !state.network || !map?.canFlow)) return false;
+      change({ flow: !state.flow });
+      return true;
+    case "storm":
+    case "edm":
+      change({ [key]: !state[key] });
+      return true;
+    default:
+      return false;
+  }
 }
 
 // ---------------------------------------------------------------------

@@ -170,6 +170,9 @@ export const RIVER_NETWORK = {
   flowTitle: "River flow direction",
   color: "#0277bd",
   minScale: 1000000,
+  // The flow animation is heavier (it draws every section in view), so it
+  // only runs zoomed in much further - roughly city / river-reach level.
+  flowMinScale: 150000,
   // River diagrams: how sites are matched to the network (see
   // js/data/river-topology.js). A site snaps to the nearest river section
   // within snapDistance metres, preferring one whose name matches the

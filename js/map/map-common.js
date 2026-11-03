@@ -25,11 +25,23 @@ export async function setupMap(mapEl) {
   mapEl.popup.dockOptions = { ...mapEl.popup.dockOptions, breakpoint: { width: 544, height: 480 } };
 }
 
-// Hide the view's focus ring after mouse/touch input, show it again as
-// soon as the keyboard is used - see .siteMap.pointerFocus in layout.css.
+// Hide the view's focus ring after mouse/touch input, show it again when
+// the keyboard is used to move around (Tab) - see .siteMap.pointerFocus in
+// layout.css. Other keys (the layer shortcuts in js/shortcuts.js, arrow
+// panning) leave it as it was, so pressing one doesn't light the map up.
 function initFocusRing(mapEl) {
+  // The map's own keyboard navigation turns the map on A and D (rotate);
+  // they're not wanted here, so those keys are stopped before the map
+  // sees them (capture phase, on the map element itself).
+  mapEl.addEventListener("keydown", (event) => {
+    if (!event.ctrlKey && !event.metaKey && !event.altKey && ["a", "d"].includes(event.key.toLowerCase())) {
+      event.stopImmediatePropagation();
+    }
+  }, true);
   mapEl.addEventListener("pointerdown", () => mapEl.classList.add("pointerFocus"));
-  mapEl.addEventListener("keydown", () => mapEl.classList.remove("pointerFocus"));
+  mapEl.addEventListener("keydown", (event) => {
+    if (event.key === "Tab") mapEl.classList.remove("pointerFocus");
+  });
 }
 
 export async function zoomToLayer(mapEl, layer) {
