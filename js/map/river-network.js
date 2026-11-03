@@ -1,17 +1,18 @@
 // =====================================================================
 // RIVER NETWORK
 // The Open River Network reference layer, plus the "River flow
-// direction" overlay - ported from the NRS dashboard. Both appear in the
-// map's layer list, off by default, and are linked: switching flow on
+// direction" overlay - shared with the NRS dashboard (keep the two
+// copies in step). Both start off and are linked: switching flow on
 // switches the network on, switching the network off switches flow off.
+// The map's Layers panel switches them (js/map/layers-panel.js).
 //
 // Flow direction is an animated overlay of light trails moving along
 // each river segment from its first digitised vertex to its last (the
 // network is digitised in flow direction). A normal renderer can't
 // animate, so it's a custom WebGL layer view (adapted from Esri's
-// "Animated lines with WebGL" sample, as in NRS). It only ever holds the
-// segments in the current view, re-queried whenever the map stops
-// moving, capped at MAX_SEGMENTS.
+// "Animated lines with WebGL" sample). It only ever holds the segments
+// in the current view, re-queried whenever the map stops moving, capped
+// at MAX_SEGMENTS.
 // =====================================================================
 
 import { RIVER_NETWORK } from "../config.js";
@@ -23,8 +24,10 @@ const TRAIL_LENGTH = 250;
 const TRAIL_CYCLE = 900;
 const MAX_SEGMENTS = 8000;
 
-// Adds both layers to the bottom of the map (under the sites).
-export async function addRiverNetwork(mapEl) {
+// Adds both layers at `index` in the map's layers (network, then flow
+// above it). Resolves to { network, flow }; flow is null if the WebGL
+// overlay couldn't be created.
+export async function addRiverNetwork(mapEl, index) {
   const [FeatureLayer, GraphicsLayer, BaseLayerViewGL2D, reactiveUtils] = await $arcgis.import([
     "@arcgis/core/layers/FeatureLayer.js",
     "@arcgis/core/layers/GraphicsLayer.js",
@@ -44,12 +47,13 @@ export async function addRiverNetwork(mapEl) {
       symbol: { type: "simple-line", color: RIVER_NETWORK.color, cap: "round", join: "round" },
       visualVariables: [{ type: "size", field: "Strahler", stops: RIVER_NETWORK.widthByStrahler }],
     },
+    // A soft shadow lifts the lines off either basemap.
+    effect: "drop-shadow(0px, 0px, 3px, #000000)",
   });
-  mapEl.map.add(network, 0);
+  mapEl.map.add(network, index);
 
   // The flow overlay is added separately and guarded, so if WebGL or the
-  // layer view fails for any reason the rest of the map is unaffected
-  // (NRS learnt this the hard way).
+  // layer view fails for any reason the rest of the map is unaffected.
   let flow;
   try {
     const FlowLayerView = createFlowLayerView(BaseLayerViewGL2D, reactiveUtils);
@@ -64,10 +68,10 @@ export async function addRiverNetwork(mapEl) {
       visible: false,
       minScale: RIVER_NETWORK.minScale,
     });
-    mapEl.map.add(flow, 1);
+    mapEl.map.add(flow, index + 1);
   } catch (error) {
     console.warn("AQuA dashboard: river flow direction unavailable:", error);
-    return;
+    return { network, flow: null };
   }
 
   // Link the two toggles.
@@ -83,6 +87,8 @@ export async function addRiverNetwork(mapEl) {
   let requestToken = 0;
   const view = mapEl.view;
   reactiveUtils.when(() => view.stationary, refresh);
+
+  return { network, flow };
 
   async function refresh() {
     const token = ++requestToken;

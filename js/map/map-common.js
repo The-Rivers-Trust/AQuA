@@ -1,23 +1,21 @@
 // =====================================================================
 // MAP COMMON
-// Shared by every map tab: basemap + theme, the focus-ring fix, pop-up
-// docking, zoom-to-sites, marker symbols, and the small HTML helpers the
-// legends and pop-ups use.
+// Shared by every map tab: basemap (shared choice, see basemaps.js), the
+// focus-ring fix, pop-up docking, zoom-to-sites, marker symbols, and the
+// small HTML helpers the legends and pop-ups use.
 // =====================================================================
 
 import { MAP } from "../config.js";
-import { getTheme, onThemeChange } from "../theme.js";
 import { escapeHtml } from "../utils/format.js";
-import { addRiverNetwork } from "./river-network.js";
+import { setupBasemap } from "./basemaps.js";
 
-// Basemap following the theme, focus-ring fix, pop-up docking, and the
-// Open River Network + flow direction reference layers. Resolves once
-// the view is ready.
+// Shared basemap + selector, focus-ring fix and pop-up docking. Resolves
+// once the view is ready. (The contextual layers are added separately by
+// setupLayersPanel in layers-panel.js.)
 export async function setupMap(mapEl) {
-  mapEl.basemap = MAP.basemap[getTheme()];
   mapEl.center = MAP.center;
   mapEl.zoom = MAP.zoom;
-  onThemeChange((theme) => { mapEl.basemap = MAP.basemap[theme]; });
+  await setupBasemap(mapEl);
   initFocusRing(mapEl);
 
   await mapEl.viewOnReady();
@@ -25,9 +23,6 @@ export async function setupMap(mapEl) {
   // Dock the pop-up to the map's edge when the map is narrow OR short
   // (5.x only checks width by default), so it's never cut off.
   mapEl.popup.dockOptions = { ...mapEl.popup.dockOptions, breakpoint: { width: 544, height: 480 } };
-
-  // Reference layers are extras - never let them stop the map loading.
-  addRiverNetwork(mapEl).catch((error) => console.warn("AQuA dashboard: river network unavailable:", error));
 }
 
 // Hide the view's focus ring after mouse/touch input, show it again as
@@ -126,18 +121,6 @@ export function attributeTable(rows) {
     .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`)
     .join("");
   return body ? `<table class="attributeTable">${body}</table>` : "";
-}
-
-// The site-details block both map pop-ups start with.
-export function siteDetailsHtml(a) {
-  return `
-    ${a.Description ? `<p class="detailsDescription">${escapeHtml(a.Description)}</p>` : ""}
-    ${attributeTable([
-      ["River / waterbody", a.River_Waterbody],
-      ["Catchment", a.Catchment],
-      ["Case study group", a.case_study_group],
-      ["OS grid ref", a.OS_Grid_Ref],
-    ])}`;
 }
 
 // Site fields every joined, client-side sites layer carries.

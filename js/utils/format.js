@@ -39,3 +39,10 @@ export function formatNumber(value, decimals = 0) {
 export function formatDate(value) {
   return value == null ? "–" : dateFormat.format(new Date(value));
 }
+
+// ms -> "YYYY-MM-DD HH:MM:SS" (UTC), for a SQL TIMESTAMP '...' literal.
+export function sqlTimestamp(ms) {
+  const d = new Date(ms);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
+}

@@ -21,10 +21,16 @@
   --border-subtle:  var(--calcite-color-border-3);
   --accent:         var(--calcite-color-brand);
   --accent-hover:   var(--calcite-color-brand-hover);
+  --accent-bg:      color-mix(in srgb, var(--accent) 16%, transparent);
 
   --status-success: var(--calcite-color-status-success);
   --status-warning: var(--calcite-color-status-warning);
   --status-danger:  var(--calcite-color-status-danger);
+  --status-neutral: var(--text-muted);
+  --status-success-bg: color-mix(in srgb, var(--status-success) 16%, transparent);
+  --status-warning-bg: color-mix(in srgb, var(--status-warning) 16%, transparent);
+  --status-danger-bg:  color-mix(in srgb, var(--status-danger) 16%, transparent);
+  --status-neutral-bg: color-mix(in srgb, var(--status-neutral) 16%, transparent);
 
   --font-family: var(--calcite-font-family, "Avenir Next", "Avenir", "Helvetica Neue", sans-serif);
   --space-1: 4px;

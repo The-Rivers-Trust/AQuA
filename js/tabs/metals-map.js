@@ -9,13 +9,17 @@
 // =====================================================================
 
 import { AQUA, METALS, NO_DATA, SITE_COLOR } from "../config.js";
-import { fetchSites, fetchMetals, recordsBySite, hasSeasons, SITES_SPATIAL_REFERENCE } from "../data/aqua-service.js";
+import { fetchSites, fetchMetals, fetchCitizenScience, recordsBySite, hasSeasons, SITES_SPATIAL_REFERENCE } from "../data/aqua-service.js";
 import { onFilterChange, matchesFilters, filterWhereClause, hasActiveFilters, getSeason } from "../filters.js";
 import { escapeHtml, formatSeason, formatSignificant } from "../utils/format.js";
 import {
   setupMap, zoomToLayer, markerSymbol, legendRow, legendToggleRow, swatch, legendPickNote,
-  handleLegendPick, restoreLegendFocus, POPUP_STYLESHEET, siteDetailsHtml, SITE_LAYER_FIELDS,
+  handleLegendPick, restoreLegendFocus, SITE_LAYER_FIELDS,
 } from "../map/map-common.js";
+import { setupLayersPanel } from "../map/layers-panel.js";
+import { initSitePanel, registerSiteLayer, refreshSite } from "../map/site-panel.js";
+import { buildSitePanelContent, section } from "../map/site-sections.js";
+import { surveysForSite } from "../data/surveys.js";
 
 const SITES_VIEW = "sites"; // metal picker value for plain site markers
 const LOD_RING_SIZE = 10;
@@ -47,6 +51,17 @@ export async function initMetalsMap({ mapEl, metalSelectEl, legendEl }) {
   state.els = { metalSelectEl, legendEl };
 
   await setupMap(mapEl);
+  // Clicking a site opens its panel under the map: site details, the
+  // site's lab results, and its citizen science surveys to flick through.
+  initSitePanel(mapEl, {
+    render: async (a) => buildSitePanelContent(a, {
+      surveys: surveysForSite(await fetchCitizenScience(), a.site_name),
+      season: getSeason(),
+      middle: () => metalsSection(a),
+    }),
+  });
+  // Contextual layers + their panel - extras, so never stop the map loading.
+  await setupLayersPanel(mapEl).catch((error) => console.warn("AQuA dashboard: map layers unavailable:", error));
 
   const [sites, records] = await Promise.all([fetchSites(), fetchMetals()]);
   state.sites = sites;
@@ -59,6 +74,7 @@ export async function initMetalsMap({ mapEl, metalSelectEl, legendEl }) {
     state.picked.clear();
     applyWhereClause();
     applyRenderer();
+    refreshSite(mapEl, findSite); // the panel highlights the chosen metal
   });
   legendEl.addEventListener("click", onLegendClick);
 
@@ -70,7 +86,6 @@ export async function initMetalsMap({ mapEl, metalSelectEl, legendEl }) {
       else renderLegend();
       return;
     }
-    state.mapEl.closePopup();
     applyWhereClause();
     renderLegend();
     await zoomToLayer(mapEl, state.layer);
@@ -154,21 +169,20 @@ async function rebuildLayer() {
     outFields: ["*"],
     geometryType: "point",
     spatialReference: SITES_SPATIAL_REFERENCE,
-    popupTemplate: {
-      outFields: ["*"],
-      title: (event) => escapeHtml(event.graphic.attributes.site_name),
-      content: (event) => sitePopupContent(event.graphic.attributes),
-    },
+    popupEnabled: false, // a click opens the site panel instead
   });
 
-  state.mapEl.closePopup();
+  registerSiteLayer(layer);
   if (state.layer) state.mapEl.map.remove(state.layer);
   state.mapEl.map.add(layer);
   state.layer = layer;
+  refreshSite(state.mapEl, findSite);
 
   applyWhereClause();
   applyRenderer();
 }
+
+const findSite = (name) => state.layer?.source.find((g) => g.attributes.site_name === name);
 
 function currentMetal() {
   return state.metals.find((m) => m.key === state.metal) ?? null;
@@ -351,14 +365,13 @@ function sizeKey(metal) {
 function onLegendClick(event) {
   const { changed, key } = handleLegendPick(event, state.picked);
   if (!changed) return;
-  state.mapEl.closePopup();
   applyWhereClause();
   renderLegend();
   restoreLegendFocus(state.els.legendEl, key);
 }
 
 // ---------------------------------------------------------------------
-// Site pop-up
+// Lab results (the site panel's middle section)
 // ---------------------------------------------------------------------
 
 function resultText(a, key) {
@@ -368,7 +381,7 @@ function resultText(a, key) {
   return "–";
 }
 
-function sitePopupContent(a) {
+function metalsSection(a) {
   const metal = currentMetal();
   let body;
   if (!a.has_sample) {
@@ -393,15 +406,10 @@ function sitePopupContent(a) {
         </tr>`;
       })
       .join("");
-    body = `${card}<table class="attributeTable metalsTable">${rows}</table>`;
+    body = `${card}<div class="metalsScroll"><table class="attributeTable metalsTable">${rows}</table></div>`;
   }
 
-  const el = document.createElement("div");
-  el.className = "sitePopup";
-  el.innerHTML = `
-    ${POPUP_STYLESHEET}
-    ${siteDetailsHtml(a)}
-    <h4 class="detailsSubhead">Metals (lab results)</h4>
-    ${body}`;
+  const el = section("siteSection--metals", "Metals (lab results)");
+  el.insertAdjacentHTML("beforeend", body);
   return el;
 }

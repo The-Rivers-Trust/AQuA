@@ -4,7 +4,7 @@
 // records, so they can be coloured by a metric (phosphate, E. coli) or
 // shown plain. Side panel: metric picker and a legend with counts, whose
 // band rows double as a filter (click to show only those bands).
-// Clicking a site opens a pop-up with its details. The header filters
+// Clicking a site opens a panel under the map (js/map/site-sections.js). The header filters
 // (js/filters.js) pick the season and narrow which sites are drawn and
 // counted. A View switch swaps the map for a league table of the same
 // sites (js/tabs/league-table.js) - same filters, legend and band picks.
@@ -15,12 +15,16 @@ import { createLayers } from "../layers.js";
 import { classify, allBands } from "../metrics.js";
 import { fetchSites, fetchCitizenScience, recordsBySite, SITES_SPATIAL_REFERENCE } from "../data/aqua-service.js";
 import { onFilterChange, matchesFilters, filterWhereClause, hasActiveFilters, getSeason } from "../filters.js";
-import { escapeHtml, formatDate, formatNumber, formatSeason } from "../utils/format.js";
+import { escapeHtml, formatSeason } from "../utils/format.js";
 import { renderLeagueTable } from "./league-table.js";
 import {
   setupMap, zoomToLayer, markerSymbol, legendRow, legendToggleRow, swatch, legendPickNote,
-  handleLegendPick, restoreLegendFocus, POPUP_STYLESHEET, attributeTable, siteDetailsHtml, SITE_LAYER_FIELDS,
+  handleLegendPick, restoreLegendFocus, SITE_LAYER_FIELDS,
 } from "../map/map-common.js";
+import { setupLayersPanel } from "../map/layers-panel.js";
+import { initSitePanel, registerSiteLayer, selectSite, refreshSite, clearSite } from "../map/site-panel.js";
+import { buildSitePanelContent, trendsSection } from "../map/site-sections.js";
+import { surveysForSite } from "../data/surveys.js";
 
 const SITES_VIEW = "sites"; // metric picker value for plain site markers
 
@@ -64,6 +68,17 @@ export async function initCitizenScienceMap({ mapEl, metricControlEl, legendEl, 
   state.els = { metricControlEl, legendEl, viewControlEl, leagueEl, hintEl };
 
   await setupMap(mapEl);
+  // Clicking a site opens its panel under the map: site details, phosphate
+  // and E. coli over every survey, and the surveys to flick through.
+  initSitePanel(mapEl, {
+    render: (a) => buildSitePanelContent(a, {
+      surveys: surveysForSite(state.records, a.site_name),
+      season: getSeason(),
+      middle: trendsSection,
+    }),
+  });
+  // Contextual layers + their panel - extras, so never stop the map loading.
+  await setupLayersPanel(mapEl).catch((error) => console.warn("AQuA dashboard: map layers unavailable:", error));
   mapEl.map.addMany(await createLayers());
 
   const [sites, records] = await Promise.all([fetchSites(), fetchCitizenScience()]);
@@ -146,25 +161,23 @@ async function rebuildLayer() {
     geometryType: "point",
     spatialReference: SITES_SPATIAL_REFERENCE,
     definitionExpression: layerWhereClause(),
-    popupTemplate: {
-      outFields: ["*"],
-      title: (event) => escapeHtml(event.graphic.attributes.site_name),
-      content: (event) => sitePopupContent(event.graphic.attributes),
-    },
+    popupEnabled: false, // a click opens the site panel instead
   });
 
-  // An open pop-up belongs to the previous season's layer.
-  state.mapEl.closePopup();
+  registerSiteLayer(layer);
   if (state.layer) map.remove(state.layer);
   map.add(layer);
   state.layer = layer;
+  // The selected site (if any) is now a graphic in the new layer.
+  refreshSite(state.mapEl, findSite);
 
   applyRenderer();
 }
 
+const findSite = (name) => state.layer?.source.find((g) => g.attributes.site_name === name);
+
 function applyFilters() {
   if (!state.layer) return;
-  state.mapEl.closePopup();
   applyWhereClause();
   refreshViews();
 }
@@ -216,11 +229,12 @@ function showView(view) {
   state.view = view;
   const { leagueEl, hintEl, viewControlEl } = state.els;
   if (viewControlEl.value !== view) viewControlEl.value = view;
-  state.mapEl.hidden = view !== "map";
+  // The map and the panel under it go together.
+  state.mapEl.closest(".mapColumn").hidden = view !== "map";
   leagueEl.hidden = view !== "league";
   hintEl.textContent = HINTS[view];
   if (view === "league") {
-    state.mapEl.closePopup();
+    clearSite(state.mapEl); // its panel belongs beside the map
     renderLeague();
   }
 }
@@ -257,13 +271,13 @@ function renderLeague() {
   });
 }
 
-// From the league table: back to the map, zoomed to the site, pop-up open.
+// From the league table: back to the map, zoomed to the site, its panel open.
 async function showSiteOnMap(siteName) {
   const graphic = state.layer.source.find((g) => g.attributes.site_name === siteName);
   if (!graphic) return;
   showView("map");
+  selectSite(state.mapEl, graphic);
   await state.mapEl.goTo({ target: graphic.geometry, zoom: 13 });
-  await state.mapEl.openPopup({ features: [graphic], location: graphic.geometry });
 }
 
 // ---------------------------------------------------------------------
@@ -318,7 +332,6 @@ function renderLegend() {
 function onLegendClick(event) {
   const { changed, key } = handleLegendPick(event, state.bands);
   if (!changed) return;
-  state.mapEl.closePopup();
   applyWhereClause();
   refreshViews();
   restoreLegendFocus(state.els.legendEl, key);
@@ -336,46 +349,3 @@ function bandRange(metric, band) {
   return ` (${fmt(prev)}–${fmt(band.max)})`;
 }
 
-// ---------------------------------------------------------------------
-// Site pop-up
-// ---------------------------------------------------------------------
-
-function sitePopupContent(a) {
-  const season = escapeHtml(formatSeason(a.season_year) || "this season");
-
-  const reading = a.has_record
-    ? `
-      <div class="metricCards">
-        ${metricCard("phosphate", a.phosphate_ppm, a.phosphate_qa)}
-        ${metricCard("ecoli", a.ecoli_cfu, a.ecoli_qa)}
-      </div>
-      ${attributeTable([
-        ["Sampled", formatDate(a.field_date)],
-        ["Water flow", a.water_flow],
-        ["Water level", a.water_level],
-        ["Weather", a.current_weather],
-      ])}`
-    : `<p class="muted">No citizen science record for ${season}.</p>`;
-
-  const el = document.createElement("div");
-  el.className = "sitePopup";
-  el.innerHTML = `
-    ${POPUP_STYLESHEET}
-    ${siteDetailsHtml(a)}
-    <h4 class="detailsSubhead">Citizen science, ${season}</h4>
-    ${reading}`;
-  return el;
-}
-
-function metricCard(metricKey, value, qa) {
-  const metric = METRICS[metricKey];
-  const band = classify(metricKey, value);
-  const shown = formatNumber(value, metric.decimals);
-  return `
-    <div class="metricCard" style="--band-color:${band.color}">
-      <span class="metricCardLabel">${escapeHtml(metric.label)}</span>
-      <span class="metricCardValue">${shown}<small> ${escapeHtml(metric.unit)}</small></span>
-      <span class="metricCardBand">${escapeHtml(band.label)}</span>
-      ${qa ? `<span class="metricCardQa">${escapeHtml(qa.toLowerCase())}</span>` : ""}
-    </div>`;
-}

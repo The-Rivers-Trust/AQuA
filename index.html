@@ -93,15 +93,29 @@
             </div>
           </calcite-panel>
           <div class="leagueArea" id="csLeague" hidden></div>
-          <arcgis-map id="mainMap" class="siteMap">
-            <arcgis-zoom slot="top-left"></arcgis-zoom>
-            <arcgis-home slot="top-left"></arcgis-home>
-            <arcgis-search slot="top-right"></arcgis-search>
-            <arcgis-expand slot="top-right" expand-icon="layers" expand-tooltip="Layers">
-              <arcgis-layer-list></arcgis-layer-list>
-            </arcgis-expand>
-            <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
-          </arcgis-map>
+          <div class="mapColumn">
+            <arcgis-map id="mainMap" class="siteMap">
+              <arcgis-zoom slot="top-left"></arcgis-zoom>
+              <arcgis-home slot="top-left"></arcgis-home>
+              <arcgis-search slot="top-right"></arcgis-search>
+              <arcgis-expand slot="top-right" expand-icon="basemap" expand-tooltip="Basemap">
+                <arcgis-basemap-gallery></arcgis-basemap-gallery>
+              </arcgis-expand>
+              <calcite-action class="mapAction layersAction" slot="top-right" icon="layers" text="Map layers" title="Map layers: backgrounds, river network, storm overflows"></calcite-action>
+              <arcgis-expand slot="top-right" expand-icon="legend" expand-tooltip="Legend">
+                <div class="mapWidget">
+                  <h3 class="mapWidgetHeading">Legend</h3>
+                  <arcgis-legend data-legend reference-element="mainMap" hidden></arcgis-legend>
+                  <p class="muted hint" data-legend-empty>Switch on a layer in Map layers to see its legend here.</p>
+                </div>
+              </arcgis-expand>
+              <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
+            </arcgis-map>
+          </div>
+          <!-- Contextual layers, closed until the map's Layers button is pressed (js/map/layers-panel.js). -->
+          <calcite-panel class="layersPanel" heading="Map layers" closable closed></calcite-panel>
+          <!-- Opens down the right of the map when a site is clicked (js/map/site-panel.js). -->
+          <calcite-panel class="sitePanel" heading="Site" closable closed></calcite-panel>
         </section>
 
         <section class="view view--map" data-view="metals" hidden>
@@ -121,15 +135,29 @@
               <p class="muted hint">Click a site on the map to see all its metals results.</p>
             </div>
           </calcite-panel>
-          <arcgis-map id="metalsMap" class="siteMap">
-            <arcgis-zoom slot="top-left"></arcgis-zoom>
-            <arcgis-home slot="top-left"></arcgis-home>
-            <arcgis-search slot="top-right"></arcgis-search>
-            <arcgis-expand slot="top-right" expand-icon="layers" expand-tooltip="Layers">
-              <arcgis-layer-list></arcgis-layer-list>
-            </arcgis-expand>
-            <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
-          </arcgis-map>
+          <div class="mapColumn">
+            <arcgis-map id="metalsMap" class="siteMap">
+              <arcgis-zoom slot="top-left"></arcgis-zoom>
+              <arcgis-home slot="top-left"></arcgis-home>
+              <arcgis-search slot="top-right"></arcgis-search>
+              <arcgis-expand slot="top-right" expand-icon="basemap" expand-tooltip="Basemap">
+                <arcgis-basemap-gallery></arcgis-basemap-gallery>
+              </arcgis-expand>
+              <calcite-action class="mapAction layersAction" slot="top-right" icon="layers" text="Map layers" title="Map layers: backgrounds, river network, storm overflows"></calcite-action>
+              <arcgis-expand slot="top-right" expand-icon="legend" expand-tooltip="Legend">
+                <div class="mapWidget">
+                  <h3 class="mapWidgetHeading">Legend</h3>
+                  <arcgis-legend data-legend reference-element="metalsMap" hidden></arcgis-legend>
+                  <p class="muted hint" data-legend-empty>Switch on a layer in Map layers to see its legend here.</p>
+                </div>
+              </arcgis-expand>
+              <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
+            </arcgis-map>
+          </div>
+          <!-- Contextual layers, closed until the map's Layers button is pressed (js/map/layers-panel.js). -->
+          <calcite-panel class="layersPanel" heading="Map layers" closable closed></calcite-panel>
+          <!-- Opens down the right of the map when a site is clicked (js/map/site-panel.js). -->
+          <calcite-panel class="sitePanel" heading="Site" closable closed></calcite-panel>
         </section>
 
         <section class="view view--map" data-view="downstream" hidden>

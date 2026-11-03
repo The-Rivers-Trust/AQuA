@@ -12,10 +12,25 @@ export const MAP = {
   // Roughly centred on Yorkshire.
   center: [-1.4, 54.0],
   zoom: 8,
+  // Starting basemap, following the dark/light theme until the user picks
+  // one from the basemap selector.
   basemap: {
     dark: "dark-gray-vector",
     light: "gray-vector",
   },
+  // The selector's choices, in gallery order: Esri basemap ids (all load
+  // without an API key; the gallery shows Esri's own name and thumbnail
+  // for each). Keep the two theme defaults above in the list.
+  basemaps: [
+    "gray-vector",
+    "dark-gray-vector",
+    "streets-vector",
+    "topo-vector",
+    "terrain",
+    "osm",
+    "satellite",
+    "hybrid",
+  ],
 };
 
 // ---------------------------------------------------------------------
@@ -36,9 +51,13 @@ export const AQUA = {
   // Number = the site's order within its catchment, 1 at the top (used by
   // the downstream plots).
   siteFields: ["OBJECTID", "site_name", "Number", "case_study_group", "River_Waterbody", "Catchment", "OS_Grid_Ref", "Description", "Easting", "Northing"],
+  // Everything a survey shows in the site panel (js/map/site-sections.js).
   citizenScienceFields: [
-    "site_name", "season_year", "field_date", "current_weather", "water_flow", "water_level",
+    "OBJECTID", "site_name", "season_year", "field_date", "field_time",
+    "current_weather", "weather_last_24h", "water_flow", "water_level", "pollution_sources_combined",
     "phosphate_ppm", "phosphate_qa", "ecoli_cfu", "ecoli_qa",
+    // Epicollect photo links (not every survey has all of them).
+    "site_photo_1", "site_photo_2", "site_photo_3", "ecoli_plate_photo",
   ],
 };
 
@@ -72,6 +91,10 @@ export const METRICS = {
     field: "ecoli_cfu",
     unit: "cfu",
     decimals: 0,
+    // The per-site bar chart's fixed top of axis: counts run from 0 to
+    // hundreds, so a higher bar is clipped (and labelled) rather than
+    // squashing the 10 cfu line into the floor.
+    chartMax: 100,
     // Good below 10 cfu, bad at 10 or more. Integer counts, so "max: 9"
     // is the same as "< 10".
     // Colours: Okabe-Ito blue / vermillion, a colour-blind-safe pair (stays
@@ -162,6 +185,91 @@ export const RIVER_NETWORK = {
     { value: 4, size: 2 },
     { value: 5, size: 3 },
     { value: 7, size: 5 },
+  ],
+};
+
+// ---------------------------------------------------------------------
+// Contextual layers (the map's Layers panel) - ported from the NRS
+// dashboard: WFD waterbody classification and the National Soil Map as
+// switchable backgrounds, live storm overflows from every water company,
+// and the Open River Network (RIVER_NETWORK above).
+// ---------------------------------------------------------------------
+export const WFD_CATCHMENTS = {
+  url: "https://services3.arcgis.com/Bb8lfThdhugyc4G3/arcgis/rest/services/WFD_River_Water_Body_Catchments_Cycle_4_With_Coastal/FeatureServer/0",
+  title: "WFD Waterbody Classification 2025",
+  opacity: 0.4,
+  fields: [
+    { field: "ecological_class", label: "Ecological" },
+    { field: "ammonia_phys_chem_class", label: "Ammonia" },
+    { field: "phosphate_class", label: "Orthophosphate" },
+  ],
+  // Same colours as the EA's own ecological_class renderer.
+  classes: [
+    { value: "High", color: [0, 114, 176, 255] },
+    { value: "Good", color: [86, 213, 232, 255] },
+    { value: "Moderate", color: [230, 184, 0, 255] },
+    { value: "Poor", color: [240, 140, 0, 255] },
+    { value: "Bad", color: [214, 49, 41, 255] },
+  ],
+  notAssessedColor: [156, 156, 156, 255],
+};
+
+export const SOIL_MAP = {
+  url: "https://utility.arcgis.com/usrsvcs/servers/608cab5c64ae44789d65582007fb2350/rest/services/NationalSoilMap/FeatureServer/0",
+  title: "National Soil Map",
+  field: "SOILSCAPE",
+};
+
+export const STORM_OVERFLOWS = {
+  title: "Storm Overflows",
+  refreshMinutes: 5,
+  recentHours: 48,
+  defaultFields: {
+    id: "Id",
+    company: "Company",
+    status: "Status",
+    statusStart: "StatusStart",
+    latestEventStart: "LatestEventStart",
+    latestEventEnd: "LatestEventEnd",
+    receivingWaterCourse: "ReceivingWaterCourse",
+    lastUpdated: "LastUpdated",
+  },
+  sources: [
+    { url: "https://services-eu1.arcgis.com/MSNNjkZ51iVh8yBj/arcgis/rest/services/Northumbrian_Water_Storm_Overflow_Activity_2_view/FeatureServer/0" },
+    { url: "https://services3.arcgis.com/VCOY1atHWVcDlvlJ/arcgis/rest/services/stream_service_outfall_locations_view/FeatureServer/0" },
+    { url: "https://services1.arcgis.com/NO7lTIlnxRMMG9Gw/arcgis/rest/services/Severn_Trent_Water_Storm_Overflow_Activity/FeatureServer/0" },
+    { url: "https://services-eu1.arcgis.com/6qJmARkS2dt2IjVA/arcgis/rest/services/SouthernWater_StormOverflowActivity_PROD_view/FeatureServer/0" },
+    {
+      // camelCase field names throughout
+      url: "https://services-eu1.arcgis.com/OMdMOtfhATJPcHe3/arcgis/rest/services/NEH_outlets_PROD/FeatureServer/0",
+      fields: {
+        company: "company",
+        status: "status",
+        statusStart: "statusStart",
+        latestEventStart: "latestEventStart",
+        latestEventEnd: "latestEventEnd",
+        receivingWaterCourse: "receivingWaterCourse",
+        lastUpdated: "lastUpdated",
+      },
+    },
+    { url: "https://services2.arcgis.com/g6o32ZDQ33GpCIu3/arcgis/rest/services/Thames_Water_Storm_Overflow_Activity_(Production)_view/FeatureServer/0" },
+    { url: "https://services5.arcgis.com/5eoLvR0f8HKb7HWP/arcgis/rest/services/United_Utilities_Storm_Overflow_Activity/FeatureServer/0" },
+    { url: "https://services.arcgis.com/3SZ6e0uCvPROr4mS/arcgis/rest/services/Wessex_Water_Storm_Overflow_Activity/FeatureServer/0" },
+    { url: "https://services-eu1.arcgis.com/1WqkK5cDKUbF0CkH/arcgis/rest/services/Yorkshire_Water_Storm_Overflow_Activity/FeatureServer/0" },
+    {
+      // The end-of-discharge field is LatestEventFinish (LatestEventEnd is
+      // only its alias, which queries can't use).
+      url: "https://services-eu1.arcgis.com/zat3uNEZelYVksuM/arcgis/rest/services/STREAM_Data/FeatureServer/0",
+      fields: { latestEventEnd: "LatestEventFinish" },
+    },
+  ],
+  // Emoji rather than dots so outfalls never read as survey sites. The
+  // two states that need attention draw larger and on top.
+  categories: [
+    { key: "spilling", label: "Currently discharging", headline: "Discharging Now", glyph: "\u{1F4A9}", size: 20, priority: 3 },
+    { key: "recent", label: "Discharged in last 48 hours", headline: "Discharged in last 48 hours", glyph: "⚠️", size: 20, priority: 2 },
+    { key: "notspilling", label: "Not discharged in last 48 hours", headline: "Not discharged in last 48 hours", glyph: "✅", size: 8, priority: 0 },
+    { key: "offline", label: "Offline", headline: "Offline", glyph: "❓", size: 8, priority: 1 },
   ],
 };
 

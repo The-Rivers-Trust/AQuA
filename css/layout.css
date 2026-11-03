@@ -95,6 +95,423 @@ body {
   padding: var(--space-4);
 }
 
+/* ---- Layers panel: contextual layers, on the right of the map, closed
+   until the map's Layers button is pressed (js/map/layers-panel.js) ---- */
+.layersPanel {
+  flex: 0 0 320px;
+  min-height: 0;
+  border-inline-start: 1px solid var(--border);
+}
+
+.layersPanel[closed] {
+  display: none;
+}
+
+/* ---- Map + site panel: clicking a site opens a panel under the map
+   (js/map/site-panel.js) ---- */
+.mapColumn {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapColumn[hidden] {
+  display: none;
+}
+
+.mapColumn > .siteMap {
+  flex: 1;
+  min-height: 0;
+}
+
+/* A calcite-panel's header has a very high z-index of its own; keeping each
+   panel's stacking to itself stops one panel's header drawing over another
+   panel placed on top of it (the site sheet on a phone). */
+.sidePanel,
+.layersPanel,
+.sitePanel {
+  isolation: isolate;
+}
+
+/* The site panel: down the right of the map, after the Layers panel. */
+.sitePanel {
+  flex: 0 0 380px;
+  min-width: 0;
+  border-inline-start: 1px solid var(--border);
+}
+
+.sitePanel[closed] {
+  display: none;
+}
+
+/* Sections stacked, each with a small caps title row, divided by a hairline. */
+.siteSections {
+  padding: var(--space-3) var(--space-4) var(--space-6);
+}
+
+.siteSection {
+  min-width: 0;
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.siteSection:first-of-type {
+  padding-top: var(--space-2);
+  border-top: 0;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+  margin-bottom: var(--space-2);
+}
+
+.sectionHead h3 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.sectionHeadNote {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Site details: label over value, two across. */
+.siteFacts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3) var(--space-4);
+  margin: 0;
+}
+
+.siteFacts dt {
+  margin-bottom: 2px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.siteFacts dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.siteFact--wide {
+  grid-column: 1 / -1;
+}
+
+/* The metals list is 24 rows - it scrolls in its own box so the surveys
+   next to or below it stay within reach. */
+.metalsScroll {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Surveys: newer / older buttons around "1 of 3", then the survey's card
+   (the NRS dashboard's "Recent surveys" pattern). */
+.surveyNav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.surveyPosition {
+  min-width: 4.5em;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.surveyCard {
+  padding: var(--space-3);
+  background: var(--surface-2);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.surveyCardTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.surveyDate {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.surveySeason {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.weatherTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-3);
+}
+
+.weatherTag {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 11px;
+}
+
+.surveyFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px var(--space-3);
+  margin: 0;
+}
+
+.surveyFields dt {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.surveyFields dd {
+  margin: 0;
+}
+
+.surveyField--wide {
+  grid-column: 1 / -1;
+}
+
+.surveyReadings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-3) 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+.surveyReading {
+  display: grid;
+  grid-template-columns: 10px 1fr auto;
+  align-items: center;
+  gap: 0 var(--space-2);
+}
+
+.surveyReadingSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.surveyReadingText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.surveyReadingLabel {
+  font-weight: 500;
+}
+
+.surveyReadingBand {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.surveyReadingValue {
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.surveyReadingValue small {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.surveyNote {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.surveyNoteLabel {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.surveyNote p {
+  margin: 2px 0 0;
+  max-height: 4.8em;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+}
+
+/* Bar charts over the threshold bands (js/charts/season-bars.js). Bars
+   take their colour from the band they fall in; everything else is theme
+   text colours. */
+.barChart {
+  margin-bottom: var(--space-3);
+}
+
+.barChartTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.barChartUnit {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.barChartSvg {
+  display: block;
+  width: 100%;
+  height: 132px;
+  overflow: visible;
+}
+
+.barTick {
+  fill: var(--text-muted);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.barTick--current {
+  fill: var(--text-primary);
+  font-weight: 600;
+}
+
+/* A faint edge keeps pale bars (the light cyan band) visible on a light
+   surface. */
+.barFill {
+  stroke: var(--text-primary);
+  stroke-opacity: 0.2;
+  stroke-width: 1;
+}
+
+/* Surveys other than the one showing, when there are several. */
+.barFill--soft {
+  opacity: 0.5;
+}
+
+.barValue {
+  fill: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.barValue--current {
+  fill: var(--text-primary);
+  font-weight: 700;
+}
+
+.surveyPhotos .photoList,
+.photoList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.photoList a {
+  display: block;
+  text-decoration: none;
+}
+
+.photoCaption {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Cropped square so a row of them lines up; the full photo opens on click. */
+.photoList img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: var(--surface-1);
+  object-fit: cover;
+}
+
+.photoList a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Layers: one list row per layer; a layer's options sit under it, only
+   while it's switched on. */
+.layerOptions {
+  padding: var(--space-1) 10px var(--space-2); /* lines up with the row's label and switch */
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.layerOptions[hidden] {
+  display: none;
+}
+
+.layerOptions calcite-label {
+  --calcite-label-margin-bottom: 0;
+}
+
+/* The map's Legend button (an arcgis-expand): the contextual layers' legend. */
+.mapWidget {
+  width: 300px;
+  max-width: calc(100vw - 96px);
+  max-height: 45vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  box-sizing: border-box;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+}
+
+.mapWidgetHeading {
+  margin: 0 0 var(--space-3);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* A calcite-action has no fill of its own - give it the same surface as
+   the map's other buttons, or the map shows through. */
+.mapAction {
+  --calcite-action-background-color: var(--calcite-color-foreground-1);
+  --calcite-action-background-color-hover: var(--calcite-color-foreground-2);
+  --calcite-action-background-color-press: var(--calcite-color-foreground-3);
+  background: var(--calcite-color-foreground-1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
 .siteMap {
   flex: 1;
   min-width: 0;
@@ -484,6 +901,35 @@ body {
 
 /* Phone width: stack the details panel under the map. */
 @media (max-width: 720px) {
+  /* The site panel is a sheet over the lower part of the screen instead of
+     squeezing the map down to nothing. */
+  .sitePanel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 4;
+    flex: none;
+    height: 75%;
+    border-inline-start: 0;
+    border-top: 1px solid var(--border);
+    background: var(--bg-page);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Floats over the map's part of the screen (the side panel's 40% below
+     it stays usable). */
+  .layersPanel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 60%; /* a calcite-panel sets its own 100% height, so not top + bottom */
+    z-index: 5;
+    width: min(320px, 90%);
+    background: var(--bg-page);
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
+  }
+
   .view--map {
     flex-direction: column-reverse;
   }
