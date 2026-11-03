@@ -6,3 +6,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 .claude/settings.local.json
+
+# Claude Code / Claude app project config - local only
+.claude/
