@@ -11,10 +11,12 @@
 // data (METRICS[x].chartMax instead where set - a bar above it is clipped
 // and its label carries a ▲). A survey with no reading has no bar.
 //
-// Not interactive - it's a picture of the history. The survey the browser
-// beside it is showing is drawn at full strength (the others a little
-// softer) and its label is emphasised; the charts redraw when the survey
-// view (js/data/surveys.js) changes.
+// It's a picture of the history, and only interactive when asked to be:
+// with `onBarClick` (see createSeasonBars) the bars of surveys it accepts
+// can be clicked - the E. coli chart uses it to open that survey's plate
+// photo. The survey the browser beside it is showing is drawn at full
+// strength (the others a little softer) and its label is emphasised; the
+// charts redraw when the survey view (js/data/surveys.js) changes.
 // =====================================================================
 
 import { METRICS } from "../config.js";
@@ -81,7 +83,10 @@ const svgEl = (tag, attrs = {}, text) => {
 
 // Returns the chart's element. It draws itself once it's in the page (so
 // it can size to its space) and again when that space changes.
-export function createSeasonBars({ metricKey, view }) {
+// onBarClick (optional): { enabled(survey) -> boolean, open(survey),
+// label } - a survey's whole column (not just its slim bar) becomes a
+// button when enabled(survey) is true; label says what it opens.
+export function createSeasonBars({ metricKey, view, onBarClick }) {
   const metric = METRICS[metricKey];
   const clipId = `seasonBars${++chartCount}`;
   const card = document.createElement("div");
@@ -153,6 +158,33 @@ export function createSeasonBars({ metricKey, view }) {
     const useShort = slot < LABEL_WIDTH;
     const labelEvery = Math.max(1, Math.ceil((useShort ? SHORT_LABEL_WIDTH : LABEL_WIDTH) / slot));
     const several = view.surveys.length > 1;
+    // A clickable survey: a transparent button over its column, so a
+    // slim bar (or the "–" of a missing reading) is easy to hit.
+    // Only the bar itself lights up (on hover, or keyboard focus).
+    function addHit(survey, i, summary, bar = null) {
+      if (!onBarClick?.enabled(survey)) return;
+      const hit = svgEl("rect", {
+        x: x(i) - slot / 2, y: MARGIN.top, width: slot, height: plotH + 1,
+        class: "barHit", role: "button", tabindex: 0, "aria-label": `${onBarClick.label}: ${summary}`,
+      });
+      hit.append(svgEl("title", {}, `${summary} - click to ${onBarClick.label.toLowerCase()}`));
+      hit.addEventListener("click", () => onBarClick.open(survey));
+      if (bar) {
+        const light = (on) => bar.classList.toggle("barFill--hover", on);
+        hit.addEventListener("mouseenter", () => light(true));
+        hit.addEventListener("mouseleave", () => light(false));
+        hit.addEventListener("focus", () => light(hit.matches(":focus-visible")));
+        hit.addEventListener("blur", () => light(false));
+      }
+      hit.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          onBarClick.open(survey);
+        }
+      });
+      svg.append(hit);
+    }
+
     view.surveys.forEach((survey, i) => {
       const v = values[i];
       const current = i === view.index;
@@ -169,6 +201,7 @@ export function createSeasonBars({ metricKey, view }) {
         });
         bar.append(svgEl("title", {}, `${summary} (${band.label})`));
         svg.append(bar);
+        addHit(survey, i, summary, bar);
         if (slot >= 34 || current) {
           svg.append(svgEl("text", { x: x(i), y: top - 5, "text-anchor": "middle", class: current ? "barValue barValue--current" : "barValue" }, `${formatNumber(v, metric.decimals)}${v > yMax ? " ▲" : ""}`));
         }
@@ -176,6 +209,7 @@ export function createSeasonBars({ metricKey, view }) {
         const none = svgEl("text", { x: x(i), y: y0 - 6, "text-anchor": "middle", class: "barTick" }, "–");
         none.append(svgEl("title", {}, summary));
         svg.append(none);
+        addHit(survey, i, summary);
       }
 
       if (i % labelEvery === 0 || i === view.surveys.length - 1 || current) {

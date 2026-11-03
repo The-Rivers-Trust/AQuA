@@ -38,6 +38,7 @@
       <div slot="content-end" class="headerActions">
         <!-- Dashboard-wide filters: apply to every tab (js/filters.js). -->
         <div class="headerFilters" role="group" aria-label="Filter data">
+          <span id="siteCount" class="siteCount" aria-live="polite"></span>
           <calcite-select id="seasonFilter" class="headerFilter" label="Season" scale="s" disabled>
             <calcite-option value="">Loading…</calcite-option>
           </calcite-select>
@@ -47,7 +48,7 @@
             selection-mode="single" clearable scale="s" disabled></calcite-combobox>
           <calcite-combobox id="riverFilter" class="headerFilter" label="River / waterbody" placeholder="All rivers"
             selection-mode="single" clearable scale="s" disabled></calcite-combobox>
-          <calcite-button id="clearFilters" appearance="transparent" kind="neutral" scale="s" icon-start="x" hidden>Clear</calcite-button>
+          <calcite-button id="clearFilters" appearance="transparent" kind="neutral" scale="s" icon-start="x" hidden>Reset filters</calcite-button>
         </div>
         <calcite-action id="themeToggle" icon="brightness" text="Switch theme" title="Switch between dark and light"></calcite-action>
       </div>
@@ -191,6 +192,13 @@
         </section>
       </main>
     </div>
+
+    <!-- Survey photos, enlarged in the page (js/map/photo-viewer.js). -->
+    <calcite-dialog id="photoDialog" heading="Survey photo" modal width="l">
+      <img class="photoImg" id="photoImg" src="" alt="" />
+      <calcite-button id="photoPrev" slot="footer-start" appearance="outline" kind="neutral" icon-start="chevron-left">Previous</calcite-button>
+      <calcite-button id="photoNext" slot="footer-end" appearance="outline" kind="neutral" icon-end="chevron-right">Next</calcite-button>
+    </calcite-dialog>
   </calcite-shell>
 
   <script type="module" src="js/main.js"></script>

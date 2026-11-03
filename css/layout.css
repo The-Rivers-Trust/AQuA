@@ -26,6 +26,32 @@ body {
   gap: var(--space-2);
 }
 
+/* "12 of 106 sites": what the filters leave, live. */
+.siteCount {
+  flex: none;
+  margin-inline-end: var(--space-2);
+  font-size: 12.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.siteCount.isFiltered {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* A filter that is narrowing the sites: an accent ring (dashed when it
+   was only filled in by another pick), so it's obvious which are on. */
+.headerFilter.isActive {
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--accent);
+  --calcite-combobox-input-text-color: var(--accent);
+}
+
+.headerFilter.isImplied {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
 /* Filters shrink before anything overflows the header. */
 .headerFilters {
   min-width: 0;
@@ -411,6 +437,21 @@ body {
   stroke-width: 1;
 }
 
+/* A clickable survey column (season-bars.js onBarClick). */
+.barHit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none; /* the bar itself shows hover / keyboard focus */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.barFill.barFill--hover {
+  opacity: 1;
+  stroke: var(--accent);
+  stroke-opacity: 1;
+  stroke-width: 2;
+}
+
 /* Surveys other than the one showing, when there are several. */
 .barFill--soft {
   opacity: 0.5;
@@ -438,9 +479,15 @@ body {
   gap: 6px;
 }
 
-.photoList a {
+.photoThumb {
   display: block;
-  text-decoration: none;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  cursor: zoom-in;
 }
 
 .photoCaption {
@@ -450,7 +497,7 @@ body {
   color: var(--text-muted);
 }
 
-/* Cropped square so a row of them lines up; the full photo opens on click. */
+/* Cropped square so a row of them lines up; a click enlarges the photo. */
 .photoList img {
   display: block;
   width: 100%;
@@ -461,7 +508,16 @@ body {
   object-fit: cover;
 }
 
-.photoList a:focus-visible {
+/* The enlarged photo (js/map/photo-viewer.js). */
+.photoImg {
+  display: block;
+  max-width: 100%;
+  max-height: 70vh;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+.photoThumb:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -830,6 +886,8 @@ body {
 
 .leagueTable {
   width: 100%;
+  min-width: 720px; /* narrower screens scroll rather than squash the columns */
+  table-layout: fixed; /* every column the same width */
   border-collapse: collapse;
   font-size: 13px;
 }
@@ -837,7 +895,7 @@ body {
 .leagueTable th,
 .leagueTable td {
   padding: var(--space-2) var(--space-3);
-  white-space: nowrap;
+  overflow-wrap: anywhere;
   border-bottom: 1px solid var(--border);
   text-align: left;
   vertical-align: top;
@@ -875,10 +933,6 @@ body {
 
 .leagueColNum {
   font-variant-numeric: tabular-nums;
-}
-
-.leagueRank {
-  font-weight: 600;
 }
 
 .leagueValue {
@@ -947,6 +1001,10 @@ body {
   /* No room for the title next to three filters - the tab names and the
      page title still say where you are. */
   calcite-navigation-logo {
+    display: none;
+  }
+
+  .siteCount {
     display: none;
   }
 

@@ -9,7 +9,7 @@
 // =====================================================================
 
 import { AQUA, METALS, NO_DATA, SITE_COLOR } from "../config.js";
-import { fetchSites, fetchMetals, fetchCitizenScience, recordsBySite, hasSeasons, SITES_SPATIAL_REFERENCE } from "../data/aqua-service.js";
+import { fetchSites, fetchMetals, recordsBySite, hasSeasons, SITES_SPATIAL_REFERENCE } from "../data/aqua-service.js";
 import { onFilterChange, matchesFilters, filterWhereClause, hasActiveFilters, getSeason } from "../filters.js";
 import { escapeHtml, formatSeason, formatSignificant } from "../utils/format.js";
 import {
@@ -19,7 +19,6 @@ import {
 import { setupLayersPanel } from "../map/layers-panel.js";
 import { initSitePanel, registerSiteLayer, refreshSite } from "../map/site-panel.js";
 import { buildSitePanelContent, section } from "../map/site-sections.js";
-import { surveysForSite } from "../data/surveys.js";
 
 const SITES_VIEW = "sites"; // metal picker value for plain site markers
 const LOD_RING_SIZE = 10;
@@ -51,14 +50,10 @@ export async function initMetalsMap({ mapEl, metalSelectEl, legendEl }) {
   state.els = { metalSelectEl, legendEl };
 
   await setupMap(mapEl);
-  // Clicking a site opens its panel under the map: site details, the
-  // site's lab results, and its citizen science surveys to flick through.
+  // Clicking a site opens its panel down the right of the map: the site's
+  // details and its lab results.
   initSitePanel(mapEl, {
-    render: async (a) => buildSitePanelContent(a, {
-      surveys: surveysForSite(await fetchCitizenScience(), a.site_name),
-      season: getSeason(),
-      middle: () => metalsSection(a),
-    }),
+    render: (a) => buildSitePanelContent(a, { middle: () => metalsSection(a) }),
   });
   // Contextual layers + their panel - extras, so never stop the map loading.
   await setupLayersPanel(mapEl).catch((error) => console.warn("AQuA dashboard: map layers unavailable:", error));

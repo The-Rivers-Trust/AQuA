@@ -41,9 +41,11 @@ js/
     site-panel.js     the panel down the right of the map that opens when a site is
                       clicked, and the site's highlight on the map
     site-sections.js  what's in it, top to bottom: site details, trends (phosphate + E. coli
-                      bar charts, or the lab metals), surveys (cycle newer / older through
-                      each visit: weather, flow, readings, photos)
-    contextual-layers.js  WFD classification, National Soil Map, storm overflows, river
+                      bar charts) or the lab metals, and on the Citizen Science map the
+                      surveys (cycle newer / older through each visit: weather, flow,
+                      readings, photos)
+    photo-viewer.js   survey photos enlarge in a dialog in the page, with previous / next
+    contextual-layers.js  WFD classification, National Soil Map, storm overflows, Event Duration Monitoring 2025, river
                       network pop-up - ported from NRS
     river-network.js  Open River Network + animated "River flow direction" layers
                       (WebGL, ported from NRS) - on every map's layer list
@@ -51,7 +53,7 @@ js/
     citizen-science-map.js  sites joined to a season's records, coloured by phosphate /
                             E. coli band, clickable legend filter, site panel,
                             Map / League table view switch
-    league-table.js         sortable site league table (phosphate + E. coli ranks)
+    league-table.js         sortable site league table (phosphate + E. coli readings)
     downstream-plots.js     one chart per catchment, sites upstream -> downstream by the
                             sites layer's Number field; phosphate, E. coli or any metal
   charts/

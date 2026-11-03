@@ -5,11 +5,14 @@
 //   1. Site details - river, catchment, group, grid reference.
 //   2. A middle section the map tab chooses: on the Citizen Science map,
 //      phosphate and E. coli bar charts over every survey
-//      (trendsSection); on the Metals map, the site's lab results.
-//   3. Surveys - the site's individual surveys, one at a time, cycled with
-//      newer / older buttons like the NRS dashboard's "Recent surveys":
-//      date, weather, flow and level, the phosphate and E. coli readings
-//      with their band, photos, and any pollution sources noted.
+//      (trendsSection; click an E. coli bar to see that survey's plate
+//      photo); on the Metals map, the site's lab results.
+//   3. Surveys (Citizen Science map only) - the site's individual surveys,
+//      one at a time, cycled with newer / older buttons like the NRS
+//      dashboard's "Recent surveys": date, weather, flow and level, the
+//      phosphate and E. coli readings with their band, photos (which
+//      enlarge in the page - photo-viewer.js), and any pollution sources
+//      noted.
 // The charts and the surveys share one "survey view"
 // (js/data/surveys.js): moving to another survey highlights its bars.
 // Each site has one survey so far, so the cycling controls only appear
@@ -22,16 +25,20 @@ import { createSurveyView } from "../data/surveys.js";
 import { createSeasonBars } from "../charts/season-bars.js";
 import { escapeHtml, formatDate, formatNumber, formatSeason } from "../utils/format.js";
 import { POPUP_STYLESHEET } from "./map-common.js";
+import { openPhotos } from "./photo-viewer.js";
 
-// surveys: the site's records, oldest first (surveysForSite).
+// surveys: the site's records, oldest first (surveysForSite), or omitted
+// for a panel without a Surveys section (the Metals map).
 // season: the header's season - the survey to start on.
-// middle(view) -> the middle section's element.
+// middle(view) -> the middle section's element (view is null with no
+// surveys).
 export function buildSitePanelContent(a, { surveys, season, middle }) {
-  const view = createSurveyView(surveys, a.site_name, season);
+  const view = surveys ? createSurveyView(surveys, a.site_name, season) : null;
   const root = document.createElement("div");
   root.className = "siteSections";
   root.insertAdjacentHTML("afterbegin", POPUP_STYLESHEET);
-  root.append(siteDetailsSection(a), middle(view), surveysSection(view));
+  root.append(siteDetailsSection(a), middle(view));
+  if (view) root.append(surveysSection(view));
   return root;
 }
 
@@ -85,9 +92,28 @@ export function trendsSection(view) {
     el.append(mutedText("No surveys recorded for this site yet."));
     return el;
   }
-  for (const metricKey of Object.keys(METRICS)) el.append(createSeasonBars({ metricKey, view }));
+  for (const metricKey of Object.keys(METRICS)) {
+    el.append(createSeasonBars({ metricKey, view, onBarClick: metricKey === "ecoli" ? platePhotoClick : undefined }));
+  }
   return el;
 }
+
+// The E. coli chart: a survey's bar opens its plate photo, if it has one.
+const platePhotoClick = {
+  label: "View E. coli plate photo",
+  enabled: (survey) => isHttps(survey.ecoli_plate_photo),
+  open(survey) {
+    const when = survey.field_date ? ` on ${formatDate(survey.field_date)}` : "";
+    openPhotos(
+      [{ url: survey.ecoli_plate_photo, caption: "E. coli plate", alt: `E. coli plate, ${survey.site_name}${when}` }],
+      0,
+      `${survey.site_name}${survey.field_date ? ` · ${formatDate(survey.field_date)}` : ""}`
+    );
+  },
+};
+
+// Photo links come from the survey data, so only https ones are used.
+const isHttps = (url) => typeof url === "string" && /^https:\/\//i.test(url);
 
 // ---------------------------------------------------------------------
 // 3. Surveys
@@ -200,17 +226,17 @@ function readingRow(metricKey, value, qa) {
 // Photos
 // ---------------------------------------------------------------------
 
-// The survey's three site photos and its E. coli plate, as thumbnails
-// that open full size. They come from the survey data, so only https
-// links are used, and one that won't load says so rather than leaving a
-// hole.
+// The survey's three site photos, as thumbnails that enlarge in the page
+// (photo-viewer.js), where the others can be stepped through. (The E. coli
+// plate photo isn't here - it opens from the E. coli chart's bar.) Only
+// https links are used, and one that won't load says so rather than
+// leaving a hole.
 function photoStrip(s) {
   const wanted = [
     [s.site_photo_1, "Photo 1", "Site photo 1"],
     [s.site_photo_2, "Photo 2", "Site photo 2"],
     [s.site_photo_3, "Photo 3", "Site photo 3"],
-    [s.ecoli_plate_photo, "E. coli plate", "E. coli plate"],
-  ].filter(([url]) => typeof url === "string" && /^https:\/\//i.test(url));
+  ].filter(([url]) => isHttps(url));
 
   const strip = document.createElement("div");
   strip.className = "surveyPhotos";
@@ -218,27 +244,33 @@ function photoStrip(s) {
     strip.append(mutedText("No photos for this survey."));
     return strip;
   }
+  const viewerPhotos = wanted.map(([url, caption, alt]) => ({
+    url,
+    caption,
+    alt: `${alt}, ${s.site_name}${s.field_date ? ` on ${formatDate(s.field_date)}` : ""}`,
+  }));
+  const heading = `${s.site_name}${s.field_date ? ` · ${formatDate(s.field_date)}` : ""}`;
   const list = document.createElement("ul");
   list.className = "photoList";
-  for (const [url, caption, alt] of wanted) {
+  viewerPhotos.forEach((photo, index) => {
     const item = document.createElement("li");
-    const link = document.createElement("a");
-    link.href = url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.title = `Open ${caption.toLowerCase()} full size`;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "photoThumb";
+    button.title = `Enlarge ${photo.caption.toLowerCase()}`;
     const img = document.createElement("img");
-    img.src = url;
-    img.alt = `${alt}, ${formatSeason(s.season_year) || "survey"}`;
+    img.src = photo.url;
+    img.alt = photo.alt;
     img.loading = "lazy";
-    img.addEventListener("error", () => item.replaceChildren(mutedText(`${caption} couldn't be loaded.`)));
+    img.addEventListener("error", () => item.replaceChildren(mutedText(`${photo.caption} couldn't be loaded.`)));
     const label = document.createElement("span");
     label.className = "photoCaption";
-    label.textContent = caption;
-    link.append(img, label);
-    item.append(link);
+    label.textContent = photo.caption;
+    button.append(img, label);
+    button.addEventListener("click", () => openPhotos(viewerPhotos, index, heading));
+    item.append(button);
     list.append(item);
-  }
+  });
   strip.append(list);
   return strip;
 }
