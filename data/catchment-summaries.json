@@ -1,0 +1,967 @@
+{
+  "summaries": [
+    {
+      "catchment": "Derwent",
+      "season": "Summer26",
+      "summary": "In summer 2026 volunteers surveyed all 4 sites in the Derwent catchment. Phosphate was in the \"slightly elevated\" band at every site, from 0.13 mg/l on Thornton Beck to 0.22 mg/l on the River Derwent. E. coli was at or above the 10 cfu threshold at all four sites, from 12 cfu on the River Derwent to 47 cfu on Thornton Beck. Volunteers noted things such as livestock and built-up areas near some sites.",
+      "facts": {
+        "sitesInCatchment": 4,
+        "sitesSurveyed": 4,
+        "phosphate": {
+          "unit": "mg/l",
+          "readings": 4,
+          "lowest": {
+            "site": "DC01",
+            "river": "Thornton Beck",
+            "value": 0.13
+          },
+          "highest": {
+            "site": "DC02",
+            "river": "River Derwent",
+            "value": 0.22
+          },
+          "median": 0.15,
+          "bands": {
+            "Low": 0,
+            "Slightly Elevated": 4,
+            "Elevated": 0,
+            "High": 0,
+            "Very High": 0
+          }
+        },
+        "ecoli": {
+          "unit": "cfu",
+          "readings": 4,
+          "lowest": {
+            "site": "DC02",
+            "river": "River Derwent",
+            "value": 12
+          },
+          "highest": {
+            "site": "DC01",
+            "river": "Thornton Beck",
+            "value": 47
+          },
+          "median": 18,
+          "bands": {
+            "Good (under 10 cfu)": 0,
+            "Bad (10 cfu or more)": 4
+          }
+        }
+      },
+      "factsHash": "3d2437cc92bf9f97",
+      "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+      "generatedAt": "2026-11-03T15:53:09.879Z",
+      "approved": true,
+      "reviewedAt": "2026-11-03",
+      "reviewedBy": "Alfie Kelly",
+      "metals": {
+        "summary": "Lab tests at all 4 Derwent sites measured 24 metals. Everyday minerals such as calcium, magnesium, sodium and potassium were found at every site, along with iron, aluminium and manganese. Cadmium, chromium and lead were not detected at any site, and copper was detected at just one. The highest iron and aluminium results were at DC04 on the River Derwent. Thresholds for these metals have not yet been established, so it is not yet possible to say whether a result is good or bad.",
+        "facts": {
+          "sitesSampled": 4,
+          "sitesInCatchment": 4,
+          "focusMetals": [
+            {
+              "metal": "Aluminium",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Cadmium",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Chromium",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Copper",
+              "detectedAtSites": 1
+            },
+            {
+              "metal": "Iron",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Lead",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Manganese",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Nickel",
+              "detectedAtSites": 2
+            },
+            {
+              "metal": "Zinc",
+              "detectedAtSites": 3
+            }
+          ]
+        },
+        "factsHash": "3b088088520dc2ef",
+        "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+        "generatedAt": "2026-11-03T16:05:57.985Z",
+        "approved": true,
+        "reviewedAt": "2026-11-03",
+        "reviewedBy": "Alfie Kelly"
+      }
+    },
+    {
+      "catchment": "Foss",
+      "season": "Summer26",
+      "summary": "In summer 2026 volunteers surveyed all 20 sites in the Foss catchment. Phosphate was the main concern: 13 of the 19 readings were in the \"very high\" band, the typical (median) reading was 1.35 mg/l, and the highest was 2.5 mg/l on South Beck. Only the River Foss site FC01, at 0.1 mg/l, was in the \"low\" band. E. coli looked better, with 16 of 20 sites under the 10 cfu threshold, though four were at or above it, up to 56 cfu on Howl Beck. Volunteers noted duckweed, litter and urban drainage near some sites.",
+      "facts": {
+        "sitesInCatchment": 20,
+        "sitesSurveyed": 20,
+        "phosphate": {
+          "unit": "mg/l",
+          "readings": 19,
+          "lowest": {
+            "site": "FC01",
+            "river": "Foss",
+            "value": 0.1
+          },
+          "highest": {
+            "site": "FC15",
+            "river": "South Beck",
+            "value": 2.5
+          },
+          "median": 1.35,
+          "bands": {
+            "Low": 1,
+            "Slightly Elevated": 2,
+            "Elevated": 1,
+            "High": 2,
+            "Very High": 13
+          }
+        },
+        "ecoli": {
+          "unit": "cfu",
+          "readings": 20,
+          "lowest": {
+            "site": "FC04",
+            "river": "Farlington Beck",
+            "value": 0
+          },
+          "highest": {
+            "site": "FC06",
+            "river": "Howl Beck",
+            "value": 56
+          },
+          "median": 4,
+          "bands": {
+            "Good (under 10 cfu)": 16,
+            "Bad (10 cfu or more)": 4
+          }
+        }
+      },
+      "factsHash": "a6cb0843d2db0b6c",
+      "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+      "generatedAt": "2026-11-03T15:53:09.880Z",
+      "approved": true,
+      "reviewedAt": "2026-11-03",
+      "reviewedBy": "Alfie Kelly",
+      "metals": {
+        "summary": "Lab tests at all 20 Foss sites measured 24 metals. Everyday minerals such as calcium, magnesium, sodium and potassium were found at every site, as were iron, aluminium, manganese, nickel and zinc. Copper was detected at 19 sites and chromium at 15, while cadmium was not detected anywhere and lead at only one site (FC19, on the Foss). The highest iron, aluminium, copper and zinc results were at FC02 on the Foss, and the highest manganese and nickel results at FC08 on Black Dike. Thresholds for these metals have not yet been established, so it is not yet possible to say whether a result is good or bad.",
+        "facts": {
+          "sitesSampled": 20,
+          "sitesInCatchment": 20,
+          "focusMetals": [
+            {
+              "metal": "Aluminium",
+              "detectedAtSites": 20
+            },
+            {
+              "metal": "Cadmium",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Chromium",
+              "detectedAtSites": 15
+            },
+            {
+              "metal": "Copper",
+              "detectedAtSites": 19
+            },
+            {
+              "metal": "Iron",
+              "detectedAtSites": 20
+            },
+            {
+              "metal": "Lead",
+              "detectedAtSites": 1
+            },
+            {
+              "metal": "Manganese",
+              "detectedAtSites": 20
+            },
+            {
+              "metal": "Nickel",
+              "detectedAtSites": 20
+            },
+            {
+              "metal": "Zinc",
+              "detectedAtSites": 20
+            }
+          ]
+        },
+        "factsHash": "5c12e712eb1bda98",
+        "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+        "generatedAt": "2026-11-03T16:05:57.986Z",
+        "approved": true,
+        "reviewedAt": "2026-11-03",
+        "reviewedBy": "Alfie Kelly"
+      }
+    },
+    {
+      "catchment": "Gledhow Lake",
+      "season": "Summer26",
+      "summary": "In summer 2026 volunteers surveyed 7 of the 9 sites in the Gledhow Lake catchment, and the results were mixed. Phosphate ranged from 0.05 mg/l to 2.11 mg/l, both on Gledhow Beck, with a median of 0.43 mg/l and two sites in the \"very high\" band. For E. coli, three sites were under the 10 cfu threshold and four were at or above it, the highest being 128 cfu. Volunteers noted urban and residential drainage near some sites.",
+      "facts": {
+        "sitesInCatchment": 9,
+        "sitesSurveyed": 7,
+        "phosphate": {
+          "unit": "mg/l",
+          "readings": 7,
+          "lowest": {
+            "site": "GLC04",
+            "river": "Gledhow Beck",
+            "value": 0.05
+          },
+          "highest": {
+            "site": "GLC01",
+            "river": "Gledhow Beck",
+            "value": 2.11
+          },
+          "median": 0.43,
+          "bands": {
+            "Low": 1,
+            "Slightly Elevated": 2,
+            "Elevated": 2,
+            "High": 0,
+            "Very High": 2
+          }
+        },
+        "ecoli": {
+          "unit": "cfu",
+          "readings": 7,
+          "lowest": {
+            "site": "GLC04",
+            "river": "Gledhow Beck",
+            "value": 0
+          },
+          "highest": {
+            "site": "GLC01",
+            "river": "Gledhow Beck",
+            "value": 128
+          },
+          "median": 12,
+          "bands": {
+            "Good (under 10 cfu)": 3,
+            "Bad (10 cfu or more)": 4
+          }
+        }
+      },
+      "factsHash": "4ea9873e9faa10e2",
+      "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+      "generatedAt": "2026-11-03T15:53:09.880Z",
+      "approved": true,
+      "reviewedAt": "2026-11-03",
+      "reviewedBy": "Alfie Kelly",
+      "metals": {
+        "summary": "Lab tests at 7 of the 9 Gledhow Lake sites measured 24 metals. Everyday minerals such as calcium, magnesium, sodium and potassium were found at every site, as were iron, aluminium, manganese, nickel and zinc. Copper was detected at 6 sites, chromium at 4, cadmium at 2 and lead at just one. Site GLC06 on Gledhow Beck had the highest copper, lead, nickel and zinc results. Thresholds for these metals have not yet been established, so it is not yet possible to say whether a result is good or bad.",
+        "facts": {
+          "sitesSampled": 7,
+          "sitesInCatchment": 9,
+          "focusMetals": [
+            {
+              "metal": "Aluminium",
+              "detectedAtSites": 7
+            },
+            {
+              "metal": "Cadmium",
+              "detectedAtSites": 2
+            },
+            {
+              "metal": "Chromium",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Copper",
+              "detectedAtSites": 6
+            },
+            {
+              "metal": "Iron",
+              "detectedAtSites": 7
+            },
+            {
+              "metal": "Lead",
+              "detectedAtSites": 1
+            },
+            {
+              "metal": "Manganese",
+              "detectedAtSites": 7
+            },
+            {
+              "metal": "Nickel",
+              "detectedAtSites": 7
+            },
+            {
+              "metal": "Zinc",
+              "detectedAtSites": 7
+            }
+          ]
+        },
+        "factsHash": "fa1acc484e6cf07f",
+        "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+        "generatedAt": "2026-11-03T16:05:57.986Z",
+        "approved": true,
+        "reviewedAt": "2026-11-03",
+        "reviewedBy": "Alfie Kelly"
+      }
+    },
+    {
+      "catchment": "Holme",
+      "season": "Summer26",
+      "summary": "In summer 2026 volunteers surveyed all 13 sites in the Holme catchment, with phosphate readings at 10 of them. Phosphate was mostly low: six readings were in the \"low\" band and the highest was 0.62 mg/l on Hall Dike. E. coli was more of a concern, with 9 of 13 sites at or above the 10 cfu threshold and a high of 712 cfu on the River Holme, while the Fox Clough site read 0 for E. coli and was low for phosphate. Volunteers noted a range of possible sources of pollution near some sites.",
+      "facts": {
+        "sitesInCatchment": 13,
+        "sitesSurveyed": 13,
+        "phosphate": {
+          "unit": "mg/l",
+          "readings": 10,
+          "lowest": {
+            "site": "HC01",
+            "river": "Fox Clough",
+            "value": 0.05
+          },
+          "highest": {
+            "site": "HC12",
+            "river": "Hall Dike",
+            "value": 0.62
+          },
+          "median": 0.085,
+          "bands": {
+            "Low": 6,
+            "Slightly Elevated": 1,
+            "Elevated": 3,
+            "High": 0,
+            "Very High": 0
+          }
+        },
+        "ecoli": {
+          "unit": "cfu",
+          "readings": 13,
+          "lowest": {
+            "site": "HC01",
+            "river": "Fox Clough",
+            "value": 0
+          },
+          "highest": {
+            "site": "HC13",
+            "river": "River Holme",
+            "value": 712
+          },
+          "median": 14,
+          "bands": {
+            "Good (under 10 cfu)": 4,
+            "Bad (10 cfu or more)": 9
+          }
+        }
+      },
+      "factsHash": "4f769b89101989fe",
+      "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+      "generatedAt": "2026-11-03T15:53:09.880Z",
+      "approved": true,
+      "reviewedAt": "2026-11-03",
+      "reviewedBy": "Alfie Kelly",
+      "metals": {
+        "summary": "Lab tests at all 13 Holme sites measured 24 metals. Everyday minerals such as calcium, magnesium, sodium and potassium were found at every site, as were iron, aluminium, manganese and zinc. Copper and nickel were detected at 12 sites, chromium at 10 and cadmium at 3, while lead was not detected at any site. Site HC04 on Jackson Bridge Dike had the highest iron, manganese, chromium, cadmium and nickel results. Thresholds for these metals have not yet been established, so it is not yet possible to say whether a result is good or bad.",
+        "facts": {
+          "sitesSampled": 13,
+          "sitesInCatchment": 13,
+          "focusMetals": [
+            {
+              "metal": "Aluminium",
+              "detectedAtSites": 13
+            },
+            {
+              "metal": "Cadmium",
+              "detectedAtSites": 3
+            },
+            {
+              "metal": "Chromium",
+              "detectedAtSites": 10
+            },
+            {
+              "metal": "Copper",
+              "detectedAtSites": 12
+            },
+            {
+              "metal": "Iron",
+              "detectedAtSites": 13
+            },
+            {
+              "metal": "Lead",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Manganese",
+              "detectedAtSites": 13
+            },
+            {
+              "metal": "Nickel",
+              "detectedAtSites": 12
+            },
+            {
+              "metal": "Zinc",
+              "detectedAtSites": 13
+            }
+          ]
+        },
+        "factsHash": "07149626bd65ad22",
+        "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+        "generatedAt": "2026-11-03T16:05:57.986Z",
+        "approved": true,
+        "reviewedAt": "2026-11-03",
+        "reviewedBy": "Alfie Kelly"
+      }
+    },
+    {
+      "catchment": "Nidd",
+      "season": "Summer26",
+      "summary": "In summer 2026 volunteers surveyed all 18 sites in the Nidd catchment, with phosphate readings at 15 of them. Phosphate stayed fairly low: no reading was in the \"high\" or \"very high\" bands, and the median was 0.18 mg/l, from 0 on the River Nidd to 0.58 mg/l on Cockhill Beck. E. coli was higher, with 13 of 18 sites at or above the 10 cfu threshold, up to 256 cfu on Oak Beck, while 5 sites were under it. A volunteer noted a small patch of foam at one site.",
+      "facts": {
+        "sitesInCatchment": 18,
+        "sitesSurveyed": 18,
+        "phosphate": {
+          "unit": "mg/l",
+          "readings": 15,
+          "lowest": {
+            "site": "NC01",
+            "river": "River Nidd",
+            "value": 0
+          },
+          "highest": {
+            "site": "NC08",
+            "river": "Cockhill Beck",
+            "value": 0.58
+          },
+          "median": 0.18,
+          "bands": {
+            "Low": 4,
+            "Slightly Elevated": 8,
+            "Elevated": 3,
+            "High": 0,
+            "Very High": 0
+          }
+        },
+        "ecoli": {
+          "unit": "cfu",
+          "readings": 18,
+          "lowest": {
+            "site": "NC08",
+            "river": "Cockhill Beck",
+            "value": 3
+          },
+          "highest": {
+            "site": "NC16",
+            "river": "Oak Beck",
+            "value": 256
+          },
+          "median": 11.5,
+          "bands": {
+            "Good (under 10 cfu)": 5,
+            "Bad (10 cfu or more)": 13
+          }
+        }
+      },
+      "factsHash": "41890e60e0ac4e94",
+      "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+      "generatedAt": "2026-11-03T15:53:09.880Z",
+      "approved": true,
+      "reviewedAt": "2026-11-03",
+      "reviewedBy": "Alfie Kelly",
+      "metals": {
+        "summary": "Lab tests at all 18 Nidd sites measured 24 metals. Everyday minerals such as calcium, magnesium, sodium and potassium were found at every site, as were iron, aluminium, manganese, copper, nickel and zinc. Chromium was detected at 13 sites, cadmium at 4 and lead at just one. Site NC02 on the River Nidd had the highest copper, nickel, zinc, chromium and lead results, while the highest iron, aluminium and manganese results were at NC15 and NC16 on Oak Beck. Thresholds for these metals have not yet been established, so it is not yet possible to say whether a result is good or bad.",
+        "facts": {
+          "sitesSampled": 18,
+          "sitesInCatchment": 18,
+          "focusMetals": [
+            {
+              "metal": "Aluminium",
+              "detectedAtSites": 18
+            },
+            {
+              "metal": "Cadmium",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Chromium",
+              "detectedAtSites": 13
+            },
+            {
+              "metal": "Copper",
+              "detectedAtSites": 18
+            },
+            {
+              "metal": "Iron",
+              "detectedAtSites": 18
+            },
+            {
+              "metal": "Lead",
+              "detectedAtSites": 1
+            },
+            {
+              "metal": "Manganese",
+              "detectedAtSites": 18
+            },
+            {
+              "metal": "Nickel",
+              "detectedAtSites": 18
+            },
+            {
+              "metal": "Zinc",
+              "detectedAtSites": 18
+            }
+          ]
+        },
+        "factsHash": "ab3ca8aa03d5cdf3",
+        "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+        "generatedAt": "2026-11-03T16:05:57.986Z",
+        "approved": true,
+        "reviewedAt": "2026-11-03",
+        "reviewedBy": "Alfie Kelly"
+      }
+    },
+    {
+      "catchment": "Ouse",
+      "season": "Summer26",
+      "summary": "In summer 2026 volunteers surveyed all 4 sites in the Ouse catchment. Phosphate readings were all in the \"elevated\" band, between 0.4 and 0.5 mg/l. The E. coli news was good: all four sites were under the 10 cfu threshold, with readings from 0 to 4 cfu. Volunteers did not record any possible sources of pollution at these sites. With only four sites surveyed, this is a small picture of a large river.",
+      "facts": {
+        "sitesInCatchment": 4,
+        "sitesSurveyed": 4,
+        "phosphate": {
+          "unit": "mg/l",
+          "readings": 4,
+          "lowest": {
+            "site": "OC01",
+            "river": "Ouse",
+            "value": 0.4
+          },
+          "highest": {
+            "site": "OC02",
+            "river": "Ouse",
+            "value": 0.5
+          },
+          "median": 0.455,
+          "bands": {
+            "Low": 0,
+            "Slightly Elevated": 0,
+            "Elevated": 4,
+            "High": 0,
+            "Very High": 0
+          }
+        },
+        "ecoli": {
+          "unit": "cfu",
+          "readings": 4,
+          "lowest": {
+            "site": "OC01",
+            "river": "Ouse",
+            "value": 0
+          },
+          "highest": {
+            "site": "OC02",
+            "river": "Ouse",
+            "value": 4
+          },
+          "median": 3,
+          "bands": {
+            "Good (under 10 cfu)": 4,
+            "Bad (10 cfu or more)": 0
+          }
+        }
+      },
+      "factsHash": "9e687b9062a174a2",
+      "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+      "generatedAt": "2026-11-03T15:53:09.880Z",
+      "approved": true,
+      "reviewedAt": "2026-11-03",
+      "reviewedBy": "Alfie Kelly",
+      "metals": {
+        "summary": "Lab tests at all 4 Ouse sites measured 24 metals. Everyday minerals such as calcium, magnesium, sodium and potassium were found at every site, as were iron, aluminium, manganese and zinc. Copper and nickel were detected at 3 sites, while cadmium, chromium and lead were not detected at any. The highest aluminium, iron, manganese and nickel results were at OC04 on the Ouse. Thresholds for these metals have not yet been established, so it is not yet possible to say whether a result is good or bad.",
+        "facts": {
+          "sitesSampled": 4,
+          "sitesInCatchment": 4,
+          "focusMetals": [
+            {
+              "metal": "Aluminium",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Cadmium",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Chromium",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Copper",
+              "detectedAtSites": 3
+            },
+            {
+              "metal": "Iron",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Lead",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Manganese",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Nickel",
+              "detectedAtSites": 3
+            },
+            {
+              "metal": "Zinc",
+              "detectedAtSites": 4
+            }
+          ]
+        },
+        "factsHash": "aaaf840571fe82fc",
+        "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+        "generatedAt": "2026-11-03T16:05:57.986Z",
+        "approved": true,
+        "reviewedAt": "2026-11-03",
+        "reviewedBy": "Alfie Kelly"
+      }
+    },
+    {
+      "catchment": "Rye",
+      "season": "Summer26",
+      "summary": "In summer 2026 volunteers surveyed all 7 sites in the Rye catchment. Phosphate was low or slightly elevated at five sites, with a median of 0.15 mg/l, though the River Rye site RC01 reached 0.82 mg/l, in the \"high\" band. E. coli was at or above the 10 cfu threshold at five of the seven sites, up to 177 cfu on the River Seven, while Costa Beck read just 2 cfu. Volunteers noted nearby roads and farmland and, at one site, an object in the river.",
+      "facts": {
+        "sitesInCatchment": 7,
+        "sitesSurveyed": 7,
+        "phosphate": {
+          "unit": "mg/l",
+          "readings": 7,
+          "lowest": {
+            "site": "RC06",
+            "river": "Pickering Beck",
+            "value": 0.05
+          },
+          "highest": {
+            "site": "RC01",
+            "river": "River Rye",
+            "value": 0.82
+          },
+          "median": 0.15,
+          "bands": {
+            "Low": 3,
+            "Slightly Elevated": 2,
+            "Elevated": 1,
+            "High": 1,
+            "Very High": 0
+          }
+        },
+        "ecoli": {
+          "unit": "cfu",
+          "readings": 7,
+          "lowest": {
+            "site": "RC05",
+            "river": "Costa Beck",
+            "value": 2
+          },
+          "highest": {
+            "site": "RC04",
+            "river": "River Seven",
+            "value": 177
+          },
+          "median": 19,
+          "bands": {
+            "Good (under 10 cfu)": 2,
+            "Bad (10 cfu or more)": 5
+          }
+        }
+      },
+      "factsHash": "1db90ac6e64b59d6",
+      "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+      "generatedAt": "2026-11-03T15:53:09.880Z",
+      "approved": true,
+      "reviewedAt": "2026-11-03",
+      "reviewedBy": "Alfie Kelly",
+      "metals": {
+        "summary": "Lab tests at all 7 Rye sites measured 24 metals. Everyday minerals such as calcium, magnesium, sodium and potassium were found at every site, as were iron, aluminium, manganese and zinc. Nickel was detected at 4 sites and copper at just one, while cadmium, chromium and lead were not detected at any. The highest iron and manganese results were at RC04 on the River Seven. Thresholds for these metals have not yet been established, so it is not yet possible to say whether a result is good or bad.",
+        "facts": {
+          "sitesSampled": 7,
+          "sitesInCatchment": 7,
+          "focusMetals": [
+            {
+              "metal": "Aluminium",
+              "detectedAtSites": 7
+            },
+            {
+              "metal": "Cadmium",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Chromium",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Copper",
+              "detectedAtSites": 1
+            },
+            {
+              "metal": "Iron",
+              "detectedAtSites": 7
+            },
+            {
+              "metal": "Lead",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Manganese",
+              "detectedAtSites": 7
+            },
+            {
+              "metal": "Nickel",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Zinc",
+              "detectedAtSites": 7
+            }
+          ]
+        },
+        "factsHash": "19cc0226de2fc274",
+        "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+        "generatedAt": "2026-11-03T16:05:57.986Z",
+        "approved": true,
+        "reviewedAt": "2026-11-03",
+        "reviewedBy": "Alfie Kelly"
+      }
+    },
+    {
+      "catchment": "Waterloo Lake",
+      "season": "Summer26",
+      "summary": "In summer 2026 volunteers surveyed all 10 sites in the Waterloo Lake catchment, with phosphate readings at 9. Five readings were in the \"low\" band, including 0 on Ram Wood Beck, but two were \"very high\", up to 1.08 mg/l in Roundhay Park upper lake. E. coli was under the 10 cfu threshold at 7 of 10 sites; the highest reading, 24 cfu, was at Waterloo Lake itself. Volunteers noted water birds, swans, litter and residential drainage near some sites.",
+      "facts": {
+        "sitesInCatchment": 10,
+        "sitesSurveyed": 10,
+        "phosphate": {
+          "unit": "mg/l",
+          "readings": 9,
+          "lowest": {
+            "site": "WLC03",
+            "river": "Ram Wood Beck",
+            "value": 0
+          },
+          "highest": {
+            "site": "WLC07",
+            "river": "Roundhay park upper lake",
+            "value": 1.08
+          },
+          "median": 0.09,
+          "bands": {
+            "Low": 5,
+            "Slightly Elevated": 1,
+            "Elevated": 1,
+            "High": 0,
+            "Very High": 2
+          }
+        },
+        "ecoli": {
+          "unit": "cfu",
+          "readings": 10,
+          "lowest": {
+            "site": "WLC04",
+            "river": "Roundhay park upper lake",
+            "value": 0
+          },
+          "highest": {
+            "site": "WLC08",
+            "river": "Waterloo Lake",
+            "value": 24
+          },
+          "median": 7.5,
+          "bands": {
+            "Good (under 10 cfu)": 7,
+            "Bad (10 cfu or more)": 3
+          }
+        }
+      },
+      "factsHash": "f9df9b750f75ff91",
+      "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+      "generatedAt": "2026-11-03T15:53:09.880Z",
+      "approved": true,
+      "reviewedAt": "2026-11-03",
+      "reviewedBy": "Alfie Kelly",
+      "metals": {
+        "summary": "Lab tests at all 10 Waterloo Lake sites measured 24 metals. Everyday minerals such as calcium, magnesium, sodium and potassium were found at every site, as were iron, aluminium, manganese, nickel and zinc. Copper was detected at 9 sites, chromium at 8 and cadmium at 2, while lead was not detected at any. Site WLC03 on Ram Wood Beck had the highest copper, nickel and cadmium results, and WLC02 on Great Heads Beck the highest iron, aluminium and chromium. Thresholds for these metals have not yet been established, so it is not yet possible to say whether a result is good or bad.",
+        "facts": {
+          "sitesSampled": 10,
+          "sitesInCatchment": 10,
+          "focusMetals": [
+            {
+              "metal": "Aluminium",
+              "detectedAtSites": 10
+            },
+            {
+              "metal": "Cadmium",
+              "detectedAtSites": 2
+            },
+            {
+              "metal": "Chromium",
+              "detectedAtSites": 8
+            },
+            {
+              "metal": "Copper",
+              "detectedAtSites": 9
+            },
+            {
+              "metal": "Iron",
+              "detectedAtSites": 10
+            },
+            {
+              "metal": "Lead",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Manganese",
+              "detectedAtSites": 10
+            },
+            {
+              "metal": "Nickel",
+              "detectedAtSites": 10
+            },
+            {
+              "metal": "Zinc",
+              "detectedAtSites": 10
+            }
+          ]
+        },
+        "factsHash": "7692c38acd215a73",
+        "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+        "generatedAt": "2026-11-03T16:05:57.986Z",
+        "approved": true,
+        "reviewedAt": "2026-11-03",
+        "reviewedBy": "Alfie Kelly"
+      }
+    },
+    {
+      "catchment": "Wharfe",
+      "season": "Summer26",
+      "summary": "In summer 2026 volunteers surveyed all 21 sites in the Wharfe catchment. Phosphate was low at most of them: 13 sites were in the \"low\" band, the median was 0.08 mg/l, and only one site, on the River Wharfe, was \"elevated\" at 0.63 mg/l. E. coli was more varied, with 17 of 21 sites at or above the 10 cfu threshold, up to 96 cfu on the River Wharfe, while 4 sites were under it, including readings of 0. Volunteers did not record any possible sources of pollution.",
+      "facts": {
+        "sitesInCatchment": 21,
+        "sitesSurveyed": 21,
+        "phosphate": {
+          "unit": "mg/l",
+          "readings": 21,
+          "lowest": {
+            "site": "WC01",
+            "river": "River Wharfe",
+            "value": 0
+          },
+          "highest": {
+            "site": "WC21",
+            "river": "River Wharfe",
+            "value": 0.63
+          },
+          "median": 0.08,
+          "bands": {
+            "Low": 13,
+            "Slightly Elevated": 7,
+            "Elevated": 1,
+            "High": 0,
+            "Very High": 0
+          }
+        },
+        "ecoli": {
+          "unit": "cfu",
+          "readings": 21,
+          "lowest": {
+            "site": "WC20",
+            "river": "River Wharfe",
+            "value": 0
+          },
+          "highest": {
+            "site": "WC11",
+            "river": "River Wharfe",
+            "value": 96
+          },
+          "median": 22,
+          "bands": {
+            "Good (under 10 cfu)": 4,
+            "Bad (10 cfu or more)": 17
+          }
+        }
+      },
+      "factsHash": "81d67141bb5b47a4",
+      "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+      "generatedAt": "2026-11-03T15:53:09.880Z",
+      "approved": true,
+      "reviewedAt": "2026-11-03",
+      "reviewedBy": "Alfie Kelly",
+      "metals": {
+        "summary": "Lab tests at all 21 Wharfe sites measured 24 metals. Everyday minerals such as calcium, magnesium, sodium and potassium were found at every site, as were iron, aluminium, manganese and zinc. Copper was detected at 17 sites, nickel at 8, chromium at 4 and lead at just one, while cadmium was not detected at any. Site WC10 on Gill Beck had the highest iron, aluminium and nickel results. Thresholds for these metals have not yet been established, so it is not yet possible to say whether a result is good or bad.",
+        "facts": {
+          "sitesSampled": 21,
+          "sitesInCatchment": 21,
+          "focusMetals": [
+            {
+              "metal": "Aluminium",
+              "detectedAtSites": 21
+            },
+            {
+              "metal": "Cadmium",
+              "detectedAtSites": 0
+            },
+            {
+              "metal": "Chromium",
+              "detectedAtSites": 4
+            },
+            {
+              "metal": "Copper",
+              "detectedAtSites": 17
+            },
+            {
+              "metal": "Iron",
+              "detectedAtSites": 21
+            },
+            {
+              "metal": "Lead",
+              "detectedAtSites": 1
+            },
+            {
+              "metal": "Manganese",
+              "detectedAtSites": 21
+            },
+            {
+              "metal": "Nickel",
+              "detectedAtSites": 8
+            },
+            {
+              "metal": "Zinc",
+              "detectedAtSites": 21
+            }
+          ]
+        },
+        "factsHash": "d5b2a34f4ebd757a",
+        "model": "claude-sonnet-5-5 (drafted in a Claude Code session)",
+        "generatedAt": "2026-11-03T16:05:57.986Z",
+        "approved": true,
+        "reviewedAt": "2026-11-03",
+        "reviewedBy": "Alfie Kelly"
+      }
+    }
+  ]
+}

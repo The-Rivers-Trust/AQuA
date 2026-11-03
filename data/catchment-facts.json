@@ -1,0 +1,1760 @@
+{
+  "generatedAt": "2026-11-03T16:04:30.596Z",
+  "seasons": [
+    "Summer26"
+  ],
+  "thresholds": {
+    "phosphate": [
+      {
+        "band": "Low",
+        "upTo": 0.1
+      },
+      {
+        "band": "Slightly Elevated",
+        "upTo": 0.3
+      },
+      {
+        "band": "Elevated",
+        "upTo": 0.75
+      },
+      {
+        "band": "High",
+        "upTo": 1
+      },
+      {
+        "band": "Very High",
+        "upTo": null
+      }
+    ],
+    "ecoli": [
+      {
+        "band": "Good (under 10 cfu)"
+      },
+      {
+        "band": "Bad (10 cfu or more)"
+      }
+    ]
+  },
+  "catchments": {
+    "Derwent": {
+      "sites": 4,
+      "rivers": [
+        "River Derwent",
+        "Thornton Beck"
+      ],
+      "groups": [
+        "Ryedale Environmental Group"
+      ],
+      "metals": {
+        "sitesSampled": 4,
+        "sitesInCatchment": 4,
+        "metalsMeasured": 24,
+        "focusMetals": [
+          {
+            "metal": "Aluminium",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "DC04",
+              "river": "River Derwent",
+              "value": 0.035
+            }
+          },
+          {
+            "metal": "Cadmium",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 4,
+            "highest": null
+          },
+          {
+            "metal": "Chromium",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 4,
+            "highest": null
+          },
+          {
+            "metal": "Copper",
+            "detectedAtSites": 1,
+            "belowLimitOfDetectionAtSites": 3,
+            "highest": {
+              "site": "DC03",
+              "river": "River Derwent",
+              "value": 0.00098
+            }
+          },
+          {
+            "metal": "Iron",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "DC04",
+              "river": "River Derwent",
+              "value": 0.17
+            }
+          },
+          {
+            "metal": "Lead",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 4,
+            "highest": null
+          },
+          {
+            "metal": "Manganese",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "DC02",
+              "river": "River Derwent",
+              "value": 0.015
+            }
+          },
+          {
+            "metal": "Nickel",
+            "detectedAtSites": 2,
+            "belowLimitOfDetectionAtSites": 2,
+            "highest": {
+              "site": "DC04",
+              "river": "River Derwent",
+              "value": 0.00064
+            }
+          },
+          {
+            "metal": "Zinc",
+            "detectedAtSites": 3,
+            "belowLimitOfDetectionAtSites": 1,
+            "highest": {
+              "site": "DC03",
+              "river": "River Derwent",
+              "value": 0.0021
+            }
+          }
+        ],
+        "detectedAtEverySampledSite": [
+          "Aluminium",
+          "Barium",
+          "Calcium",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Potassium",
+          "Sodium",
+          "Strontium"
+        ],
+        "neverDetected": [
+          "Bismuth",
+          "Cadmium",
+          "Caesium",
+          "Chromium",
+          "Cobalt",
+          "Gallium",
+          "Indium",
+          "Lead",
+          "Lithium",
+          "Silver",
+          "Thallium"
+        ]
+      },
+      "seasons": {
+        "Summer26": {
+          "sitesSurveyed": 4,
+          "surveys": 4,
+          "surveyDates": [
+            "2026-08-22",
+            "2026-08-23"
+          ],
+          "phosphate": {
+            "unit": "mg/l",
+            "readings": 4,
+            "lowest": {
+              "site": "DC01",
+              "river": "Thornton Beck",
+              "value": 0.13
+            },
+            "highest": {
+              "site": "DC02",
+              "river": "River Derwent",
+              "value": 0.22
+            },
+            "median": 0.15,
+            "bands": {
+              "Low": 0,
+              "Slightly Elevated": 4,
+              "Elevated": 0,
+              "High": 0,
+              "Very High": 0
+            }
+          },
+          "ecoli": {
+            "unit": "cfu",
+            "readings": 4,
+            "lowest": {
+              "site": "DC02",
+              "river": "River Derwent",
+              "value": 12
+            },
+            "highest": {
+              "site": "DC01",
+              "river": "Thornton Beck",
+              "value": 47
+            },
+            "median": 18,
+            "bands": {
+              "Good (under 10 cfu)": 0,
+              "Bad (10 cfu or more)": 4
+            }
+          },
+          "volunteerNotes": [
+            {
+              "site": "DC01",
+              "note": "Sheep field"
+            },
+            {
+              "site": "DC02",
+              "note": "Site next to both cows and a camping site, Urban/road discharge"
+            },
+            {
+              "site": "DC03",
+              "note": "There is a beck next to the sample site (it’s called Menenthorpe beck) that when we walked over it, had foam / scum and looked to be unpleasant on the top. The beck looks to run past a farm of some kind so could be discharge. The confluence"
+            },
+            {
+              "site": "DC04",
+              "note": "Residential discharge, Urban/road discharge"
+            }
+          ]
+        }
+      }
+    },
+    "Foss": {
+      "sites": 20,
+      "rivers": [
+        "Black Dike",
+        "Brandsby Beck",
+        "Farlington Beck",
+        "Foss",
+        "Howl Beck",
+        "Osbaldwick Beck",
+        "South Beck",
+        "Tang Hall Beck",
+        "Westfield Beck"
+      ],
+      "groups": [
+        "River Foss Society"
+      ],
+      "metals": {
+        "sitesSampled": 20,
+        "sitesInCatchment": 20,
+        "metalsMeasured": 24,
+        "focusMetals": [
+          {
+            "metal": "Aluminium",
+            "detectedAtSites": 20,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "FC02",
+              "river": "Foss",
+              "value": 0.26
+            }
+          },
+          {
+            "metal": "Cadmium",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 20,
+            "highest": null
+          },
+          {
+            "metal": "Chromium",
+            "detectedAtSites": 15,
+            "belowLimitOfDetectionAtSites": 5,
+            "highest": {
+              "site": "FC03",
+              "river": "Brandsby Beck",
+              "value": 0.0015
+            }
+          },
+          {
+            "metal": "Copper",
+            "detectedAtSites": 19,
+            "belowLimitOfDetectionAtSites": 1,
+            "highest": {
+              "site": "FC02",
+              "river": "Foss",
+              "value": 0.029
+            }
+          },
+          {
+            "metal": "Iron",
+            "detectedAtSites": 20,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "FC02",
+              "river": "Foss",
+              "value": 0.62
+            }
+          },
+          {
+            "metal": "Lead",
+            "detectedAtSites": 1,
+            "belowLimitOfDetectionAtSites": 19,
+            "highest": {
+              "site": "FC19",
+              "river": "Foss",
+              "value": 0.0021
+            }
+          },
+          {
+            "metal": "Manganese",
+            "detectedAtSites": 20,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "FC08",
+              "river": "Black Dike",
+              "value": 1.5
+            }
+          },
+          {
+            "metal": "Nickel",
+            "detectedAtSites": 20,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "FC08",
+              "river": "Black Dike",
+              "value": 0.0025
+            }
+          },
+          {
+            "metal": "Zinc",
+            "detectedAtSites": 20,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "FC02",
+              "river": "Foss",
+              "value": 0.016
+            }
+          }
+        ],
+        "detectedAtEverySampledSite": [
+          "Aluminium",
+          "Barium",
+          "Calcium",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Nickel",
+          "Potassium",
+          "Sodium",
+          "Strontium",
+          "Zinc"
+        ],
+        "neverDetected": [
+          "Bismuth",
+          "Cadmium",
+          "Caesium",
+          "Cobalt",
+          "Gallium",
+          "Indium",
+          "Lithium",
+          "Silver",
+          "Thallium"
+        ]
+      },
+      "seasons": {
+        "Summer26": {
+          "sitesSurveyed": 20,
+          "surveys": 20,
+          "surveyDates": [
+            "2026-08-23"
+          ],
+          "phosphate": {
+            "unit": "mg/l",
+            "readings": 19,
+            "lowest": {
+              "site": "FC01",
+              "river": "Foss",
+              "value": 0.1
+            },
+            "highest": {
+              "site": "FC15",
+              "river": "South Beck",
+              "value": 2.5
+            },
+            "median": 1.35,
+            "bands": {
+              "Low": 1,
+              "Slightly Elevated": 2,
+              "Elevated": 1,
+              "High": 2,
+              "Very High": 13
+            }
+          },
+          "ecoli": {
+            "unit": "cfu",
+            "readings": 20,
+            "lowest": {
+              "site": "FC04",
+              "river": "Farlington Beck",
+              "value": 0
+            },
+            "highest": {
+              "site": "FC06",
+              "river": "Howl Beck",
+              "value": 56
+            },
+            "median": 4,
+            "bands": {
+              "Good (under 10 cfu)": 16,
+              "Bad (10 cfu or more)": 4
+            }
+          },
+          "volunteerNotes": [
+            {
+              "site": "FC16",
+              "note": "Duckweed and litter"
+            },
+            {
+              "site": "FC18",
+              "note": "Residential discharge, Urban/road discharge"
+            },
+            {
+              "site": "FC19",
+              "note": "Blanket of duckweed, some litter"
+            },
+            {
+              "site": "FC20",
+              "note": "Water pumped upstream from lock where works in progress"
+            }
+          ]
+        }
+      }
+    },
+    "Gledhow Lake": {
+      "sites": 9,
+      "rivers": [
+        "Gledhow Beck",
+        "Gledhow Lake"
+      ],
+      "groups": [
+        "Friends of Gledhow Valley Woods"
+      ],
+      "metals": {
+        "sitesSampled": 7,
+        "sitesInCatchment": 9,
+        "metalsMeasured": 24,
+        "focusMetals": [
+          {
+            "metal": "Aluminium",
+            "detectedAtSites": 7,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "GLC03",
+              "river": "Gledhow Beck",
+              "value": 0.078
+            }
+          },
+          {
+            "metal": "Cadmium",
+            "detectedAtSites": 2,
+            "belowLimitOfDetectionAtSites": 5,
+            "highest": {
+              "site": "GLC09",
+              "river": "Gledhow Lake",
+              "value": 0.00022
+            }
+          },
+          {
+            "metal": "Chromium",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 3,
+            "highest": {
+              "site": "GLC03",
+              "river": "Gledhow Beck",
+              "value": 0.00092
+            }
+          },
+          {
+            "metal": "Copper",
+            "detectedAtSites": 6,
+            "belowLimitOfDetectionAtSites": 1,
+            "highest": {
+              "site": "GLC06",
+              "river": "Gledhow Beck",
+              "value": 0.34
+            }
+          },
+          {
+            "metal": "Iron",
+            "detectedAtSites": 7,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "GLC03",
+              "river": "Gledhow Beck",
+              "value": 0.19
+            }
+          },
+          {
+            "metal": "Lead",
+            "detectedAtSites": 1,
+            "belowLimitOfDetectionAtSites": 6,
+            "highest": {
+              "site": "GLC06",
+              "river": "Gledhow Beck",
+              "value": 0.016
+            }
+          },
+          {
+            "metal": "Manganese",
+            "detectedAtSites": 7,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "GLC09",
+              "river": "Gledhow Lake",
+              "value": 0.39
+            }
+          },
+          {
+            "metal": "Nickel",
+            "detectedAtSites": 7,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "GLC06",
+              "river": "Gledhow Beck",
+              "value": 0.0029
+            }
+          },
+          {
+            "metal": "Zinc",
+            "detectedAtSites": 7,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "GLC06",
+              "river": "Gledhow Beck",
+              "value": 0.23
+            }
+          }
+        ],
+        "detectedAtEverySampledSite": [
+          "Aluminium",
+          "Barium",
+          "Boron",
+          "Calcium",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Nickel",
+          "Potassium",
+          "Sodium",
+          "Strontium",
+          "Zinc"
+        ],
+        "neverDetected": [
+          "Bismuth",
+          "Caesium",
+          "Cobalt",
+          "Gallium",
+          "Indium",
+          "Lithium",
+          "Silver",
+          "Thallium"
+        ]
+      },
+      "seasons": {
+        "Summer26": {
+          "sitesSurveyed": 7,
+          "surveys": 7,
+          "surveyDates": [
+            "2026-08-24"
+          ],
+          "phosphate": {
+            "unit": "mg/l",
+            "readings": 7,
+            "lowest": {
+              "site": "GLC04",
+              "river": "Gledhow Beck",
+              "value": 0.05
+            },
+            "highest": {
+              "site": "GLC01",
+              "river": "Gledhow Beck",
+              "value": 2.11
+            },
+            "median": 0.43,
+            "bands": {
+              "Low": 1,
+              "Slightly Elevated": 2,
+              "Elevated": 2,
+              "High": 0,
+              "Very High": 2
+            }
+          },
+          "ecoli": {
+            "unit": "cfu",
+            "readings": 7,
+            "lowest": {
+              "site": "GLC04",
+              "river": "Gledhow Beck",
+              "value": 0
+            },
+            "highest": {
+              "site": "GLC01",
+              "river": "Gledhow Beck",
+              "value": 128
+            },
+            "median": 12,
+            "bands": {
+              "Good (under 10 cfu)": 3,
+              "Bad (10 cfu or more)": 4
+            }
+          },
+          "volunteerNotes": [
+            {
+              "site": "GLC01",
+              "note": "Residential discharge"
+            },
+            {
+              "site": "GLC02",
+              "note": "Urban/road discharge"
+            },
+            {
+              "site": "GLC05",
+              "note": "Urban/road discharge"
+            }
+          ]
+        }
+      }
+    },
+    "Holme": {
+      "sites": 13,
+      "rivers": [
+        "Fox Clough",
+        "Hall Dike",
+        "Jackson Bridge Dike",
+        "New Mill Dike",
+        "River Holme",
+        "River Ribble"
+      ],
+      "groups": [
+        "River Holme Connections"
+      ],
+      "metals": {
+        "sitesSampled": 13,
+        "sitesInCatchment": 13,
+        "metalsMeasured": 24,
+        "focusMetals": [
+          {
+            "metal": "Aluminium",
+            "detectedAtSites": 13,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "HC11",
+              "river": "Hall Dike",
+              "value": 0.15
+            }
+          },
+          {
+            "metal": "Cadmium",
+            "detectedAtSites": 3,
+            "belowLimitOfDetectionAtSites": 10,
+            "highest": {
+              "site": "HC04",
+              "river": "Jackson Bridge Dike",
+              "value": 0.00018
+            }
+          },
+          {
+            "metal": "Chromium",
+            "detectedAtSites": 10,
+            "belowLimitOfDetectionAtSites": 3,
+            "highest": {
+              "site": "HC04",
+              "river": "Jackson Bridge Dike",
+              "value": 0.0036
+            }
+          },
+          {
+            "metal": "Copper",
+            "detectedAtSites": 12,
+            "belowLimitOfDetectionAtSites": 1,
+            "highest": {
+              "site": "HC09",
+              "river": "River Holme",
+              "value": 0.015
+            }
+          },
+          {
+            "metal": "Iron",
+            "detectedAtSites": 13,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "HC04",
+              "river": "Jackson Bridge Dike",
+              "value": 7.7
+            }
+          },
+          {
+            "metal": "Lead",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 13,
+            "highest": null
+          },
+          {
+            "metal": "Manganese",
+            "detectedAtSites": 13,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "HC04",
+              "river": "Jackson Bridge Dike",
+              "value": 2.5
+            }
+          },
+          {
+            "metal": "Nickel",
+            "detectedAtSites": 12,
+            "belowLimitOfDetectionAtSites": 1,
+            "highest": {
+              "site": "HC04",
+              "river": "Jackson Bridge Dike",
+              "value": 0.0035
+            }
+          },
+          {
+            "metal": "Zinc",
+            "detectedAtSites": 13,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "HC13",
+              "river": "River Holme",
+              "value": 0.0088
+            }
+          }
+        ],
+        "detectedAtEverySampledSite": [
+          "Aluminium",
+          "Barium",
+          "Boron",
+          "Calcium",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Potassium",
+          "Sodium",
+          "Strontium",
+          "Zinc"
+        ],
+        "neverDetected": [
+          "Bismuth",
+          "Caesium",
+          "Cobalt",
+          "Gallium",
+          "Lead",
+          "Lithium",
+          "Silver"
+        ]
+      },
+      "seasons": {
+        "Summer26": {
+          "sitesSurveyed": 13,
+          "surveys": 13,
+          "surveyDates": [
+            "2026-08-21",
+            "2026-08-22",
+            "2026-08-23"
+          ],
+          "phosphate": {
+            "unit": "mg/l",
+            "readings": 10,
+            "lowest": {
+              "site": "HC01",
+              "river": "Fox Clough",
+              "value": 0.05
+            },
+            "highest": {
+              "site": "HC12",
+              "river": "Hall Dike",
+              "value": 0.62
+            },
+            "median": 0.085,
+            "bands": {
+              "Low": 6,
+              "Slightly Elevated": 1,
+              "Elevated": 3,
+              "High": 0,
+              "Very High": 0
+            }
+          },
+          "ecoli": {
+            "unit": "cfu",
+            "readings": 13,
+            "lowest": {
+              "site": "HC01",
+              "river": "Fox Clough",
+              "value": 0
+            },
+            "highest": {
+              "site": "HC13",
+              "river": "River Holme",
+              "value": 712
+            },
+            "median": 14,
+            "bands": {
+              "Good (under 10 cfu)": 4,
+              "Bad (10 cfu or more)": 9
+            }
+          },
+          "volunteerNotes": [
+            {
+              "site": "HC04",
+              "note": "Industrial discharge"
+            },
+            {
+              "site": "HC08",
+              "note": "Industrial discharge, Residential discharge, Urban/road discharge, Mine discharge at Jackson Bridge"
+            },
+            {
+              "site": "HC09",
+              "note": "Urban/road discharge"
+            }
+          ]
+        }
+      }
+    },
+    "Nidd": {
+      "sites": 18,
+      "rivers": [
+        "Cockhill Beck",
+        "Crimple Beck",
+        "Oak Beck",
+        "River Nidd"
+      ],
+      "groups": [
+        "Nidd Action Group"
+      ],
+      "metals": {
+        "sitesSampled": 18,
+        "sitesInCatchment": 18,
+        "metalsMeasured": 24,
+        "focusMetals": [
+          {
+            "metal": "Aluminium",
+            "detectedAtSites": 18,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "NC16",
+              "river": "Oak Beck",
+              "value": 0.089
+            }
+          },
+          {
+            "metal": "Cadmium",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 14,
+            "highest": {
+              "site": "NC13",
+              "river": "River Nidd",
+              "value": 0.00023
+            }
+          },
+          {
+            "metal": "Chromium",
+            "detectedAtSites": 13,
+            "belowLimitOfDetectionAtSites": 5,
+            "highest": {
+              "site": "NC02",
+              "river": "River Nidd",
+              "value": 0.0021
+            }
+          },
+          {
+            "metal": "Copper",
+            "detectedAtSites": 18,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "NC02",
+              "river": "River Nidd",
+              "value": 0.27
+            }
+          },
+          {
+            "metal": "Iron",
+            "detectedAtSites": 18,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "NC15",
+              "river": "Oak Beck",
+              "value": 0.51
+            }
+          },
+          {
+            "metal": "Lead",
+            "detectedAtSites": 1,
+            "belowLimitOfDetectionAtSites": 17,
+            "highest": {
+              "site": "NC02",
+              "river": "River Nidd",
+              "value": 0.011
+            }
+          },
+          {
+            "metal": "Manganese",
+            "detectedAtSites": 18,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "NC16",
+              "river": "Oak Beck",
+              "value": 0.2
+            }
+          },
+          {
+            "metal": "Nickel",
+            "detectedAtSites": 18,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "NC02",
+              "river": "River Nidd",
+              "value": 0.003
+            }
+          },
+          {
+            "metal": "Zinc",
+            "detectedAtSites": 18,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "NC02",
+              "river": "River Nidd",
+              "value": 0.2
+            }
+          }
+        ],
+        "detectedAtEverySampledSite": [
+          "Aluminium",
+          "Barium",
+          "Boron",
+          "Calcium",
+          "Copper",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Nickel",
+          "Potassium",
+          "Sodium",
+          "Strontium",
+          "Zinc"
+        ],
+        "neverDetected": [
+          "Bismuth",
+          "Caesium",
+          "Cobalt",
+          "Gallium",
+          "Indium",
+          "Lithium",
+          "Silver",
+          "Thallium"
+        ]
+      },
+      "seasons": {
+        "Summer26": {
+          "sitesSurveyed": 18,
+          "surveys": 18,
+          "surveyDates": [
+            "2026-08-21",
+            "2026-08-22",
+            "2026-08-24"
+          ],
+          "phosphate": {
+            "unit": "mg/l",
+            "readings": 15,
+            "lowest": {
+              "site": "NC01",
+              "river": "River Nidd",
+              "value": 0
+            },
+            "highest": {
+              "site": "NC08",
+              "river": "Cockhill Beck",
+              "value": 0.58
+            },
+            "median": 0.18,
+            "bands": {
+              "Low": 4,
+              "Slightly Elevated": 8,
+              "Elevated": 3,
+              "High": 0,
+              "Very High": 0
+            }
+          },
+          "ecoli": {
+            "unit": "cfu",
+            "readings": 18,
+            "lowest": {
+              "site": "NC08",
+              "river": "Cockhill Beck",
+              "value": 3
+            },
+            "highest": {
+              "site": "NC16",
+              "river": "Oak Beck",
+              "value": 256
+            },
+            "median": 11.5,
+            "bands": {
+              "Good (under 10 cfu)": 5,
+              "Bad (10 cfu or more)": 13
+            }
+          },
+          "volunteerNotes": [
+            {
+              "site": "NC15",
+              "note": "Light brown foam - small patch."
+            }
+          ]
+        }
+      }
+    },
+    "Ouse": {
+      "sites": 4,
+      "rivers": [
+        "Foss Basin",
+        "Ouse"
+      ],
+      "groups": [
+        "River Foss Society"
+      ],
+      "metals": {
+        "sitesSampled": 4,
+        "sitesInCatchment": 4,
+        "metalsMeasured": 24,
+        "focusMetals": [
+          {
+            "metal": "Aluminium",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "OC04",
+              "river": "Ouse",
+              "value": 0.033
+            }
+          },
+          {
+            "metal": "Cadmium",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 4,
+            "highest": null
+          },
+          {
+            "metal": "Chromium",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 4,
+            "highest": null
+          },
+          {
+            "metal": "Copper",
+            "detectedAtSites": 3,
+            "belowLimitOfDetectionAtSites": 1,
+            "highest": {
+              "site": "OC02",
+              "river": "Ouse",
+              "value": 0.005
+            }
+          },
+          {
+            "metal": "Iron",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "OC04",
+              "river": "Ouse",
+              "value": 0.079
+            }
+          },
+          {
+            "metal": "Lead",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 4,
+            "highest": null
+          },
+          {
+            "metal": "Manganese",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "OC04",
+              "river": "Ouse",
+              "value": 0.028
+            }
+          },
+          {
+            "metal": "Nickel",
+            "detectedAtSites": 3,
+            "belowLimitOfDetectionAtSites": 1,
+            "highest": {
+              "site": "OC04",
+              "river": "Ouse",
+              "value": 0.0014
+            }
+          },
+          {
+            "metal": "Zinc",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "OC03",
+              "river": "Foss Basin",
+              "value": 0.0094
+            }
+          }
+        ],
+        "detectedAtEverySampledSite": [
+          "Aluminium",
+          "Barium",
+          "Boron",
+          "Calcium",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Potassium",
+          "Sodium",
+          "Strontium",
+          "Zinc"
+        ],
+        "neverDetected": [
+          "Bismuth",
+          "Cadmium",
+          "Caesium",
+          "Chromium",
+          "Cobalt",
+          "Gallium",
+          "Indium",
+          "Lead",
+          "Lithium",
+          "Silver",
+          "Thallium"
+        ]
+      },
+      "seasons": {
+        "Summer26": {
+          "sitesSurveyed": 4,
+          "surveys": 4,
+          "surveyDates": [
+            "2026-08-23"
+          ],
+          "phosphate": {
+            "unit": "mg/l",
+            "readings": 4,
+            "lowest": {
+              "site": "OC01",
+              "river": "Ouse",
+              "value": 0.4
+            },
+            "highest": {
+              "site": "OC02",
+              "river": "Ouse",
+              "value": 0.5
+            },
+            "median": 0.455,
+            "bands": {
+              "Low": 0,
+              "Slightly Elevated": 0,
+              "Elevated": 4,
+              "High": 0,
+              "Very High": 0
+            }
+          },
+          "ecoli": {
+            "unit": "cfu",
+            "readings": 4,
+            "lowest": {
+              "site": "OC01",
+              "river": "Ouse",
+              "value": 0
+            },
+            "highest": {
+              "site": "OC02",
+              "river": "Ouse",
+              "value": 4
+            },
+            "median": 3,
+            "bands": {
+              "Good (under 10 cfu)": 4,
+              "Bad (10 cfu or more)": 0
+            }
+          },
+          "volunteerNotes": []
+        }
+      }
+    },
+    "Rye": {
+      "sites": 7,
+      "rivers": [
+        "Costa Beck",
+        "Harome Moor",
+        "Pickering Beck",
+        "River Dove",
+        "River Rye",
+        "River Seven"
+      ],
+      "groups": [
+        "Ryedale Environmental Group"
+      ],
+      "metals": {
+        "sitesSampled": 7,
+        "sitesInCatchment": 7,
+        "metalsMeasured": 24,
+        "focusMetals": [
+          {
+            "metal": "Aluminium",
+            "detectedAtSites": 7,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "RC06",
+              "river": "Pickering Beck",
+              "value": 0.03
+            }
+          },
+          {
+            "metal": "Cadmium",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 7,
+            "highest": null
+          },
+          {
+            "metal": "Chromium",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 7,
+            "highest": null
+          },
+          {
+            "metal": "Copper",
+            "detectedAtSites": 1,
+            "belowLimitOfDetectionAtSites": 6,
+            "highest": {
+              "site": "RC04",
+              "river": "River Seven",
+              "value": 0.00097
+            }
+          },
+          {
+            "metal": "Iron",
+            "detectedAtSites": 7,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "RC04",
+              "river": "River Seven",
+              "value": 0.57
+            }
+          },
+          {
+            "metal": "Lead",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 7,
+            "highest": null
+          },
+          {
+            "metal": "Manganese",
+            "detectedAtSites": 7,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "RC04",
+              "river": "River Seven",
+              "value": 0.054
+            }
+          },
+          {
+            "metal": "Nickel",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 3,
+            "highest": {
+              "site": "RC03",
+              "river": "River Dove",
+              "value": 0.0018
+            }
+          },
+          {
+            "metal": "Zinc",
+            "detectedAtSites": 7,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "RC02",
+              "river": "Harome Moor",
+              "value": 0.0046
+            }
+          }
+        ],
+        "detectedAtEverySampledSite": [
+          "Aluminium",
+          "Barium",
+          "Calcium",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Potassium",
+          "Sodium",
+          "Strontium",
+          "Zinc"
+        ],
+        "neverDetected": [
+          "Bismuth",
+          "Cadmium",
+          "Caesium",
+          "Chromium",
+          "Cobalt",
+          "Gallium",
+          "Indium",
+          "Lead",
+          "Lithium",
+          "Silver",
+          "Thallium"
+        ]
+      },
+      "seasons": {
+        "Summer26": {
+          "sitesSurveyed": 7,
+          "surveys": 7,
+          "surveyDates": [
+            "2026-08-23"
+          ],
+          "phosphate": {
+            "unit": "mg/l",
+            "readings": 7,
+            "lowest": {
+              "site": "RC06",
+              "river": "Pickering Beck",
+              "value": 0.05
+            },
+            "highest": {
+              "site": "RC01",
+              "river": "River Rye",
+              "value": 0.82
+            },
+            "median": 0.15,
+            "bands": {
+              "Low": 3,
+              "Slightly Elevated": 2,
+              "Elevated": 1,
+              "High": 1,
+              "Very High": 0
+            }
+          },
+          "ecoli": {
+            "unit": "cfu",
+            "readings": 7,
+            "lowest": {
+              "site": "RC05",
+              "river": "Costa Beck",
+              "value": 2
+            },
+            "highest": {
+              "site": "RC04",
+              "river": "River Seven",
+              "value": 177
+            },
+            "median": 19,
+            "bands": {
+              "Good (under 10 cfu)": 2,
+              "Bad (10 cfu or more)": 5
+            }
+          },
+          "volunteerNotes": [
+            {
+              "site": "RC02",
+              "note": "Urban/road discharge"
+            },
+            {
+              "site": "RC03",
+              "note": "Next to sheep field and road. Also over town road from an industrial estate., Urban/road discharge"
+            },
+            {
+              "site": "RC04",
+              "note": "Urban/road discharge"
+            },
+            {
+              "site": "RC07",
+              "note": "There is a car in the river just upstream of the sample site. It can be seen in the photos., Urban/road discharge"
+            }
+          ]
+        }
+      }
+    },
+    "Waterloo Lake": {
+      "sites": 10,
+      "rivers": [
+        "Great Heads Beck",
+        "Ram Wood Beck",
+        "Roundhay park upper lake",
+        "Waterloo Lake"
+      ],
+      "groups": [
+        "Friends of Roundhay Park"
+      ],
+      "metals": {
+        "sitesSampled": 10,
+        "sitesInCatchment": 10,
+        "metalsMeasured": 24,
+        "focusMetals": [
+          {
+            "metal": "Aluminium",
+            "detectedAtSites": 10,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "WLC02",
+              "river": "Great Heads Beck",
+              "value": 0.04
+            }
+          },
+          {
+            "metal": "Cadmium",
+            "detectedAtSites": 2,
+            "belowLimitOfDetectionAtSites": 8,
+            "highest": {
+              "site": "WLC03",
+              "river": "Ram Wood Beck",
+              "value": 0.00018
+            }
+          },
+          {
+            "metal": "Chromium",
+            "detectedAtSites": 8,
+            "belowLimitOfDetectionAtSites": 2,
+            "highest": {
+              "site": "WLC02",
+              "river": "Great Heads Beck",
+              "value": 0.00086
+            }
+          },
+          {
+            "metal": "Copper",
+            "detectedAtSites": 9,
+            "belowLimitOfDetectionAtSites": 1,
+            "highest": {
+              "site": "WLC03",
+              "river": "Ram Wood Beck",
+              "value": 0.13
+            }
+          },
+          {
+            "metal": "Iron",
+            "detectedAtSites": 10,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "WLC02",
+              "river": "Great Heads Beck",
+              "value": 0.37
+            }
+          },
+          {
+            "metal": "Lead",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 10,
+            "highest": null
+          },
+          {
+            "metal": "Manganese",
+            "detectedAtSites": 10,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "WLC08",
+              "river": "Waterloo Lake",
+              "value": 0.29
+            }
+          },
+          {
+            "metal": "Nickel",
+            "detectedAtSites": 10,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "WLC03",
+              "river": "Ram Wood Beck",
+              "value": 0.03
+            }
+          },
+          {
+            "metal": "Zinc",
+            "detectedAtSites": 10,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "WLC04",
+              "river": "Roundhay park upper lake",
+              "value": 0.0099
+            }
+          }
+        ],
+        "detectedAtEverySampledSite": [
+          "Aluminium",
+          "Barium",
+          "Boron",
+          "Calcium",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Nickel",
+          "Potassium",
+          "Sodium",
+          "Strontium",
+          "Zinc"
+        ],
+        "neverDetected": [
+          "Bismuth",
+          "Caesium",
+          "Cobalt",
+          "Gallium",
+          "Indium",
+          "Lead",
+          "Lithium",
+          "Silver",
+          "Thallium"
+        ]
+      },
+      "seasons": {
+        "Summer26": {
+          "sitesSurveyed": 10,
+          "surveys": 10,
+          "surveyDates": [
+            "2026-08-21",
+            "2026-08-22",
+            "2026-08-24"
+          ],
+          "phosphate": {
+            "unit": "mg/l",
+            "readings": 9,
+            "lowest": {
+              "site": "WLC03",
+              "river": "Ram Wood Beck",
+              "value": 0
+            },
+            "highest": {
+              "site": "WLC07",
+              "river": "Roundhay park upper lake",
+              "value": 1.08
+            },
+            "median": 0.09,
+            "bands": {
+              "Low": 5,
+              "Slightly Elevated": 1,
+              "Elevated": 1,
+              "High": 0,
+              "Very High": 2
+            }
+          },
+          "ecoli": {
+            "unit": "cfu",
+            "readings": 10,
+            "lowest": {
+              "site": "WLC04",
+              "river": "Roundhay park upper lake",
+              "value": 0
+            },
+            "highest": {
+              "site": "WLC08",
+              "river": "Waterloo Lake",
+              "value": 24
+            },
+            "median": 7.5,
+            "bands": {
+              "Good (under 10 cfu)": 7,
+              "Bad (10 cfu or more)": 3
+            }
+          },
+          "volunteerNotes": [
+            {
+              "site": "WLC03",
+              "note": "Residential discharge, Urban/road discharge, Litter plus dogs entering beck"
+            },
+            {
+              "site": "WLC08",
+              "note": "Residential discharge, Litter"
+            },
+            {
+              "site": "WLC09",
+              "note": "Many water birds"
+            },
+            {
+              "site": "WLC10",
+              "note": "Residential discharge, Swans"
+            }
+          ]
+        }
+      }
+    },
+    "Wharfe": {
+      "sites": 21,
+      "rivers": [
+        "Bardsey Beck",
+        "Gill Beck",
+        "Hebden Beck",
+        "Mickle Ing Beck",
+        "River Wharfe"
+      ],
+      "groups": [
+        "Otley Clean Rivers Group",
+        "Yorkshire Dales Rivers Trust"
+      ],
+      "metals": {
+        "sitesSampled": 21,
+        "sitesInCatchment": 21,
+        "metalsMeasured": 24,
+        "focusMetals": [
+          {
+            "metal": "Aluminium",
+            "detectedAtSites": 21,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "WC10",
+              "river": "Gill Beck",
+              "value": 0.58
+            }
+          },
+          {
+            "metal": "Cadmium",
+            "detectedAtSites": 0,
+            "belowLimitOfDetectionAtSites": 21,
+            "highest": null
+          },
+          {
+            "metal": "Chromium",
+            "detectedAtSites": 4,
+            "belowLimitOfDetectionAtSites": 17,
+            "highest": {
+              "site": "WC04",
+              "river": "River Wharfe",
+              "value": 0.0031
+            }
+          },
+          {
+            "metal": "Copper",
+            "detectedAtSites": 17,
+            "belowLimitOfDetectionAtSites": 4,
+            "highest": {
+              "site": "WC20",
+              "river": "River Wharfe",
+              "value": 0.013
+            }
+          },
+          {
+            "metal": "Iron",
+            "detectedAtSites": 21,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "WC10",
+              "river": "Gill Beck",
+              "value": 0.64
+            }
+          },
+          {
+            "metal": "Lead",
+            "detectedAtSites": 1,
+            "belowLimitOfDetectionAtSites": 20,
+            "highest": {
+              "site": "WC19",
+              "river": "River Wharfe",
+              "value": 0.0061
+            }
+          },
+          {
+            "metal": "Manganese",
+            "detectedAtSites": 21,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "WC17",
+              "river": "Bardsey Beck",
+              "value": 0.034
+            }
+          },
+          {
+            "metal": "Nickel",
+            "detectedAtSites": 8,
+            "belowLimitOfDetectionAtSites": 13,
+            "highest": {
+              "site": "WC10",
+              "river": "Gill Beck",
+              "value": 0.0059
+            }
+          },
+          {
+            "metal": "Zinc",
+            "detectedAtSites": 21,
+            "belowLimitOfDetectionAtSites": 0,
+            "highest": {
+              "site": "WC05",
+              "river": "Hebden Beck",
+              "value": 0.098
+            }
+          }
+        ],
+        "detectedAtEverySampledSite": [
+          "Aluminium",
+          "Barium",
+          "Calcium",
+          "Iron",
+          "Magnesium",
+          "Manganese",
+          "Potassium",
+          "Sodium",
+          "Strontium",
+          "Zinc"
+        ],
+        "neverDetected": [
+          "Bismuth",
+          "Cadmium",
+          "Caesium",
+          "Cobalt",
+          "Gallium",
+          "Indium",
+          "Lithium",
+          "Silver",
+          "Thallium"
+        ]
+      },
+      "seasons": {
+        "Summer26": {
+          "sitesSurveyed": 21,
+          "surveys": 21,
+          "surveyDates": [
+            "2026-08-21",
+            "2026-08-22",
+            "2026-08-23",
+            "2026-08-24"
+          ],
+          "phosphate": {
+            "unit": "mg/l",
+            "readings": 21,
+            "lowest": {
+              "site": "WC01",
+              "river": "River Wharfe",
+              "value": 0
+            },
+            "highest": {
+              "site": "WC21",
+              "river": "River Wharfe",
+              "value": 0.63
+            },
+            "median": 0.08,
+            "bands": {
+              "Low": 13,
+              "Slightly Elevated": 7,
+              "Elevated": 1,
+              "High": 0,
+              "Very High": 0
+            }
+          },
+          "ecoli": {
+            "unit": "cfu",
+            "readings": 21,
+            "lowest": {
+              "site": "WC20",
+              "river": "River Wharfe",
+              "value": 0
+            },
+            "highest": {
+              "site": "WC11",
+              "river": "River Wharfe",
+              "value": 96
+            },
+            "median": 22,
+            "bands": {
+              "Good (under 10 cfu)": 4,
+              "Bad (10 cfu or more)": 17
+            }
+          },
+          "volunteerNotes": []
+        }
+      }
+    }
+  }
+}

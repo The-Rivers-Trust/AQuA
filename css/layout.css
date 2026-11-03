@@ -590,9 +590,8 @@ body {
 }
 
 /* <arcgis-map> sets its own display, which beats the browser's [hidden]
-   rule - force it, so the Map / League table switch works. */
-.siteMap[hidden],
-.leagueArea[hidden] {
+   rule - force it. */
+.siteMap[hidden] {
   display: none !important;
 }
 
@@ -856,12 +855,222 @@ body {
   fill-opacity: 0.18;
 }
 
-/* ---- League table (Citizen Science tab, in place of the map) ---- */
+/* ---- Catchment summaries tab ---- */
+.summaryIntro {
+  max-width: 70ch;
+  margin: 0 0 var(--space-4);
+  color: var(--text-secondary);
+}
+
+.summaryDraftNote {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+  gap: var(--space-4);
+  grid-auto-rows: 1fr; /* every row the height of the tallest card... */
+  align-items: stretch; /* ...and every card fills its row */
+}
+
+.summaryCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.summaryCard--draft {
+  border-style: dashed;
+  border-color: var(--status-warning);
+}
+
+.summaryHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+}
+
+.summaryHead h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.summaryMeta {
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.summaryDraftTag {
+  margin-inline-start: auto;
+  padding: 1px var(--space-2);
+  border-radius: 10px;
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.summaryText {
+  flex: 1; /* the bars and footer line up along the bottom of each card */
+}
+
+.summaryText p {
+  margin: 0 0 var(--space-2);
+  line-height: 1.5;
+}
+
+.summaryText p:last-child {
+  margin-bottom: 0;
+}
+
+.summaryBars {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.summaryBarTitle {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.summaryBarTitle .muted {
+  font-weight: 400;
+}
+
+.summaryStack {
+  display: flex;
+  gap: 2px;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.summarySegment {
+  min-width: 4px;
+}
+
+.summaryLegend {
+  display: flex;
+  flex-wrap: nowrap; /* a legend is always one line */
+  gap: 2px var(--space-2);
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.summaryLegend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.summaryLegend .legendSwatch {
+  flex-basis: 10px;
+  height: 10px;
+}
+
+.summaryMetals {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.summaryMetals .summaryBarTitle {
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.summaryChipsLabel {
+  margin: var(--space-3) 0 var(--space-2);
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.summaryChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+}
+
+.summaryChips li {
+  padding: 2px var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.summaryChips .summaryChip--none {
+  color: var(--text-muted);
+}
+
+.summaryFoot {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+
+/* ---- League table (Citizen Science tab): a drawer taking the lower half
+   of the map's column (the map shrinks to the upper half), opened by the
+   League table button at the map's bottom right ---- */
+.leagueDrawer {
+  position: relative;
+  flex: 0 0 50%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-page);
+  border-top: 1px solid var(--border);
+  isolation: isolate;
+  animation: drawerUp 0.2s ease-out;
+}
+
+.leagueDrawer[hidden] {
+  display: none;
+}
+
+@keyframes drawerUp {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leagueDrawer { animation: none; }
+}
+
+.leagueClose {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 1;
+}
+
 .leagueArea {
   flex: 1;
+  min-height: 0;
   min-width: 0;
   overflow: auto;
-  padding: var(--space-6) var(--space-6);
+  padding: var(--space-4) var(--space-6);
   box-sizing: border-box;
 }
 

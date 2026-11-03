@@ -128,6 +128,10 @@ export const METALS = {
   color: "#009E73", // Okabe-Ito bluish green - neutral, no good/bad meaning
   minSize: 6,
   maxSize: 30,
+  // The metals the catchment summaries single out (js/tabs/catchment-summaries.js,
+  // scripts/catchment-facts.mjs): the ones people ask about. The rest are
+  // mostly ordinary minerals (calcium, sodium...) or rarely detected.
+  focus: ["aluminium", "cadmium", "chromium", "copper", "iron", "lead", "manganese", "nickel", "zinc"],
   list: [
     { key: "aluminium", label: "Aluminium", symbol: "Al" },
     { key: "barium", label: "Barium", symbol: "Ba" },

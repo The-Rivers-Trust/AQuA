@@ -53,8 +53,10 @@ js/
   tabs/
     citizen-science-map.js  sites joined to a season's records, coloured by phosphate /
                             E. coli band, clickable legend filter, site panel,
-                            Map / League table view switch
+                            League table button + bottom drawer over the map
     league-table.js         sortable site league table (phosphate + E. coli readings)
+    catchment-summaries.js  AI-assisted catchment summaries read from data/catchment-summaries.json
+                            (approved ones only; add ?drafts to the address to review the rest)
     downstream-plots.js     one chart per catchment, sites upstream -> downstream by the
                             sites layer's Number field; phosphate, E. coli or any metal
   charts/
@@ -85,3 +87,18 @@ Add an entry to `LAYERS` in `js/config.js` with an `id`, `title` and `url`. It'l
 2. Create `js/tabs/x-tab.js` exporting an `initXTab` function.
 3. Add it to `TAB_INITS` in `js/main.js` (it's initialised the first time the tab is opened).
 4. Respect the header filters: subscribe with `onFilterChange(fn)` from `js/filters.js`. Then either test sites with `matchesFilters(attributes)` / `filterWhereClause()`, or, for tables related on `site_name` (metals etc.), keep rows whose site is in `filteredSiteNames()`.
+
+## Catchment summaries
+
+The **Catchment Summaries** tab shows a short plain-English summary of each catchment's citizen science results for the season picked in the header. The text is written ahead of time with AI and checked by a person before the public sees it - nothing is generated while someone is using the dashboard, and no API key is ever in the browser.
+
+Each new season:
+
+1. `npm run catchment:facts` - works out the numbers for every catchment (sites surveyed, phosphate and E. coli bands, volunteers' pollution notes) into `data/catchment-facts.json`. No key needed.
+2. `ANTHROPIC_API_KEY=... npm run catchment:summaries` - writes a summary of each catchment from those facts into `data/catchment-summaries.json`, every one saved with `"approved": false`. A summary whose facts haven't changed is left alone (`--force` redoes all, `--only Foss` redoes one).
+3. Review: open the dashboard with `?drafts` on the address (e.g. `http://localhost:8080/?drafts`) to see the drafts. Edit any text in `data/catchment-summaries.json`, then set `"approved": true` and add `"reviewedAt": "2026-09-01"` (and `"reviewedBy"`).
+4. Commit the JSON. Only approved summaries are shown on the live dashboard; until there are some it says they are being prepared.
+
+Each summary also has a **metals** note (the lab results, which have no season) with its own `"approved"` flag inside `"metals"` - review and approve it the same way. The metals have no agreed thresholds yet and their units aren't confirmed in the data, so the note only says what was detected and where the highest results were, never whether they are high or safe.
+
+The wording rules the model is given (public audience, no blame, no causes, no health advice, only the supplied numbers) are in `scripts/generate-catchment-summaries.mjs`.
