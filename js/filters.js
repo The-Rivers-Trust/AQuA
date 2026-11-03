@@ -13,6 +13,10 @@
 // you've picked (pick the Foss river and Catchment offers only Foss,
 // Group only River Foss Society). So no combination can leave the map
 // empty. To widen a list again, clear the filter that's narrowing it.
+// Each option says how many sites it covers (given the other picks), a
+// filter that's narrowing the sites is marked in the header (.isActive -
+// .isImplied when it was only filled in), and a live "N of M sites"
+// count shows what the filters leave.
 // A broader filter left on "All" that a narrower pick pins down to one
 // value is filled in with it (river -> its catchment and group,
 // catchment -> its group); where it's ambiguous (the Wharfe has two
@@ -83,8 +87,8 @@ export function filterWhereClause() {
 // siteAttributes: plain attribute objects for every site.
 // seasons: every season with data, most recent first (the default).
 // siteFilterEls: { group, catchment, river } -> calcite-combobox.
-export function initFilters({ seasonEl, siteFilterEls, clearEl, siteAttributes, seasons }) {
-  els = { seasonEl, siteFilterEls, clearEl };
+export function initFilters({ seasonEl, siteFilterEls, clearEl, countEl, siteAttributes, seasons }) {
+  els = { seasonEl, siteFilterEls, clearEl, countEl };
   allSites = siteAttributes;
 
   filters.season = seasons[0] ?? null;
@@ -112,7 +116,7 @@ export function initFilters({ seasonEl, siteFilterEls, clearEl, siteAttributes, 
     update(Object.fromEntries(SITE_FILTER_KEYS.map((key) => [key, null])), null);
   });
 
-  updateClearButton();
+  updateSummary();
 }
 
 // changedKey: the site filter the user just changed, if any - it wins
@@ -131,7 +135,7 @@ function update(changes, changedKey = null) {
   } else {
     Object.assign(filters, changes);
   }
-  updateClearButton();
+  updateSummary();
 
   const current = getFilters();
   listeners.forEach((fn) => fn(current, previous));
@@ -174,9 +178,21 @@ function fillImpliedValues() {
 // filter. Implied values are left out: the pick that implied them
 // already narrows the list at least as much.
 function optionsFor(key) {
+  return [...optionCounts(key).keys()];
+}
+
+// The same values with the number of sites each covers, alphabetical.
+function optionCounts(key) {
   const others = SITE_FILTER_KEYS.filter((k) => k !== key && filters[k] != null && !implied.has(k));
-  const sites = allSites.filter((a) => others.every((k) => a[SITE_FILTER_FIELDS[k]] === filters[k]));
-  return distinct(sites, SITE_FILTER_FIELDS[key]);
+  const field = SITE_FILTER_FIELDS[key];
+  const counts = new Map();
+  for (const a of allSites) {
+    if (!others.every((k) => a[SITE_FILTER_FIELDS[k]] === filters[k])) continue;
+    const value = a[field];
+    if (value == null || value === "") continue;
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+  return new Map([...counts].sort(([a], [b]) => a.localeCompare(b, "en-GB")));
 }
 
 function matchesExcept(attributes, skipKey) {
@@ -189,18 +205,28 @@ function renderSiteFilterOptions() {
   for (const key of SITE_FILTER_KEYS) {
     const el = els.siteFilterEls[key];
     const selected = filters[key];
-    el.innerHTML = optionsFor(key)
-      .map((v) => `<calcite-combobox-item value="${escapeHtml(v)}" heading="${escapeHtml(v)}"${v === selected ? " selected" : ""}></calcite-combobox-item>`)
+    el.innerHTML = [...optionCounts(key)]
+      .map(([v, n]) => `<calcite-combobox-item value="${escapeHtml(v)}" heading="${escapeHtml(v)}" description="${n} ${n === 1 ? "site" : "sites"}"${v === selected ? " selected" : ""}></calcite-combobox-item>`)
       .join("");
     if (selected == null) el.value = "";
   }
 }
 
-function distinct(sites, field) {
-  return [...new Set(sites.map((a) => a[field]).filter((v) => v != null && v !== ""))]
-    .sort((a, b) => a.localeCompare(b, "en-GB"));
-}
-
-function updateClearButton() {
-  els.clearEl.hidden = !hasActiveFilters();
+// The reset button, the marked filters and the site count.
+function updateSummary() {
+  const active = SITE_FILTER_KEYS.filter((key) => filters[key] != null);
+  els.clearEl.hidden = !active.length;
+  const picked = active.filter((key) => !implied.has(key)).length; // not the filled-in ones
+  els.clearEl.textContent = picked > 1 ? `Reset filters (${picked})` : "Reset filters";
+  for (const key of SITE_FILTER_KEYS) {
+    const el = els.siteFilterEls[key];
+    el.classList.toggle("isActive", filters[key] != null);
+    el.classList.toggle("isImplied", implied.has(key));
+  }
+  if (els.countEl) {
+    const total = allSites.length;
+    const shown = filteredSiteNames().size;
+    els.countEl.textContent = active.length ? `${shown} of ${total} sites` : `${total} sites`;
+    els.countEl.classList.toggle("isFiltered", active.length > 0);
+  }
 }

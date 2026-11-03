@@ -93,6 +93,7 @@ async function initHeaderFilters() {
       river: document.getElementById("riverFilter"),
     },
     clearEl: document.getElementById("clearFilters"),
+    countEl: document.getElementById("siteCount"),
     siteAttributes: sites.map((f) => f.attributes),
     seasons: listSeasons([...citizenScience, ...metals]),
   });

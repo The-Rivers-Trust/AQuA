@@ -1,6 +1,6 @@
 // =====================================================================
 // LEAGUE TABLE
-// Sortable table of sites ranked by their citizen science readings,
+// Sortable table of sites with their citizen science readings,
 // shown in place of the map on the Citizen Science tab. Same behaviour
 // as the NRS dashboard's league table: click a column header to sort
 // (numbers lead with the highest, text A-Z; click again to flip),
@@ -12,39 +12,36 @@ import { METRICS } from "../config.js";
 import { classify } from "../metrics.js";
 import { escapeHtml, formatNumber, formatSeason } from "../utils/format.js";
 
-// Ranks: 1 = lowest reading (cleanest). Equal readings share a rank
-// ("1, 2, 2, 4"), and sites with no reading get none.
+// Six equal-width columns (css/layout.css).
 const COLUMNS = [
   { field: "site_name", label: "Site", type: "text" },
   { field: "River_Waterbody", label: "River / waterbody", type: "text" },
   { field: "Catchment", label: "Catchment", type: "text" },
   { field: "case_study_group", label: "Group", type: "text" },
-  { field: "phosphate_rank", label: "Phosphate rank", type: "rank" },
   { field: "phosphate_ppm", label: `Phosphate (${METRICS.phosphate.unit})`, type: "metric", metric: "phosphate" },
-  { field: "ecoli_rank", label: "E. coli rank", type: "rank" },
   { field: "ecoli_cfu", label: `E. coli (${METRICS.ecoli.unit})`, type: "metric", metric: "ecoli" },
 ];
 
-let sort = { field: "phosphate_rank", direction: "asc" };
+// Lowest reading first (cleanest at the top) until a column is clicked.
+let sort = { field: "phosphate_ppm", direction: "asc" };
 
 // rows: site attribute objects (already filtered). metric: the metric
 // picked in the side panel ("sites" for none) - when it changes, the
-// table re-sorts by that metric's rank.
+// table re-sorts by that metric, lowest first.
 let lastMetric = null;
 
 export function renderLeagueTable(containerEl, { rows, metric, season, filteredNote, onSelectSite }) {
   if (metric !== lastMetric && METRICS[metric]) {
-    sort = { field: `${metric}_rank`, direction: "asc" };
+    sort = { field: METRICS[metric].field, direction: "asc" };
   }
   lastMetric = metric;
 
-  const ranked = withRanks(rows);
-  const sorted = ranked.slice().sort(compareRows);
+  const sorted = rows.slice().sort(compareRows);
 
   containerEl.innerHTML = `
     <div class="leagueHeader">
       <h2>Site league table</h2>
-      <p class="leagueSubtitle">Citizen science readings, ${escapeHtml(formatSeason(season) || "–")}. Rank 1 = lowest reading. Click a column to sort, or a site to see it on the map.</p>
+      <p class="leagueSubtitle">Citizen science readings, ${escapeHtml(formatSeason(season) || "–")}. Click a column to sort, or a site to see it on the map.</p>
       ${filteredNote}
     </div>
     ${sorted.length
@@ -61,8 +58,7 @@ export function renderLeagueTable(containerEl, { rows, metric, season, filteredN
       const col = COLUMNS.find((c) => c.field === th.dataset.field);
       sort = sort.field === col.field
         ? { field: col.field, direction: sort.direction === "asc" ? "desc" : "asc" }
-        // Ranks lead with 1 (lowest reading), other numbers with the
-        // highest, text A-Z.
+        // Readings lead with the highest, text A-Z.
         : { field: col.field, direction: col.type === "metric" ? "desc" : "asc" };
       renderLeagueTable(containerEl, { rows, metric, season, filteredNote, onSelectSite });
       containerEl.querySelector(`th[data-field="${col.field}"]`)?.focus();
@@ -80,19 +76,6 @@ export function renderLeagueTable(containerEl, { rows, metric, season, filteredN
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(); }
     });
   });
-}
-
-function withRanks(rows) {
-  const ranked = rows.map((a) => ({ ...a }));
-  for (const [key, metric] of Object.entries(METRICS)) {
-    const values = ranked.map((r) => r[metric.field]).filter((v) => v != null).sort((x, y) => x - y);
-    for (const r of ranked) {
-      const v = r[metric.field];
-      // Competition ranking: 1 + number of readings strictly lower.
-      r[`${key}_rank`] = v == null ? null : values.findIndex((x) => x === v) + 1;
-    }
-  }
-  return ranked;
 }
 
 function compareRows(a, b) {
@@ -135,7 +118,6 @@ function rowHtml(row) {
           <span class="leagueBand">${escapeHtml(band.label)}</span>
         </td>`;
     }
-    if (col.type === "rank") return `<td class="leagueColNum leagueRank">${v ?? "–"}</td>`;
     return `<td>${escapeHtml(v ?? "–")}</td>`;
   }).join("");
   return `<tr data-site="${escapeHtml(row.site_name)}" tabindex="0" title="Show ${escapeHtml(row.site_name)} on the map">${cells}</tr>`;
