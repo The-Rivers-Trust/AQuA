@@ -6,8 +6,10 @@
 // band rows double as a filter (click to show only those bands).
 // Clicking a site opens a panel under the map (js/map/site-sections.js). The header filters
 // (js/filters.js) pick the season and narrow which sites are drawn and
-// counted. A View switch swaps the map for a league table of the same
-// sites (js/tabs/league-table.js) - same filters, legend and band picks.
+// counted. The League table button at the bottom right of the map slides
+// a league table of the same sites (js/tabs/league-table.js) up from the
+// bottom, taking the lower half of the map's space - same filters, legend
+// and band picks.
 // =====================================================================
 
 import { AQUA, METRICS, SITE_COLOR } from "../config.js";
@@ -22,7 +24,7 @@ import {
   handleLegendPick, restoreLegendFocus, SITE_LAYER_FIELDS,
 } from "../map/map-common.js";
 import { setupLayersPanel } from "../map/layers-panel.js";
-import { initSitePanel, registerSiteLayer, selectSite, refreshSite, clearSite } from "../map/site-panel.js";
+import { initSitePanel, registerSiteLayer, selectSite, refreshSite } from "../map/site-panel.js";
 import { buildSitePanelContent, trendsSection } from "../map/site-sections.js";
 import { surveysForSite } from "../data/surveys.js";
 
@@ -54,18 +56,13 @@ const state = {
   season: null,
   metric: SITES_VIEW,
   bands: new Set(), // legend bands picked for the current metric; empty = all
-  view: "map", // "map" | "league"
+  leagueOpen: false,
   layer: null,
 };
 
-const HINTS = {
-  map: "Click a site on the map to see its details.",
-  league: "Click a site in the table to see it on the map.",
-};
-
-export async function initCitizenScienceMap({ mapEl, metricControlEl, legendEl, viewControlEl, leagueEl, hintEl }) {
+export async function initCitizenScienceMap({ mapEl, metricControlEl, legendEl, leagueEl, leagueButtonEl, leagueDrawerEl, leagueCloseEl, hintEl }) {
   state.mapEl = mapEl;
-  state.els = { metricControlEl, legendEl, viewControlEl, leagueEl, hintEl };
+  state.els = { metricControlEl, legendEl, leagueEl, leagueButtonEl, leagueDrawerEl, hintEl };
 
   await setupMap(mapEl);
   // Clicking a site opens its panel under the map: site details, phosphate
@@ -94,7 +91,14 @@ export async function initCitizenScienceMap({ mapEl, metricControlEl, legendEl, 
     applyRenderer();
   });
   legendEl.addEventListener("click", onLegendClick);
-  viewControlEl.addEventListener("calciteSegmentedControlChange", () => showView(viewControlEl.value));
+  leagueButtonEl.addEventListener("click", () => setLeagueOpen(!state.leagueOpen));
+  leagueCloseEl.addEventListener("click", () => setLeagueOpen(false));
+  leagueDrawerEl.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setLeagueOpen(false);
+      leagueButtonEl.setFocus?.();
+    }
+  });
 
   onFilterChange(async (current, previous) => {
     if (current.season !== previous.season) {
@@ -108,10 +112,9 @@ export async function initCitizenScienceMap({ mapEl, metricControlEl, legendEl, 
     await zoomToLayer(mapEl, state.layer);
   });
 
-  // Pick up a metric / view chosen while the data was still loading.
+  // Pick up a metric chosen while the data was still loading.
   state.metric = metricControlEl.value || SITES_VIEW;
   await rebuildLayer();
-  showView(viewControlEl.value || "map");
   await zoomToLayer(mapEl, state.layer);
 }
 
@@ -222,28 +225,23 @@ function applyRenderer() {
 }
 
 // ---------------------------------------------------------------------
-// Map / league table
+// League table drawer
 // ---------------------------------------------------------------------
 
-function showView(view) {
-  state.view = view;
-  const { leagueEl, hintEl, viewControlEl } = state.els;
-  if (viewControlEl.value !== view) viewControlEl.value = view;
-  // The map and the panel under it go together.
-  state.mapEl.closest(".mapColumn").hidden = view !== "map";
-  leagueEl.hidden = view !== "league";
-  hintEl.textContent = HINTS[view];
-  if (view === "league") {
-    clearSite(state.mapEl); // its panel belongs beside the map
-    renderLeague();
-  }
+function setLeagueOpen(open) {
+  state.leagueOpen = open;
+  const { leagueButtonEl, leagueDrawerEl } = state.els;
+  leagueDrawerEl.hidden = !open;
+  leagueButtonEl.kind = open ? "brand" : "neutral";
+  leagueButtonEl.setAttribute("aria-expanded", String(open));
+  if (open) renderLeague();
 }
 
-// Legend always; the league table too while it's showing.
+// Legend always; the league table too while it's open.
 function refreshViews() {
   if (!state.layer) return;
   renderLegend();
-  if (state.view === "league") renderLeague();
+  if (state.leagueOpen) renderLeague();
 }
 
 // The sites the map is drawing: header filters plus any legend bands.
@@ -271,11 +269,11 @@ function renderLeague() {
   });
 }
 
-// From the league table: back to the map, zoomed to the site, its panel open.
+// From the league table: the map zooms to the site (the drawer stays open)
+// and its panel opens.
 async function showSiteOnMap(siteName) {
   const graphic = state.layer.source.find((g) => g.attributes.site_name === siteName);
   if (!graphic) return;
-  showView("map");
   selectSite(state.mapEl, graphic);
   await state.mapEl.goTo({ target: graphic.geometry, zoom: 13 });
 }

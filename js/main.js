@@ -17,6 +17,7 @@ import { fetchSites, fetchCitizenScience, fetchMetals, listSeasons } from "./dat
 import { initCitizenScienceMap } from "./tabs/citizen-science-map.js";
 import { initMetalsMap } from "./tabs/metals-map.js";
 import { initDownstreamPlots } from "./tabs/downstream-plots.js";
+import { initCatchmentSummaries } from "./tabs/catchment-summaries.js";
 import { initDataTab } from "./tabs/data-tab.js";
 
 // data-view -> that tab's init.
@@ -25,8 +26,10 @@ const TAB_INITS = {
     mapEl: document.getElementById("mainMap"),
     metricControlEl: document.getElementById("metricControl"),
     legendEl: document.getElementById("mapLegend"),
-    viewControlEl: document.getElementById("csViewControl"),
     leagueEl: document.getElementById("csLeague"),
+    leagueButtonEl: document.getElementById("leagueButton"),
+    leagueDrawerEl: document.getElementById("csLeagueDrawer"),
+    leagueCloseEl: document.getElementById("leagueClose"),
     hintEl: document.getElementById("csHint"),
   }),
   metals: () => initMetalsMap({
@@ -40,6 +43,7 @@ const TAB_INITS = {
     chartsEl: document.getElementById("downstreamCharts"),
     tooltipEl: document.getElementById("downstreamTooltip"),
   }),
+  catchments: () => initCatchmentSummaries({ containerEl: document.getElementById("catchmentSummaries") }),
   data: () => initDataTab({ containerEl: document.getElementById("dataView") }),
 };
 

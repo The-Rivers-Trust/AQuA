@@ -63,6 +63,7 @@
         <calcite-tab-title data-view="map" selected>Citizen Science Map</calcite-tab-title>
         <calcite-tab-title data-view="metals">Metals Map</calcite-tab-title>
         <calcite-tab-title data-view="downstream">Downstream Plots</calcite-tab-title>
+        <calcite-tab-title data-view="catchments">Catchment Summaries</calcite-tab-title>
         <calcite-tab-title data-view="data">Data</calcite-tab-title>
       </calcite-tab-nav>
 
@@ -71,13 +72,6 @@
           <calcite-panel class="sidePanel" heading="Citizen Science">
             <div class="sidePanelBody">
               <div class="controlGroup">
-                <calcite-label>
-                  View
-                  <calcite-segmented-control id="csViewControl" width="full">
-                    <calcite-segmented-control-item value="map" checked icon-start="map">Map</calcite-segmented-control-item>
-                    <calcite-segmented-control-item value="league" icon-start="table">League table</calcite-segmented-control-item>
-                  </calcite-segmented-control>
-                </calcite-label>
                 <calcite-label>
                   Show
                   <calcite-segmented-control id="metricControl" width="full">
@@ -93,7 +87,6 @@
               <p class="muted hint" id="csHint">Click a site on the map to see its details.</p>
             </div>
           </calcite-panel>
-          <div class="leagueArea" id="csLeague" hidden></div>
           <div class="mapColumn">
             <arcgis-map id="mainMap" class="siteMap">
               <arcgis-zoom slot="top-left"></arcgis-zoom>
@@ -111,7 +104,14 @@
                 </div>
               </arcgis-expand>
               <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
+              <calcite-button id="leagueButton" class="mapButton" slot="bottom-right" icon-start="table" scale="s"
+                appearance="solid" kind="neutral" aria-expanded="false" aria-controls="csLeagueDrawer">League table</calcite-button>
             </arcgis-map>
+            <!-- Slides up over the lower half of the map from the League table button (js/tabs/citizen-science-map.js). -->
+            <div class="leagueDrawer" id="csLeagueDrawer" hidden>
+              <calcite-action class="leagueClose" id="leagueClose" icon="x" text="Close league table" scale="s"></calcite-action>
+              <div class="leagueArea" id="csLeague"></div>
+            </div>
           </div>
           <!-- Contextual layers, closed until the map's Layers button is pressed (js/map/layers-panel.js). -->
           <calcite-panel class="layersPanel" heading="Map layers" closable closed></calcite-panel>
@@ -185,6 +185,10 @@
           </calcite-panel>
           <div class="plotsArea" id="downstreamCharts"></div>
           <div class="chartTooltip" id="downstreamTooltip" role="status" hidden></div>
+        </section>
+
+        <section class="view view--data" data-view="catchments" hidden>
+          <div class="viewInner" id="catchmentSummaries"></div>
         </section>
 
         <section class="view view--data" data-view="data" hidden>
