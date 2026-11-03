@@ -6,7 +6,8 @@
 //   Background - one at a time: WFD waterbody classification (coloured
 //     by ecological / ammonia / orthophosphate class), National Soil Map
 //   Overlays: Open River Network (+ animated flow direction), live storm
-//     overflows (+ "discharging or in the last 48 hours" only)
+//     overflows (+ "discharging or in the last 48 hours" only), Event
+//     Duration Monitoring 2025 (the annual spill returns)
 // and the map's Legend button shows a legend for whatever is switched on.
 // This file also handles clicks on the map (see initMapClicks): a site or
 // storm overflow opens its own pop-up; otherwise, with the river network
@@ -26,12 +27,12 @@
 // its own site layer, so these sit underneath the sites.
 // =====================================================================
 
-import { WFD_CATCHMENTS, RIVER_NETWORK } from "../config.js";
+import { WFD_CATCHMENTS, RIVER_NETWORK, EDM_2025 } from "../config.js";
 import { escapeHtml } from "../utils/format.js";
 import { addRiverNetwork } from "./river-network.js";
 import { isSiteLayer, hasSitePanel, selectSite, afterLayout, MIN_MAP_WIDTH } from "./site-panel.js";
 import {
-  createWfdLayer, wfdRenderer, wfdTitle, createSoilLayer, createStormOverflowLayers,
+  createWfdLayer, wfdRenderer, wfdTitle, createSoilLayer, createStormOverflowLayers, createEdmLayer,
   riverPopupTemplate, RIVER_POPUP_FIELDS,
 } from "./contextual-layers.js";
 
@@ -47,6 +48,7 @@ const state = {
   flow: false, // animated flow direction (needs the network)
   storm: false,
   recent: false, // storm overflows: only discharging / discharged lately
+  edm: false,
 };
 const maps = new Set(); // each map's { apply }
 
@@ -109,6 +111,9 @@ function panelMarkup() {
               </calcite-label>
             </div>
           </calcite-list-item>
+          <calcite-list-item label="${escapeHtml(EDM_2025.title)}" description="Annual spill returns, sized by spill count">
+            <calcite-switch slot="content-end" data-edm scale="s" label="${escapeHtml(EDM_2025.title)}"></calcite-switch>
+          </calcite-list-item>
         </calcite-list-item-group>
       </calcite-list>
     </div>`;
@@ -124,13 +129,14 @@ export async function setupLayersPanel(mapEl) {
   if (!panel || !action) return;
 
   const [reactiveUtils] = await $arcgis.import(["@arcgis/core/core/reactiveUtils.js"]);
-  const [soil, wfd, storm] = await Promise.all([createSoilLayer(), createWfdLayer(), createStormOverflowLayers()]);
+  const [soil, wfd, storm, edm] = await Promise.all([createSoilLayer(), createWfdLayer(), createStormOverflowLayers(), createEdmLayer()]);
 
-  // Bottom to top: backgrounds, river network (+ flow), storm overflows -
+  // Bottom to top: backgrounds, river network (+ flow), EDM, storm overflows -
   // all under whatever the tab adds afterwards (the sites).
   mapEl.map.addMany([soil, wfd], 0);
   const { network, flow } = await addRiverNetwork(mapEl, 2);
-  mapEl.map.addMany(storm.layers, flow ? 4 : 3);
+  mapEl.map.add(edm, flow ? 4 : 3);
+  mapEl.map.addMany(storm.layers, flow ? 5 : 4);
 
   // ---- panel ----
   panel.innerHTML = panelMarkup();
@@ -148,6 +154,7 @@ export async function setupLayersPanel(mapEl) {
     storm: q("[data-storm]"),
     stormOptions: q("[data-storm-options]"),
     recent: q("[data-recent]"),
+    edm: q("[data-edm]"),
     // In the map's Legend button, not this panel.
     legend: mapEl.querySelector("[data-legend]"),
     legendEmpty: mapEl.querySelector("[data-legend-empty]"),
@@ -160,6 +167,7 @@ export async function setupLayersPanel(mapEl) {
   on(el.flow, "calciteCheckboxChange", () => change({ flow: el.flow.checked }));
   on(el.storm, "calciteSwitchChange", () => change({ storm: el.storm.checked }));
   on(el.recent, "calciteCheckboxChange", () => change({ recent: el.recent.checked }));
+  on(el.edm, "calciteSwitchChange", () => change({ edm: el.edm.checked }));
   on(el.wfdField, "calciteSelectChange", () => change({ wfdField: el.wfdField.value }));
 
   // ---- open / close ----
@@ -202,6 +210,7 @@ export async function setupLayersPanel(mapEl) {
     if (state.wfd) infos.push({ layer: wfd, title: wfd.title });
     if (state.network) infos.push({ layer: network, title: network.title });
     if (state.soil) infos.push({ layer: soil, title: soil.title });
+    if (state.edm) infos.push({ layer: edm, title: edm.title });
     if (state.storm) infos.push({ layer: storm.layers[0], title: storm.layers[0].title });
     const key = infos.map((i) => `${i.layer.id}|${i.title}`).join(",");
     if (key !== legendKey) {
@@ -222,6 +231,10 @@ export async function setupLayersPanel(mapEl) {
     }
     if (flow) flow.visible = state.flow && state.network; // off before the network goes
     network.visible = state.network;
+    if (edm.visible !== state.edm) {
+      edm.visible = state.edm;
+      if (!state.edm) mapEl.closePopup();
+    }
     if (stormShown !== state.storm) {
       stormShown = state.storm;
       storm.setVisible(state.storm);
@@ -242,6 +255,7 @@ export async function setupLayersPanel(mapEl) {
     el.storm.checked = state.storm;
     el.stormOptions.hidden = !state.storm;
     el.recent.checked = state.recent;
+    el.edm.checked = state.edm;
     applyScaleGating();
     applyLegend();
   }

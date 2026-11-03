@@ -229,6 +229,35 @@
   color: var(--text-muted);
 }
 
+/* Event Duration Monitoring pop-up: headline numbers (the river pop-up's
+   stat tiles), then a list of facts. */
+.edmPopup {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.edmFacts {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+}
+
+.edmFacts div {
+  display: grid;
+  grid-template-columns: 9.5em 1fr;
+  gap: var(--space-2);
+}
+
+.edmFacts dt {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.edmFacts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
 /* One colour per discharge status. */
 .stormCard--spilling .stormDateBadge,
 .stormCard--spilling .stormActivePill { background: var(--status-danger-bg); color: var(--status-danger); }

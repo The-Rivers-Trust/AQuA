@@ -273,6 +273,25 @@ export const STORM_OVERFLOWS = {
   ],
 };
 
+// Event Duration Monitoring 2025 (England and Wales): every storm overflow's
+// annual return to the EA / NRW - how many times it spilled and for how
+// long. One hosted layer of ~16,500 outfalls; points are sized by spill
+// count in the same classes as the service's own styling.
+export const EDM_2025 = {
+  url: "https://services3.arcgis.com/Bb8lfThdhugyc4G3/arcgis/rest/services/Event_Duration_Monitoring_Storm_Overflows_2025/FeatureServer/0",
+  title: "Event Duration Monitoring 2025",
+  color: [99, 79, 63, 190],
+  // Spill counts: [highest count in the class, label, symbol size].
+  classes: [
+    [0, "No spills", 4],
+    [19, "1 - 19 spills", 7],
+    [39, "20 - 39 spills", 10],
+    [59, "40 - 59 spills", 13],
+    [99, "60 - 99 spills", 16],
+    [366, "100 or more spills", 19],
+  ],
+};
+
 // Hand corrections for the river diagrams, keyed by site_name:
 //   { snapTo: "River Ribble" } - match this site to the nearest network
 //                                section with that name instead

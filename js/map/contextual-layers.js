@@ -7,8 +7,8 @@
 // dashboard.
 // =====================================================================
 
-import { WFD_CATCHMENTS, SOIL_MAP, RIVER_NETWORK, STORM_OVERFLOWS } from "../config.js";
-import { escapeHtml, sqlTimestamp } from "../utils/format.js";
+import { WFD_CATCHMENTS, SOIL_MAP, RIVER_NETWORK, STORM_OVERFLOWS, EDM_2025 } from "../config.js";
+import { escapeHtml, formatNumber, sqlTimestamp } from "../utils/format.js";
 import { POPUP_STYLESHEET } from "./map-common.js";
 
 async function getFeatureLayerClass() {
@@ -348,6 +348,94 @@ function stormPopupContent(attrs, fields) {
       live.textContent = liveDuration(startMs);
     }, 1000);
   }
+  return el;
+}
+
+// ---------------------------------------------------------------------
+// Event Duration Monitoring 2025
+// The annual spill returns: one point per outfall, sized by spill count.
+// ---------------------------------------------------------------------
+
+const EDM_FIELDS = [
+  "OBJECTID", "waterCompanyName", "siteNameEA", "siteNameWASC", "permitReferenceEA", "assetType",
+  "recievingWaterName", "wfdWaterbodyName", "countedSpills", "totalDurationAllSpillsHrs",
+  "longTermAverageSpillCount", "edmOperationPercent", "edmCommissionYear", "treatmentType",
+];
+
+function edmSymbol(size) {
+  return { type: "simple-marker", style: "circle", size, color: EDM_2025.color, outline: { color: [255, 255, 255, 230], width: 0.75 } };
+}
+
+function edmRenderer() {
+  const classes = EDM_2025.classes;
+  return {
+    type: "class-breaks",
+    field: "countedSpills",
+    // Biggest on the bottom so a busy outfall doesn't hide its neighbours.
+    classBreakInfos: classes.map(([max, label, size], i) => ({
+      minValue: i === 0 ? 0 : classes[i - 1][0] + 0.0001,
+      maxValue: max,
+      label,
+      symbol: edmSymbol(size),
+    })),
+    defaultSymbol: { ...edmSymbol(4), color: [156, 156, 156, 170] },
+    defaultLabel: "Not reported",
+  };
+}
+
+export async function createEdmLayer() {
+  const FeatureLayer = await getFeatureLayerClass();
+  return new FeatureLayer({
+    url: EDM_2025.url,
+    outFields: EDM_FIELDS,
+    visible: false,
+    minScale: 0,
+    maxScale: 0,
+    title: EDM_2025.title,
+    renderer: edmRenderer(),
+    orderBy: [{ field: "countedSpills", order: "ascending" }],
+    popupTemplate: {
+      title: (event) => event.graphic.attributes.siteNameEA || event.graphic.attributes.siteNameWASC || EDM_2025.title,
+      outFields: EDM_FIELDS,
+      content: (event) => edmPopupContent(event.graphic.attributes),
+    },
+  });
+}
+
+function edmPopupContent(a) {
+  const spills = a.countedSpills;
+  const hours = a.totalDurationAllSpillsHrs;
+  const stats = [
+    [spills == null ? "–" : formatNumber(spills), "Spills in 2025"],
+    [hours == null ? "–" : `${formatNumber(hours, 1)} h`, "Total spill duration"],
+    [a.longTermAverageSpillCount == null ? "–" : formatNumber(a.longTermAverageSpillCount, 1), "Long-term average spills"],
+  ];
+  const details = [
+    ["Water company", a.waterCompanyName],
+    ["Receiving water", a.recievingWaterName],
+    ["WFD waterbody", a.wfdWaterbodyName],
+    ["Asset type", a.assetType],
+    ["Treatment type", a.treatmentType],
+    ["EA permit reference", a.permitReferenceEA],
+    ["Monitor operating", a.edmOperationPercent == null ? null : `${formatNumber(a.edmOperationPercent, 1)}% of the year`],
+    ["Monitor installed", a.edmCommissionYear],
+  ].filter(([, value]) => value != null && value !== "");
+
+  const el = document.createElement("div");
+  el.className = "edmPopup";
+  el.innerHTML = `${POPUP_STYLESHEET}
+    ${a.siteNameWASC && a.siteNameWASC !== a.siteNameEA ? `<div class="stormId">${escapeHtml(a.siteNameWASC)}</div>` : ""}
+    <div class="riverStats">
+      ${stats.map(([value, label]) => `
+        <div class="riverStat">
+          <span class="riverStatValue">${escapeHtml(value)}</span>
+          <span class="riverStatLabel">${escapeHtml(label)}</span>
+        </div>`).join("")}
+    </div>
+    <dl class="edmFacts">
+      ${details.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}
+    </dl>
+    <div class="stormUpdated">Event Duration Monitoring 2025 annual return</div>`;
   return el;
 }
 
