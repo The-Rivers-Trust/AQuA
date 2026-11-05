@@ -1,39 +1,48 @@
 {
-  "generatedAt": "2026-11-03T16:04:30.596Z",
+  "generatedAt": "2026-11-05T09:34:04.988Z",
   "seasons": [
     "Summer26"
   ],
+  "thresholdsHash": "65dd0915663e9e5e",
   "thresholds": {
-    "phosphate": [
-      {
-        "band": "Low",
-        "upTo": 0.1
-      },
-      {
-        "band": "Slightly Elevated",
-        "upTo": 0.3
-      },
-      {
-        "band": "Elevated",
-        "upTo": 0.75
-      },
-      {
-        "band": "High",
-        "upTo": 1
-      },
-      {
-        "band": "Very High",
-        "upTo": null
-      }
-    ],
-    "ecoli": [
-      {
-        "band": "Good (under 10 cfu)"
-      },
-      {
-        "band": "Bad (10 cfu or more)"
-      }
-    ]
+    "phosphate": {
+      "unit": "mg/l",
+      "bands": [
+        {
+          "band": "Low",
+          "upTo": 0.1
+        },
+        {
+          "band": "Slightly Elevated",
+          "upTo": 0.3
+        },
+        {
+          "band": "Elevated",
+          "upTo": 0.75
+        },
+        {
+          "band": "High",
+          "upTo": 1
+        },
+        {
+          "band": "Very High",
+          "upTo": null
+        }
+      ]
+    },
+    "ecoli": {
+      "unit": "cfu",
+      "bands": [
+        {
+          "band": "Good (under 10 cfu)",
+          "upTo": 9
+        },
+        {
+          "band": "Bad (10 cfu or more)",
+          "upTo": null
+        }
+      ]
+    }
   },
   "catchments": {
     "Derwent": {

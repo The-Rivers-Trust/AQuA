@@ -105,7 +105,8 @@
         "approved": true,
         "reviewedAt": "2026-11-03",
         "reviewedBy": "Alfie Kelly"
-      }
+      },
+      "thresholdsHash": "65dd0915663e9e5e"
     },
     {
       "catchment": "Foss",
@@ -212,7 +213,8 @@
         "approved": true,
         "reviewedAt": "2026-11-03",
         "reviewedBy": "Alfie Kelly"
-      }
+      },
+      "thresholdsHash": "65dd0915663e9e5e"
     },
     {
       "catchment": "Gledhow Lake",
@@ -319,7 +321,8 @@
         "approved": true,
         "reviewedAt": "2026-11-03",
         "reviewedBy": "Alfie Kelly"
-      }
+      },
+      "thresholdsHash": "65dd0915663e9e5e"
     },
     {
       "catchment": "Holme",
@@ -426,7 +429,8 @@
         "approved": true,
         "reviewedAt": "2026-11-03",
         "reviewedBy": "Alfie Kelly"
-      }
+      },
+      "thresholdsHash": "65dd0915663e9e5e"
     },
     {
       "catchment": "Nidd",
@@ -533,7 +537,8 @@
         "approved": true,
         "reviewedAt": "2026-11-03",
         "reviewedBy": "Alfie Kelly"
-      }
+      },
+      "thresholdsHash": "65dd0915663e9e5e"
     },
     {
       "catchment": "Ouse",
@@ -640,7 +645,8 @@
         "approved": true,
         "reviewedAt": "2026-11-03",
         "reviewedBy": "Alfie Kelly"
-      }
+      },
+      "thresholdsHash": "65dd0915663e9e5e"
     },
     {
       "catchment": "Rye",
@@ -747,7 +753,8 @@
         "approved": true,
         "reviewedAt": "2026-11-03",
         "reviewedBy": "Alfie Kelly"
-      }
+      },
+      "thresholdsHash": "65dd0915663e9e5e"
     },
     {
       "catchment": "Waterloo Lake",
@@ -854,7 +861,8 @@
         "approved": true,
         "reviewedAt": "2026-11-03",
         "reviewedBy": "Alfie Kelly"
-      }
+      },
+      "thresholdsHash": "65dd0915663e9e5e"
     },
     {
       "catchment": "Wharfe",
@@ -961,7 +969,8 @@
         "approved": true,
         "reviewedAt": "2026-11-03",
         "reviewedBy": "Alfie Kelly"
-      }
+      },
+      "thresholdsHash": "65dd0915663e9e5e"
     }
   ]
 }

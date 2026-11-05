@@ -6,6 +6,8 @@
 // file that changes.
 // =====================================================================
 
+import { loadThresholds } from "./thresholds.js";
+
 export const APP_TITLE = "AQuA Dashboard";
 
 export const MAP = {
@@ -63,7 +65,8 @@ export const AQUA = {
 
 // ---------------------------------------------------------------------
 // Map metrics
-// Each metric colours the sites by bands of one citizen science field.
+// Each metric (phosphate, E. coli - defined in data/thresholds.json) colours
+// the sites by bands of one citizen science field.
 // A band's `max` is its own upper bound, INCLUSIVE (same convention as
 // the NRS dashboard); the last band has no max and catches everything
 // above. Readings that are missing (not collected / no visit that
@@ -71,42 +74,11 @@ export const AQUA = {
 // ---------------------------------------------------------------------
 export const NO_DATA = { key: "noData", label: "No reading", color: "#8a8a8a" };
 
-export const METRICS = {
-  phosphate: {
-    label: "Phosphate",
-    field: "phosphate_ppm",
-    unit: "mg/l",
-    decimals: 2,
-    // Same thresholds and colours as the NRS dashboard's phosphate bands.
-    bands: [
-      { key: "low", label: "Low", max: 0.1, color: "#0072b0" },
-      { key: "slightlyElevated", label: "Slightly Elevated", max: 0.3, color: "#56d5e8" },
-      { key: "elevated", label: "Elevated", max: 0.75, color: "#e6b800" },
-      { key: "high", label: "High", max: 1, color: "#f08c00" },
-      { key: "veryHigh", label: "Very High", color: "#d63129" },
-    ],
-  },
-  ecoli: {
-    label: "E. coli",
-    field: "ecoli_cfu",
-    unit: "cfu",
-    decimals: 0,
-    // The per-site bar chart's fixed top of axis: counts run from 0 to
-    // hundreds, so a higher bar is clipped (and labelled) rather than
-    // squashing the 10 cfu line into the floor.
-    chartMax: 100,
-    // Good below 10 cfu, bad at 10 or more. Integer counts, so "max: 9"
-    // is the same as "< 10".
-    // Colours: Okabe-Ito blue / vermillion, a colour-blind-safe pair (stays
-    // clearly distinct under protan, deutan and tritan simulation, unlike
-    // red/green). Blue also matches phosphate's "Low", so blue = good on
-    // both metrics.
-    bands: [
-      { key: "good", label: "Good (under 10 cfu)", max: 9, color: "#0072B2" },
-      { key: "bad", label: "Bad (10 cfu or more)", color: "#D55E00" },
-    ],
-  },
-};
+// The bands themselves - thresholds, colours and labels - live in
+// data/thresholds.json, so they can be edited without touching code (see
+// README, "Thresholds"). They're read once as the app starts (and checked:
+// a mistake in the file stops it with a message saying what's wrong).
+export const METRICS = await loadThresholds();
 
 // Plain symbol colour for the "Sites" view (no metric selected).
 export const SITE_COLOR = "#009af2";

@@ -31,7 +31,7 @@ const SYSTEM_PROMPT = `You write short summaries of river water quality results 
 Rules:
 - Write 70 to 110 words of plain, friendly UK English in one or two short paragraphs. No headings, bullet points or markdown.
 - Use only the facts you are given. Never invent or estimate a number, site, river or cause. Every number you quote must appear in the facts.
-- Explain the results in everyday terms. Phosphate is a nutrient that can come from sewage and farmland and, in excess, harms river life. E. coli is a bacterium found in human and animal waste; the dashboard counts a reading of 10 cfu or more as "bad".
+- Explain the results in everyday terms. Phosphate is a nutrient that can come from sewage and farmland and, in excess, harms river life. E. coli is a bacterium found in human and animal waste. The facts list the dashboard's bands for each (the "thresholds"): use those names and limits exactly, and never quote a limit that isn't there.
 - Do not blame, name or imply any person, business, farm or water company. Never say what caused a result. If volunteers' notes mention possible pollution sources, say only that volunteers noted things such as that (in general terms), without naming who or where it might come from.
 - Do not give health advice, and do not add a disclaimer about the results being snapshots or unofficial (the dashboard page already says so).
 - Mention the season the results are from, how many sites were surveyed, and the overall picture for phosphate and E. coli, picking out the clearest highs and lows.
@@ -103,9 +103,15 @@ for (const [catchment, catchmentFacts] of Object.entries(facts.catchments)) {
     const factsHash = hashOf({ catchment, season, seasonFacts, sites: catchmentFacts.sites });
     const current = existing.get(key);
     let entry = current;
-    if (current && current.factsHash === factsHash && !force && !only) {
+    // The thresholds in data/thresholds.json changed since this summary was
+    // written, so its wording may now be wrong. (Entries from before this
+    // was tracked just adopt the current thresholds.)
+    const thresholdsChanged = !!current?.thresholdsHash && current.thresholdsHash !== facts.thresholdsHash;
+    if (current && current.factsHash === factsHash && !thresholdsChanged && !force && !only) {
+      current.thresholdsHash ??= facts.thresholdsHash;
       console.log(`${catchment} ${season}: unchanged, kept`);
     } else {
+      if (thresholdsChanged) console.log(`${catchment} ${season}: thresholds changed - rewriting (needs approving again)`);
       process.stdout.write(`${catchment} ${season}: writing... `);
       const summary = await askClaude(
         SYSTEM_PROMPT,
@@ -124,6 +130,7 @@ for (const [catchment, catchmentFacts] of Object.entries(facts.catchments)) {
           ecoli: seasonFacts.ecoli,
         },
         factsHash,
+        thresholdsHash: facts.thresholdsHash,
         model: MODEL,
         generatedAt: new Date().toISOString(),
         approved: false,

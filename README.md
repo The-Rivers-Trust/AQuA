@@ -20,8 +20,10 @@ css/
   popup.css           site pop-up styles (loaded inside the pop-up - it's in the map's shadow DOM)
 js/
   main.js             start-up: theme, tab switching, each tab's init
-  config.js           service URLs, field names, metric thresholds, map start position
-  metrics.js          classify(metric, value) → band, using thresholds in config.js
+  config.js           service URLs, field names, map start position (metric bands come from
+                      data/thresholds.json via thresholds.js)
+  thresholds.js       loads and checks data/thresholds.json
+  metrics.js          classify(metric, value) → band, using the thresholds
   shortcuts.js        keyboard shortcuts on the map tabs: R river network, F flow, S storm overflows, E EDM
   filters.js          header filters (season, group, catchment, river) shared by every tab;
                       site filters narrow left to right
@@ -104,3 +106,19 @@ Each new season:
 Each summary also has a **metals** note (the lab results, which have no season) with its own `"approved"` flag inside `"metals"` - review and approve it the same way. The metals have no agreed thresholds yet and their units aren't confirmed in the data, so the note only says what was detected and where the highest results were, never whether they are high or safe.
 
 The wording rules the model is given (public audience, no blame, no causes, no health advice, only the supplied numbers) are in `scripts/generate-catchment-summaries.mjs`.
+
+## Thresholds
+
+The bands for phosphate and E. coli - where each band ends, its name and its colour - are in **`data/thresholds.json`**, not in the code. To change one, edit that file on GitHub (or locally), run
+
+```bash
+npm run check:thresholds
+```
+
+to check it, and commit. The dashboard (maps, legends, league table, bar charts, catchment summaries) reads the file when it loads, so a change shows up as soon as GitHub Pages has redeployed.
+
+- A band's `max` is its own upper limit, inclusive; the last band has no `max` and catches everything above. Bands run from lowest to highest.
+- Labels are free text, so if you move a limit also update any number in the label (e.g. "Good (under 10 cfu)" with `"max": 9`).
+- If the file has a mistake (a missing comma, bands out of order, a colour that isn't `#rrggbb`) the dashboard shows a red message saying what's wrong instead of starting, and the check above prints the same message.
+- The catchment summaries quote thresholds in their text. After changing one, run `npm run catchment:facts` then `npm run catchment:summaries`: summaries written under the old thresholds are rewritten as unapproved drafts to review again.
+- Metals have no thresholds yet; when they are agreed they can be added to this file.

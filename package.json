@@ -5,7 +5,8 @@
   "scripts": {
     "start": "npx --yes http-server@14.1.1 . -p 8080 -c-1 -o",
     "catchment:facts": "node scripts/catchment-facts.mjs",
-    "catchment:summaries": "node scripts/generate-catchment-summaries.mjs"
+    "catchment:summaries": "node scripts/generate-catchment-summaries.mjs",
+    "check:thresholds": "node scripts/check-thresholds.mjs"
   },
   "type": "module"
 }

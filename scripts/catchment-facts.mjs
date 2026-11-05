@@ -17,6 +17,7 @@
 // =====================================================================
 
 import { writeFile, mkdir } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { AQUA, METRICS, METALS } from "../js/config.js";
 import { classify } from "../js/metrics.js";
 
@@ -113,9 +114,14 @@ const catchments = unique(sites.map((s) => s.Catchment));
 const facts = {
   generatedAt: new Date().toISOString(),
   seasons,
+  // Changes whenever data/thresholds.json does, so the summaries written
+  // under the old thresholds can be told apart (and rewritten).
+  thresholdsHash: createHash("sha256").update(JSON.stringify(METRICS)).digest("hex").slice(0, 16),
   thresholds: {
-    phosphate: METRICS.phosphate.bands.map((b) => ({ band: b.label, upTo: b.max ?? null })),
-    ecoli: METRICS.ecoli.bands.map((b) => ({ band: b.label })),
+    ...Object.fromEntries(Object.entries(METRICS).map(([key, metric]) => [
+      key,
+      { unit: metric.unit, bands: metric.bands.map((b) => ({ band: b.label, upTo: b.max ?? null })) },
+    ])),
   },
   catchments: {},
 };

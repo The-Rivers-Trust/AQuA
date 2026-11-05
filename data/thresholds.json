@@ -1,0 +1,29 @@
+{
+  "_about": "Thresholds for the citizen science readings. Edit here (see README, 'Thresholds'); run `npm run check:thresholds` before committing. A band's 'max' is its own upper limit, INCLUSIVE; the last band has no 'max' and catches everything above. Bands go from best to worst, lowest to highest. 'chartMax' (optional) fixes the top of the per-site bar chart's axis.",
+
+  "phosphate": {
+    "label": "Phosphate",
+    "field": "phosphate_ppm",
+    "unit": "mg/l",
+    "decimals": 2,
+    "bands": [
+      { "key": "low", "label": "Low", "max": 0.1, "color": "#0072b0" },
+      { "key": "slightlyElevated", "label": "Slightly Elevated", "max": 0.3, "color": "#56d5e8" },
+      { "key": "elevated", "label": "Elevated", "max": 0.75, "color": "#e6b800" },
+      { "key": "high", "label": "High", "max": 1, "color": "#f08c00" },
+      { "key": "veryHigh", "label": "Very High", "color": "#d63129" }
+    ]
+  },
+
+  "ecoli": {
+    "label": "E. coli",
+    "field": "ecoli_cfu",
+    "unit": "cfu",
+    "decimals": 0,
+    "chartMax": 100,
+    "bands": [
+      { "key": "good", "label": "Good (under 10 cfu)", "max": 9, "color": "#0072B2" },
+      { "key": "bad", "label": "Bad (10 cfu or more)", "color": "#D55E00" }
+    ]
+  }
+}
