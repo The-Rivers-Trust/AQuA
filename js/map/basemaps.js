@@ -1,7 +1,7 @@
 // =====================================================================
 // BASEMAPS
 // One basemap choice shared by every map. Each map has a basemap gallery
-// (an <arcgis-basemap-gallery> in the map's layer/basemap controls);
+// (an <arcgis-basemap-gallery> in the map's Basemap panel, tool-panels.js);
 // picking a basemap in any of them changes every map that's already
 // running, and any map started later (tabs are only initialised the
 // first time they're opened) starts with it.
@@ -35,7 +35,7 @@ export async function setupBasemap(mapEl) {
   mapEl.basemap = currentBasemapId();
   maps.add(mapEl);
 
-  const gallery = mapEl.querySelector("arcgis-basemap-gallery");
+  const gallery = mapEl.closest(".view")?.querySelector("arcgis-basemap-gallery");
   if (!gallery) return;
   gallery.source = new LocalBasemapsSource({
     basemaps: MAP.basemaps.map((id) => {

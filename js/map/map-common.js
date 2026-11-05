@@ -8,6 +8,7 @@
 import { MAP } from "../config.js";
 import { escapeHtml } from "../utils/format.js";
 import { setupBasemap } from "./basemaps.js";
+import { setupToolPanels } from "./tool-panels.js";
 
 // Shared basemap + selector, focus-ring fix and pop-up docking. Resolves
 // once the view is ready. (The contextual layers are added separately by
@@ -16,6 +17,7 @@ export async function setupMap(mapEl) {
   mapEl.center = MAP.center;
   mapEl.zoom = MAP.zoom;
   await setupBasemap(mapEl);
+  setupToolPanels(mapEl);
   initFocusRing(mapEl);
 
   await mapEl.viewOnReady();

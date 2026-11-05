@@ -121,15 +121,16 @@ body {
   padding: var(--space-4);
 }
 
-/* ---- Layers panel: contextual layers, on the right of the map, closed
-   until the map's Layers button is pressed (js/map/layers-panel.js) ---- */
-.layersPanel {
+/* ---- Tool panels (Map layers, Basemap, Legend): on the right of the map,
+   closed until their button on the map is pressed, one open at a time
+   (js/map/tool-panels.js) ---- */
+.toolPanel {
   flex: 0 0 320px;
   min-height: 0;
   border-inline-start: 1px solid var(--border);
 }
 
-.layersPanel[closed] {
+.toolPanel[closed] {
   display: none;
 }
 
@@ -156,7 +157,7 @@ body {
    panel's stacking to itself stops one panel's header drawing over another
    panel placed on top of it (the site sheet on a phone). */
 .sidePanel,
-.layersPanel,
+.toolPanel,
 .sitePanel {
   isolation: isolate;
 }
@@ -536,26 +537,6 @@ body {
 
 .layerOptions calcite-label {
   --calcite-label-margin-bottom: 0;
-}
-
-/* The map's Legend button (an arcgis-expand): the contextual layers' legend. */
-.mapWidget {
-  width: 300px;
-  max-width: calc(100vw - 96px);
-  max-height: 45vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: var(--space-3) var(--space-4) var(--space-4);
-  box-sizing: border-box;
-  background: var(--surface-1);
-  color: var(--text-primary);
-  font-family: var(--font-family);
-}
-
-.mapWidgetHeading {
-  margin: 0 0 var(--space-3);
-  font-size: 14px;
-  font-weight: 600;
 }
 
 /* A calcite-action has no fill of its own - give it the same surface as
@@ -1182,7 +1163,7 @@ body {
 
   /* Floats over the map's part of the screen (the side panel's 40% below
      it stays usable). */
-  .layersPanel {
+  .toolPanel {
     position: absolute;
     top: 0;
     right: 0;

@@ -8,7 +8,7 @@
 //   Overlays: Open River Network (+ animated flow direction), live storm
 //     overflows (+ "discharging or in the last 48 hours" only), Event
 //     Duration Monitoring 2025 (the annual spill returns)
-// and the map's Legend button shows a legend for whatever is switched on.
+// and the map's Legend panel shows a legend for whatever is switched on.
 // This file also handles clicks on the map (see initMapClicks): a site or
 // storm overflow opens its own pop-up; otherwise, with the river network
 // on, the nearest river does.
@@ -18,11 +18,11 @@
 // them - switch storm overflows on in one map and they're on in the
 // other too, like the basemap.
 //
-// A map's panel lives in its tab's <section>:
-//   <calcite-panel class="layersPanel" closable closed> (filled in here)
+// A map's panel lives in its tab's <section> (opened and closed by
+// tool-panels.js, along with the Basemap and Legend panels):
+//   <calcite-panel class="toolPanel layersPanel" closable closed> (filled in here)
 //   <calcite-action class="layersAction"> inside the <arcgis-map>
-//   <arcgis-legend data-legend> + <p data-legend-empty> in the map's Legend
-//     button (an <arcgis-expand>)
+//   <arcgis-legend data-legend> + <p data-legend-empty> in the Legend panel
 // Call setupLayersPanel(mapEl) right after setupMap, before the tab adds
 // its own site layer, so these sit underneath the sites.
 // =====================================================================
@@ -30,7 +30,7 @@
 import { WFD_CATCHMENTS, RIVER_NETWORK, EDM_2025 } from "../config.js";
 import { escapeHtml } from "../utils/format.js";
 import { addRiverNetwork } from "./river-network.js";
-import { isSiteLayer, hasSitePanel, selectSite, afterLayout, MIN_MAP_WIDTH } from "./site-panel.js";
+import { isSiteLayer, hasSitePanel, selectSite } from "./site-panel.js";
 import {
   createWfdLayer, wfdRenderer, wfdTitle, createSoilLayer, createStormOverflowLayers, createEdmLayer,
   riverPopupTemplate, RIVER_POPUP_FIELDS,
@@ -126,9 +126,9 @@ function panelMarkup() {
 // ---------------------------------------------------------------------
 
 export async function setupLayersPanel(mapEl) {
-  const panel = mapEl.closest(".view")?.querySelector(".layersPanel");
-  const action = mapEl.querySelector(".layersAction");
-  if (!panel || !action) return;
+  const view = mapEl.closest(".view");
+  const panel = view?.querySelector(".layersPanel");
+  if (!panel) return;
 
   const [reactiveUtils] = await $arcgis.import(["@arcgis/core/core/reactiveUtils.js"]);
   const [soil, wfd, storm, edm] = await Promise.all([createSoilLayer(), createWfdLayer(), createStormOverflowLayers(), createEdmLayer()]);
@@ -158,9 +158,9 @@ export async function setupLayersPanel(mapEl) {
     stormOptions: q("[data-storm-options]"),
     recent: q("[data-recent]"),
     edm: q("[data-edm]"),
-    // In the map's Legend button, not this panel.
-    legend: mapEl.querySelector("[data-legend]"),
-    legendEmpty: mapEl.querySelector("[data-legend-empty]"),
+    // In the map's Legend panel (tool-panels.js), not this one.
+    legend: view.querySelector("[data-legend]"),
+    legendEmpty: view.querySelector("[data-legend-empty]"),
   };
 
   const on = (target, event, fn) => target.addEventListener(event, fn);
@@ -172,22 +172,6 @@ export async function setupLayersPanel(mapEl) {
   on(el.recent, "calciteCheckboxChange", () => change({ recent: el.recent.checked }));
   on(el.edm, "calciteSwitchChange", () => change({ edm: el.edm.checked }));
   on(el.wfdField, "calciteSelectChange", () => change({ wfdField: el.wfdField.value }));
-
-  // ---- open / close ----
-  const syncAction = () => { action.active = !panel.closed; };
-  action.addEventListener("click", () => {
-    panel.closed = !panel.closed;
-    syncAction();
-    if (!panel.closed) afterLayout(panel).then(() => mapEl.dispatchEvent(new CustomEvent("layerspanelopen")));
-  });
-  // A site was selected and there isn't room for both right-hand panels.
-  mapEl.addEventListener("sitepanelopen", () => {
-    if (!panel.closed && mapEl.closest(".mapColumn").clientWidth < MIN_MAP_WIDTH) {
-      panel.closed = true;
-      syncAction();
-    }
-  });
-  panel.addEventListener("calcitePanelClose", syncAction);
 
   // ---- follow the shared state ----
   let stormShown = false;

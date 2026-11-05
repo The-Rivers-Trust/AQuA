@@ -83,7 +83,7 @@ export async function initCitizenScienceMap({ mapEl, metricControlEl, legendEl, 
   state.records = records;
   state.season = getSeason();
 
-  metricControlEl.addEventListener("calciteSegmentedControlChange", () => {
+  metricControlEl.addEventListener("calciteSelectChange", () => {
     state.metric = metricControlEl.value;
     // Band picks belong to one metric's bands - start fresh.
     state.bands.clear();

@@ -34,10 +34,12 @@ js/
   map/
     map-common.js     shared map setup (basemap/theme, focus fix, pop-up docking, zoom),
                       legend + pop-up helpers used by every map tab
-    basemaps.js       one basemap choice shared by every map (selector on each map's
-                      controls); follows the theme until a basemap is picked
+    tool-panels.js    the right-hand Map layers / Basemap / Legend panels: a button on each map
+                      opens its panel, only one open at a time
+    basemaps.js       one basemap choice shared by every map (gallery in the Basemap panel);
+                      follows the theme until a basemap is picked
     layers-panel.js   the right-hand "Map layers" panel on every map (closed by default):
-                      switches (shared between the maps), the Legend button's contents,
+                      switches (shared between the maps), the Legend panel's contents,
                       and the map's click handling (site panel / storm overflow / river pop-up)
     site-panel.js     the panel down the right of the map that opens when a site is
                       clicked, and the site's highlight on the map
