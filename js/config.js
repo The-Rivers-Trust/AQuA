@@ -55,9 +55,11 @@ export const AQUA = {
   siteFields: ["OBJECTID", "site_name", "Number", "case_study_group", "River_Waterbody", "Catchment", "OS_Grid_Ref", "Description", "Easting", "Northing"],
   // Everything a survey shows in the site panel (js/map/site-sections.js).
   citizenScienceFields: [
-    "OBJECTID", "site_name", "season_year", "field_date", "field_time",
+    "OBJECTID", "site_name", "season_year", "field_date", "field_time", "analysis_date", "analysis_time",
     "current_weather", "weather_last_24h", "water_flow", "water_level", "pollution_sources_combined",
     "phosphate_ppm", "phosphate_qa", "ecoli_cfu", "ecoli_qa",
+    // Control blanks (quality control): collected? what for? E. coli result and plate photo.
+    "qcb_collected", "qcb_analysis_status", "qcb_ecoli_cfu", "qcb_plate_photo",
     // Epicollect photo links (not every survey has all of them).
     "site_photo_1", "site_photo_2", "site_photo_3", "ecoli_plate_photo",
   ],
@@ -79,6 +81,13 @@ export const NO_DATA = { key: "noData", label: "No reading", color: "#8a8a8a" };
 // README, "Thresholds"). They're read once as the app starts (and checked:
 // a mistake in the file stops it with a message saying what's wrong).
 export const METRICS = await loadThresholds();
+
+// Quality control (the Data tab): an E. coli control blank is clean water
+// tested like a real sample, so it should grow nothing - more than this many
+// cfu is flagged.
+export const QUALITY_CONTROL = {
+  ecoliBlankMaxCfu: 0,
+};
 
 // Plain symbol colour for the "Sites" view (no metric selected).
 export const SITE_COLOR = "#009af2";

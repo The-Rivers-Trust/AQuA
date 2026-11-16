@@ -75,7 +75,8 @@ js/
                             in config.js
     metals-map.js           sites joined to lab metals results, sized by value, hollow
                             ring = below limit of detection, clickable legend filter
-    data-tab.js       placeholder for a table/summary view
+    data-tab.js       sites tested (by catchment) and quality assurance: control blank
+                      counts and the E. coli blanks' results with their plate photos
   utils/
     format.js         escapeHtml, formatNumber, formatDate
 data/                 any static data files (GeoJSON, lookups)
