@@ -169,13 +169,45 @@ function surveysSection(view) {
 
 const weatherPills = (text) => String(text ?? "").split(",").map((t) => t.trim()).filter(Boolean);
 
+// A date-only and a time-only field as one moment on the wall clock
+// ("2026-08-22" + "15:55:00"); null if either is missing. Both come from
+// the same place, so the gap between two of them is just their difference
+// in the browser's own clock.
+function wallClock(date, time) {
+  if (date == null || !time) return null;
+  const day = typeof date === "number" ? new Date(date).toISOString().slice(0, 10) : String(date).slice(0, 10);
+  const moment = new Date(`${day}T${String(time).slice(0, 8)}`);
+  return Number.isNaN(moment.getTime()) ? null : moment;
+}
+
+const dateAndTime = (date, time) => (date == null ? "" : [formatDate(date), time?.slice(0, 5)].filter(Boolean).join(", "));
+
+// Whole hours from collection to analysis, rounded to the nearest hour.
+function gapText(from, to) {
+  if (!from || !to || to < from) return null;
+  const hours = Math.round((to - from) / 3600000);
+  return hours === 0 ? "Under an hour" : `${hours} ${hours === 1 ? "hour" : "hours"}`;
+}
+
+// When the water sample was taken and when it was tested in the lab, and
+// how long it waited between the two.
+function sampleTimes(s) {
+  const collected = dateAndTime(s.field_date, s.field_time);
+  const analysed = dateAndTime(s.analysis_date, s.analysis_time);
+  const gap = gapText(wallClock(s.field_date, s.field_time), wallClock(s.analysis_date, s.analysis_time));
+  const el = document.createElement("dl");
+  el.className = "sampleTimes";
+  el.innerHTML = `
+    <div><dt>Sample collected</dt><dd>${escapeHtml(collected || "Not recorded")}</dd></div>
+    <div><dt>Sample analysed</dt><dd>${escapeHtml(analysed || "Not recorded")}</dd></div>
+    <div class="sampleGap"><dt>Time to analysis</dt><dd>${escapeHtml(gap ?? "–")}</dd></div>`;
+  return el;
+}
+
 function surveyCard(s) {
-  const when = [s.field_date && formatDate(s.field_date), s.field_time?.slice(0, 5)].filter(Boolean).join(" · ");
   const top = document.createElement("div");
   top.className = "surveyCardTop";
-  top.innerHTML = `
-    <span class="surveyDate">${escapeHtml(when || "Undated survey")}</span>
-    ${s.season_year ? `<span class="surveySeason">${escapeHtml(formatSeason(s.season_year))}</span>` : ""}`;
+  top.innerHTML = s.season_year ? `<span class="surveySeason">${escapeHtml(formatSeason(s.season_year))}</span>` : "";
 
   const body = document.createElement("div");
   const pills = weatherPills(s.current_weather);
@@ -191,7 +223,7 @@ function surveyCard(s) {
       ${readingRow("ecoli", s.ecoli_cfu, s.ecoli_qa)}
     </div>`;
 
-  const parts = [top, body, photoStrip(s)];
+  const parts = [top, sampleTimes(s), body, photoStrip(s)];
   // Free text, sometimes a paragraph - scrolled in its own small box.
   if (s.pollution_sources_combined) {
     const note = document.createElement("div");
@@ -207,16 +239,27 @@ function surveyCard(s) {
   return parts;
 }
 
+// The data's quality flag for a reading (phosphate_qa / ecoli_qa) is only
+// shown when it tells the reader something: a zero reading, or one above
+// the test's detection limit. The ordinary values ("OKAY", "DETECTED") and
+// "NOT COLLECTED" (the reading already says "No reading") are left out.
+const QA_FLAGS = {
+  "ZERO READING": { text: "Zero reading", hint: "The test read zero." },
+  "NO E.COLI DETECTED": { text: "Zero reading", hint: "No E. coli was detected." },
+  "AT UPPER LIMIT": { text: "Above detection limit", hint: "The reading was at the top of what the test can measure, so the true value may be higher." },
+};
+
 // A reading with the band it falls in (colour and name), as on the map.
 function readingRow(metricKey, value, qa) {
   const metric = METRICS[metricKey];
   const band = classify(metricKey, value);
+  const flag = QA_FLAGS[String(qa ?? "").trim().toUpperCase()];
   return `
     <div class="surveyReading">
       <span class="surveyReadingSwatch" style="background:${band.color}"></span>
       <span class="surveyReadingText">
         <span class="surveyReadingLabel">${escapeHtml(metric.label)}</span>
-        <span class="surveyReadingBand">${escapeHtml(band.label)}${qa ? ` · ${escapeHtml(qa.toLowerCase())}` : ""}</span>
+        <span class="surveyReadingBand">${escapeHtml(band.label)}${flag ? ` <span class="readingFlag" title="${escapeHtml(flag.hint)}">${escapeHtml(flag.text)}</span>` : ""}</span>
       </span>
       <span class="surveyReadingValue">${formatNumber(value, metric.decimals)}${value == null ? "" : `<small> ${escapeHtml(metric.unit)}</small>`}</span>
     </div>`;
