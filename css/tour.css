@@ -1,0 +1,202 @@
+/* =====================================================================
+   Guided tour (js/tour.js): a dimmed page with a spotlight and a card.
+   Not shown on phones.
+   ===================================================================== */
+
+/* The "?" button is for screens big enough for the tour. */
+@media (max-width: 720px) {
+  #tourButton,
+  .tourOffer {
+    display: none !important;
+  }
+}
+
+/* Blocks clicks on the page behind the tour. */
+.tourBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: transparent;
+}
+
+/* The target is left bright by a huge shadow around a box the size of it. */
+.tourSpotlight {
+  position: fixed;
+  z-index: 2001;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.62);
+  pointer-events: none;
+  transition: left 0.2s, top 0.2s, width 0.2s, height 0.2s;
+}
+
+.tourSpotlight[hidden] {
+  display: block; /* with no target, the whole page is just dimmed */
+  left: 50% !important;
+  top: 50% !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: 0;
+}
+
+.tourCard {
+  position: fixed;
+  z-index: 2002;
+  box-sizing: border-box;
+  width: min(360px, calc(100vw - 24px));
+  padding: var(--space-4);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-family);
+}
+
+.tourClose {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tourClose:hover {
+  color: var(--text-primary);
+  background: var(--surface-2);
+}
+
+.tourProgress {
+  margin: 0 0 var(--space-1);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.tourTitle {
+  margin: 0 0 var(--space-2);
+  font-size: 17px;
+}
+
+.tourText {
+  margin: 0 0 var(--space-4);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.tourActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tourDots {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  gap: 5px;
+}
+
+.tourDots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+}
+
+.tourDots i.isOn {
+  background: var(--accent);
+}
+
+.tourBtn {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tourBtn[hidden] {
+  display: none;
+}
+
+.tourBtn:hover {
+  border-color: var(--accent);
+}
+
+.tourBtn:focus-visible,
+.tourClose:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tourBtn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.tourBtn--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.tourBtn--quiet {
+  border-color: transparent;
+  background: none;
+  color: var(--text-secondary);
+}
+
+/* The first-visit offer */
+.tourOffer {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1500;
+  box-sizing: border-box;
+  width: min(290px, calc(100vw - 32px));
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  font-family: var(--font-family);
+}
+
+.tourOfferTitle {
+  margin: 0 0 2px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.tourOfferText {
+  margin: 0 0 var(--space-3);
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.tourOfferActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tourSpotlight {
+    transition: none;
+  }
+}

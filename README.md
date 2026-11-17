@@ -24,6 +24,8 @@ js/
                       data/thresholds.json via thresholds.js)
   thresholds.js       loads and checks data/thresholds.json
   metrics.js          classify(metric, value) → band, using the thresholds
+  tour.js             the guided tour (the "?" button in the header, offered once on a first visit;
+                      not on phones). Its wording is the STEPS list at the top; styles in css/tour.css
   shortcuts.js        keyboard shortcuts on the map tabs: R river network, F flow, S storm overflows, E EDM
   filters.js          header filters (season, group, catchment, river) shared by every tab;
                       site filters narrow left to right

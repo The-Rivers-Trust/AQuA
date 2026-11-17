@@ -19,6 +19,7 @@ import { initMetalsMap } from "./tabs/metals-map.js";
 import { initDownstreamPlots } from "./tabs/downstream-plots.js";
 import { initCatchmentSummaries } from "./tabs/catchment-summaries.js";
 import { initGroupsTab } from "./tabs/groups-tab.js";
+import { initTour } from "./tour.js";
 import { initDataTab } from "./tabs/data-tab.js";
 
 // data-view -> that tab's init.
@@ -149,3 +150,4 @@ filtersReady = initHeaderFilters();
 filtersReady.catch((error) => console.error("AQuA dashboard: filters failed to start:", error));
 initViewSwitching();
 startTab("map"); // the tab marked selected in index.html
+initTour(document.getElementById("tourButton"));
