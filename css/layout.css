@@ -1120,6 +1120,7 @@ body {
 
 /* How the picked catchment compares (catchment-table.js) */
 .compare {
+  max-width: 1100px; /* on a very wide screen the charts would just blow up */
   margin-bottom: var(--space-6);
 }
 
@@ -1866,10 +1867,10 @@ body {
   font-size: 9px;
 }
 
-/* Phone width: stack the details panel under the map. */
-@media (max-width: 720px) {
-  /* The site panel is a sheet over the lower part of the screen instead of
-     squeezing the map down to nothing. */
+/* Below laptop width (about 1180px) a map with the left panel AND the site
+   panel open would be squeezed to nothing, so the left panel moves under the
+   map and the site panel becomes a sheet over the lower part of the screen. */
+@media (max-width: 1180px) {
   .sitePanel {
     position: absolute;
     left: 0;
@@ -1882,13 +1883,6 @@ body {
     border-top: 1px solid var(--border);
     background: var(--bg-page);
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  /* On a phone the panel takes the map's width below the search box (it
-     covers the buttons; its own close icon closes it). */
-  .toolPanel {
-    right: 8px;
-    max-width: calc(100% - 16px);
   }
 
   .view--map {
@@ -1904,9 +1898,11 @@ body {
   .viewTabs {
     padding-inline: var(--space-2);
   }
+}
 
-  /* No room for the title next to three filters - the tab names and the
-     page title still say where you are. */
+/* Tablet widths: the logo and the "x of y sites" count give way to the four
+   filters, so the theme button stays on screen. */
+@media (max-width: 900px) {
   calcite-navigation-logo {
     display: none;
   }
@@ -1914,9 +1910,38 @@ body {
   .siteCount {
     display: none;
   }
+}
 
+/* Phone width */
+@media (max-width: 720px) {
+  /* The tool panel takes the map's width below the search box (it covers
+     the buttons; its own close icon closes it). */
+  .toolPanel {
+    right: 8px;
+    max-width: calc(100% - 16px);
+  }
+
+  /* The four filters share the screen width, leaving room for the theme
+     button and the reset icon, instead of keeping their own widths and
+     pushing the theme button off the screen. */
   .headerFilter {
+    flex: 0 1 auto;
+    width: calc((100vw - 150px) / 4);
     min-width: 0;
+  }
+
+  /* Reset filters shows just its icon here. */
+  #clearFilters {
+    flex: none;
+    width: 32px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 0;
+  }
+
+  /* The summary cards' legends may wrap on a narrow card. */
+  .summaryLegend {
+    flex-wrap: wrap;
   }
 }
 
