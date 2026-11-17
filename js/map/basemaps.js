@@ -22,6 +22,11 @@ const maps = new Set();
 
 const themeDefault = () => MAP.basemap[getTheme()];
 
+// The style id ("arcgis/topographic") of the basemap a map is showing. A
+// basemap a map made from an id string has an automatic internal id
+// ("...-basemap-3"), which is not the style id, so read the style.
+export const shownBasemapId = (mapEl) => mapEl.map?.basemap?.style?.id ?? mapEl.map?.basemap?.id;
+
 // The basemap id every map should be showing right now.
 export const currentBasemapId = () => choice ?? themeDefault();
 
@@ -63,7 +68,9 @@ export async function setupBasemap(mapEl) {
 // and stop following the theme. (Re-picking the basemap already showing
 // before choosing anything else therefore doesn't lock it in; harmless.)
 function pick(id) {
-  if (!id || id === choice) return;
+  // Only a real choice from the list: a gallery also reports the automatic
+  // ids of the basemaps maps are showing, which must never be stored.
+  if (!id || id === choice || !MAP.basemaps.includes(id)) return;
   if (choice === null && id === themeDefault()) return;
   choice = id;
   applyToAll();
@@ -72,7 +79,7 @@ function pick(id) {
 function applyToAll() {
   const id = currentBasemapId();
   for (const mapEl of maps) {
-    if (mapEl.map?.basemap?.id !== id) mapEl.basemap = id;
+    if (shownBasemapId(mapEl) !== id) mapEl.basemap = id;
   }
 }
 

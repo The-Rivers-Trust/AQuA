@@ -16,6 +16,7 @@
 // =====================================================================
 
 import { MAP, RIVER_NETWORK } from "../config.js";
+import { shownBasemapId } from "./basemaps.js";
 
 const FLOW_EXTRA_WIDTH = 3; // trail is a bit wider than the river line
 const FLOW_COLOR_ON_DARK = [255, 255, 255, 255]; // light trails on a dark basemap...
@@ -88,8 +89,8 @@ export async function addRiverNetwork(mapEl, index) {
 
   // The trail colour follows the basemap showing (theme switch or a pick
   // from the gallery); the trails are redrawn in the new colour.
-  const flowColor = () => (MAP.darkBasemaps.includes(mapEl.map.basemap?.id) ? FLOW_COLOR_ON_DARK : FLOW_COLOR_ON_LIGHT);
-  reactiveUtils.watch(() => mapEl.map.basemap?.id, () => { if (flow.visible) refresh(); });
+  const flowColor = () => (MAP.darkBasemaps.includes(shownBasemapId(mapEl)) ? FLOW_COLOR_ON_DARK : FLOW_COLOR_ON_LIGHT);
+  reactiveUtils.watch(() => shownBasemapId(mapEl), () => { if (flow.visible) refresh(); });
   reactiveUtils.when(() => view.stationary, refresh);
   // The network's tiles arrive a moment after the map settles - re-read
   // the segments once they have.

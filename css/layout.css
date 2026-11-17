@@ -2115,3 +2115,17 @@ calcite-segmented-control[width="full"] > calcite-segmented-control-item {
   margin: 0;
   font-size: 13px;
 }
+
+/* The basemap gallery outlines the chosen basemap with a bright blue border
+   that stays on after a pick. Its border colour is Calcite's "info" colour,
+   which is set to clear inside the gallery only; the chosen basemap keeps
+   its soft shaded background. */
+arcgis-basemap-gallery {
+  --calcite-color-status-info: transparent;
+}
+
+/* Clicking a basemap leaves the gallery itself focused, and it outlines its
+   whole box in blue. Only show that outline for keyboard use. */
+arcgis-basemap-gallery:focus:not(:focus-visible) {
+  outline: none;
+}
