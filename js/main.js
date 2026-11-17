@@ -10,6 +10,7 @@
 // entry in TAB_INITS below.
 // =====================================================================
 
+import "./arcgis-setup.js"; // the Esri API key, before anything uses a map
 import { initTheme } from "./theme.js";
 import { initFilters } from "./filters.js";
 import { initShortcuts } from "./shortcuts.js";
@@ -20,6 +21,7 @@ import { initDownstreamPlots } from "./tabs/downstream-plots.js";
 import { initCatchmentSummaries } from "./tabs/catchment-summaries.js";
 import { initGroupsTab } from "./tabs/groups-tab.js";
 import { initTour } from "./tour.js";
+import { initGroupLink, arrivedByGroupLink } from "./deep-link.js";
 import { initDataTab } from "./tabs/data-tab.js";
 
 // data-view -> that tab's init.
@@ -150,4 +152,5 @@ filtersReady = initHeaderFilters();
 filtersReady.catch((error) => console.error("AQuA dashboard: filters failed to start:", error));
 initViewSwitching();
 startTab("map"); // the tab marked selected in index.html
-initTour(document.getElementById("tourButton"));
+initGroupLink(filtersReady).catch((error) => console.error("AQuA dashboard: group link failed:", error));
+initTour(document.getElementById("tourButton"), { offer: !arrivedByGroupLink() });

@@ -6,7 +6,7 @@
 // band rows double as a filter (click to show only those bands).
 // Clicking a site opens a panel under the map (js/map/site-sections.js). The header filters
 // (js/filters.js) pick the season and narrow which sites are drawn and
-// counted. The League table button at the bottom right of the map slides
+// counted. The League table button among the buttons at the top right of the map slides
 // a league table of the same sites (js/tabs/league-table.js) up from the
 // bottom, taking the lower half of the map's space - same filters, legend
 // and band picks.
@@ -232,7 +232,7 @@ function setLeagueOpen(open) {
   state.leagueOpen = open;
   const { leagueButtonEl, leagueDrawerEl } = state.els;
   leagueDrawerEl.hidden = !open;
-  leagueButtonEl.kind = open ? "brand" : "neutral";
+  leagueButtonEl.active = open;
   leagueButtonEl.setAttribute("aria-expanded", String(open));
   if (open) renderLeague();
 }

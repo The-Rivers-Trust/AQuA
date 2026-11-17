@@ -24,6 +24,10 @@ js/
                       data/thresholds.json via thresholds.js)
   thresholds.js       loads and checks data/thresholds.json
   metrics.js          classify(metric, value) → band, using the thresholds
+  arcgis-setup.js     gives the ArcGIS SDK the Esri API key (ESRI_API_KEY in config.js; basemaps only,
+                      restricted to the site's addresses, expires 17 Nov 2027)
+  deep-link.js        ?group=<slug> in the address opens the Groups tab on that group, and the
+                      address follows the group filter (see "Organisation profiles")
   tour.js             the guided tour (the "?" button in the header, offered once on a first visit;
                       not on phones). Its wording is the STEPS list at the top; styles in css/tour.css
   shortcuts.js        keyboard shortcuts on the map tabs: R river network, F flow, S storm overflows, E EDM
@@ -116,7 +120,7 @@ The wording rules the model is given (public audience, no blame, no causes, no h
 
 ## Organisation profiles
 
-The **Groups** tab shows a card for every group and, once one is picked, a drill-down. Every organisation has the same profile, with three sections - **About**, **Catchment Concerns and Questions** and **Links and Socials** (website, Instagram, Bluesky, X, Facebook) - and all of it lives in one file, **`data/organisations.json`**. Entries are keyed by the group's name exactly as it is in the sites layer (e.g. `"River Foss Society"`) and every group already has an empty entry to fill in. Edit it on GitHub and commit; leave a field empty (`[]` or `null`) until it is known and that section is simply not shown. A group with nothing filled in shows its numbers and a "profile coming soon" note. Only the River Foss Society has one so far, and only its website and Instagram are filled in so far. The logos are in `img/social/` (from Simple Icons).
+The **Groups** tab shows a card for every group and, once one is picked, a drill-down. Every organisation has the same profile, with three sections - **About**, **Catchment Concerns and Questions** and **Links and Socials** (website, Instagram, Bluesky, X, Facebook) - and all of it lives in one file, **`data/organisations.json`**. Each group also has a `slug`, its short name in the group's shareable link: `https://<site>/?group=river-foss-society` opens the dashboard on the Groups tab with that group picked (the Groups tab has a Copy link button, and the address bar follows the group filter). Keep a slug fixed once it's been shared. Entries are keyed by the group's name exactly as it is in the sites layer (e.g. `"River Foss Society"`) and every group already has an empty entry to fill in. Edit it on GitHub and commit; leave a field empty (`[]` or `null`) until it is known and that section is simply not shown. A group with nothing filled in shows its numbers and a "profile coming soon" note. Only the River Foss Society has one so far, and only its website and Instagram are filled in so far. The logos are in `img/social/` (from Simple Icons).
 
 ## Thresholds
 

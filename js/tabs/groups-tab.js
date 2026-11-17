@@ -10,12 +10,11 @@
 // =====================================================================
 
 import { fetchSites } from "../data/aqua-service.js";
+import { fetchOrganisations, groupLink } from "../data/organisations.js";
 import { onFilterChange, getFilters, setSiteFilter } from "../filters.js";
 import { MAP, RIVER_NETWORK } from "../config.js";
 import { followBasemap } from "../map/basemaps.js";
 import { escapeHtml } from "../utils/format.js";
-
-const ORGANISATIONS_URL = "data/organisations.json";
 
 // The web / social links, in the order shown. Icons are in img/social/
 // (Simple Icons; the website globe is drawn to match).
@@ -56,12 +55,9 @@ export async function initGroupsTab({ containerEl: el }) {
   containerEl = el;
   containerEl.innerHTML = `<p class="muted">Loading…</p>`;
   try {
-    const [siteFeatures, response] = await Promise.all([
-      fetchSites(),
-      fetch(ORGANISATIONS_URL, { cache: "no-cache" }),
-    ]);
+    const [siteFeatures, orgs] = await Promise.all([fetchSites(), fetchOrganisations()]);
     sites = siteFeatures.map((f) => ({ ...f.attributes, geometry: f.geometry })); // WGS84 points, for the small map
-    if (response.ok) organisations = (await response.json()).organisations ?? {};
+    organisations = orgs;
   } catch (error) {
     console.warn("AQuA dashboard: groups tab unavailable:", error);
     containerEl.innerHTML = `<h2>Groups</h2><p class="muted">The groups couldn't be loaded just now. Please try again later.</p>`;
@@ -79,7 +75,10 @@ export async function initGroupsTab({ containerEl: el }) {
           <h3 id="groupDetailHeading" data-title></h3>
           <p class="groupDetailSub" data-sub></p>
         </div>
-        <calcite-button appearance="outline" kind="neutral" scale="s" icon-start="x" data-clear-group>Back to all groups</calcite-button>
+        <div class="groupDetailButtons">
+          <calcite-button appearance="outline" kind="neutral" scale="s" icon-start="link" data-copy-link>Copy link</calcite-button>
+          <calcite-button appearance="outline" kind="neutral" scale="s" icon-start="x" data-clear-group>Back to all groups</calcite-button>
+        </div>
       </div>
       <div class="groupBody">
         <div class="groupProfile" data-profile></div>
@@ -100,10 +99,29 @@ export async function initGroupsTab({ containerEl: el }) {
     }
     if (event.target.closest("[data-clear-group]")) {
       setSiteFilter("group", null);
+      return;
     }
+    const copy = event.target.closest("[data-copy-link]");
+    if (copy) copyGroupLink(copy);
   });
   onFilterChange(render);
+  // Arriving with a group already picked (from a link): bring its profile into view.
+  scrollToDetail = Boolean(getFilters().group);
   render();
+}
+
+// The picked group's shareable address (?group=...) onto the clipboard.
+async function copyGroupLink(button) {
+  const name = getFilters().group;
+  if (!name) return;
+  let label = "Link copied";
+  try {
+    await navigator.clipboard.writeText(groupLink(name, organisations));
+  } catch (error) {
+    label = "Couldn't copy"; // clipboard not allowed here
+  }
+  button.textContent = label;
+  setTimeout(() => { button.textContent = "Copy link"; }, 2000);
 }
 
 // ---------------------------------------------------------------------
@@ -184,9 +202,13 @@ async function ensureMiniMap() {
   // resized, layout switching between side-by-side and stacked) the sites
   // are fitted again.
   let timer = null;
+  // A hidden tab gives the map no size; fitting then would zoom it out a
+  // step each time the tab is left and reopened, so only fit when it has one.
   new ResizeObserver(() => {
     clearTimeout(timer);
-    timer = setTimeout(() => mini.fit?.(), 150);
+    timer = setTimeout(() => {
+      if (mapEl.clientWidth > 50 && mapEl.clientHeight > 50) mini.fit?.();
+    }, 150);
   }).observe(mapEl);
   return mini;
 }
@@ -216,7 +238,7 @@ async function showSites(groupName) {
   });
   mini.fit = () => mapEl.goTo(
     // A single site has a zero-size extent, so zoom to it instead of fitting.
-    groupSites.length === 1 ? { target: extent.center, zoom: 13 } : extent.expand(1.2),
+    groupSites.length === 1 ? { target: extent.center, zoom: 13 } : extent.clone().expand(1.2), // clone: expand() changes the extent it is called on
     { animate: false }
   );
   await mini.fit();

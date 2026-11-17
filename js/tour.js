@@ -26,7 +26,7 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const visibleView = () => $(".view:not([hidden])");
 const tabTitle = (view) => () => $(`calcite-tab-title[data-view="${view}"]`);
 const mapButtons = () => {
-  const els = [".basemapAction", ".layersAction", ".legendAction"].map((s) => $(s, visibleView())).filter(Boolean);
+  const els = [".basemapAction", ".layersAction", ".legendAction", "#leagueButton"].map((s) => $(s, visibleView())).filter(Boolean);
   if (!els.length) return null;
   const rects = els.map((e) => e.getBoundingClientRect());
   return {
@@ -115,7 +115,7 @@ const STEPS = [
     target: mapButtons,
     placement: "left",
     title: "Change the map",
-    body: "Use these buttons to open the background map choice (for example aerial imagery), add contextual layers (for example land use), and view the legend.",
+    body: "Use these buttons to open the background map choice (for example aerial imagery), add contextual layers (for example land use), view the legend, and open the league table that ranks the sites.",
   },
   {
     tab: "map",
@@ -342,8 +342,9 @@ function offerTour() {
 }
 
 // Wires the header button and, after a pause for the page to settle,
-// makes the first-visit offer.
-export function initTour(buttonEl) {
+// makes the first-visit offer (offer: false skips it - for someone who
+// arrived on a group's link and has somewhere to be already).
+export function initTour(buttonEl, { offer = true } = {}) {
   buttonEl?.addEventListener("click", startTour);
-  setTimeout(offerTour, 2500);
+  if (offer) setTimeout(offerTour, 2500);
 }

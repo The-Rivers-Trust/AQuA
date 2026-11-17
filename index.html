@@ -99,9 +99,8 @@
               <calcite-action class="mapAction basemapAction" slot="top-right" icon="basemap" text="Basemap" title="Basemap"></calcite-action>
               <calcite-action class="mapAction layersAction" slot="top-right" icon="layers" text="Map layers" title="Map layers: backgrounds, river network, storm overflows"></calcite-action>
               <calcite-action class="mapAction legendAction" slot="top-right" icon="legend" text="Legend" title="Legend"></calcite-action>
+              <calcite-action id="leagueButton" class="mapAction" slot="top-right" icon="table" text="League table" title="League table: rank the sites" aria-expanded="false" aria-controls="csLeagueDrawer"></calcite-action>
               <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
-              <calcite-button id="leagueButton" class="mapButton" slot="bottom-right" icon-start="table" scale="s"
-                appearance="solid" kind="neutral" aria-expanded="false" aria-controls="csLeagueDrawer">League table</calcite-button>
             </arcgis-map>
               <!-- Right-hand tool panels, closed until their button on the map is pressed; one open at a time (js/map/tool-panels.js). -->
               <calcite-panel class="toolPanel layersPanel" heading="Map layers" closable closed></calcite-panel>

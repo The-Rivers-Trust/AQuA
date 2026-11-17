@@ -15,7 +15,7 @@
 
 import { METRICS } from "../config.js";
 import { fetchSites, fetchCitizenScience } from "../data/aqua-service.js";
-import { onFilterChange, matchesFilters, getFilters, getSeason } from "../filters.js";
+import { onFilterChange, matchesFilters, getFilters, getSeason, setSiteFilter } from "../filters.js";
 import { escapeHtml, formatDate, formatSeason } from "../utils/format.js";
 import { computeCatchments, catchmentTableHtml, comparisonHtml, sortCatchmentsBy } from "./catchment-table.js";
 
@@ -48,7 +48,15 @@ export async function initCatchmentSummaries({ containerEl: el }) {
   // Sorting the catchment table redraws just the table, in place.
   containerEl.addEventListener("click", (event) => {
     const header = event.target.closest("th[data-sort]");
-    if (header) resortTable(header.dataset.sort);
+    if (header) { resortTable(header.dataset.sort); return; }
+    const card = event.target.closest("[data-catchment]");
+    if (card) {
+      const name = card.dataset.catchment;
+      const same = getFilters().catchment === name;
+      setSiteFilter("catchment", same ? null : name);
+      return;
+    }
+    if (event.target.closest("[data-clear-catchment]")) { setSiteFilter("catchment", null); return; }
   });
   containerEl.addEventListener("keydown", (event) => {
     const header = event.target.closest?.("th[data-sort]");
@@ -62,6 +70,25 @@ export async function initCatchmentSummaries({ containerEl: el }) {
 }
 
 let catchmentRows = [];
+
+// A card for every catchment (with its site count); picking one is the
+// same as picking it in the header.
+function catchmentCardsHtml(selected) {
+  const counts = new Map();
+  for (const a of siteAttributes) if (a.Catchment) counts.set(a.Catchment, (counts.get(a.Catchment) ?? 0) + 1);
+  const cards = [...counts.keys()].sort((a, b) => a.localeCompare(b, "en-GB")).map((name) => {
+    const n = counts.get(name);
+    return `<button type="button" class="groupCard${name === selected ? " groupCard--selected" : ""}" data-catchment="${escapeHtml(name)}" aria-pressed="${name === selected}">
+      <span class="groupCardName">${escapeHtml(name)} Catchment</span>
+      <span class="groupCardSites">${n} ${n === 1 ? "site" : "sites"}</span>
+    </button>`;
+  }).join("");
+  const buttons = selected ? `<div class="groupDetailButtons catchmentButtons">
+      <calcite-button appearance="outline" kind="neutral" scale="s" icon-start="x" data-clear-catchment>Back to all catchments</calcite-button>
+    </div>` : "";
+  return `<p class="summaryIntro">Select a catchment below to see how it compares with the others.</p>
+    <div class="groupGrid">${cards}</div>${buttons}`;
+}
 
 function resortTable(field) {
   sortCatchmentsBy(field);
@@ -92,6 +119,7 @@ function render() {
   const selected = getFilters().catchment;
   catchmentRows = computeCatchments(siteAttributes, records, season);
   const overview = `
+    ${catchmentCardsHtml(selected)}
     ${comparisonHtml(catchmentRows, selected)}
     <section class="dataSection" aria-labelledby="catchmentTableHeading">
       <h3 id="catchmentTableHeading">All catchments</h3>

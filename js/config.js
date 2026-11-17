@@ -10,6 +10,10 @@ import { loadThresholds } from "./thresholds.js";
 
 export const APP_TITLE = "AQuA Dashboard";
 
+// API key for Esri's basemaps (see arcgis-setup.js). Restricted to the
+// dashboard's addresses and to basemaps only; expires 17 November 2027.
+export const ESRI_API_KEY = "AAPTa4Dr7Prp06xEJJyNAF8iYNw..bhHP0JLlWss1dLoTjxm-X4zzwRFjbw1fjvXUHkEWUfvbQ-reLPOPR9IPwcrcn98YFFtWELd4FLD6dzp6hZgY7zwsbm__AyAgJBNhgtMDY_Vfug5hqhcvTtKctqb55XxajGZS4BLH6RFV4vCQ__4aD8l-xMctV3LugQWIRuRmlE0o3Cll8KzCZeG9YHJFUUcAyqQ8cOH2EfxoVzzRKvCxSJCzdGapAvwe9M6UbNaB0s_v58GwZiswAT1_F5XDHbU9";
+
 export const MAP = {
   // Roughly centred on Yorkshire.
   center: [-1.4, 54.0],
@@ -17,24 +21,24 @@ export const MAP = {
   // Starting basemap, following the dark/light theme until the user picks
   // one from the basemap selector.
   basemap: {
-    dark: "dark-gray-vector",
-    light: "gray-vector",
+    dark: "arcgis/dark-gray",
+    light: "arcgis/light-gray",
   },
-  // The selector's choices, in gallery order: Esri basemap ids (all load
-  // without an API key; the gallery shows Esri's own name and thumbnail
+  // The selector's choices, in gallery order: Esri basemap style ids (they
+  // need the API key above; the gallery shows Esri's own name and thumbnail
   // for each). Keep the two theme defaults above in the list.
   // The basemaps that are dark: the river flow trails are drawn white on
   // these and dark on every other (light) one.
-  darkBasemaps: ["dark-gray-vector", "satellite", "hybrid"],
+  darkBasemaps: ["arcgis/dark-gray", "arcgis/imagery", "arcgis/imagery/standard"],
   basemaps: [
-    "gray-vector",
-    "dark-gray-vector",
-    "streets-vector",
-    "topo-vector",
-    "terrain",
-    "osm",
-    "satellite",
-    "hybrid",
+    "arcgis/light-gray",
+    "arcgis/dark-gray",
+    "arcgis/streets",
+    "arcgis/topographic",
+    "arcgis/terrain",
+    "arcgis/outdoor",
+    "arcgis/imagery",
+    "arcgis/imagery/standard",
   ],
 };
 

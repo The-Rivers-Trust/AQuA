@@ -218,7 +218,7 @@ function compareMetric(rows, row, key) {
 // header (null when none is).
 export function comparisonHtml(rows, selected) {
   if (!selected) {
-    return `<p class="muted compareHint">Pick a catchment in the filters at the top to see how it compares with the others.</p>`;
+    return "";
   }
   const row = rows.find((r) => r.catchment === selected);
   if (!row) return "";

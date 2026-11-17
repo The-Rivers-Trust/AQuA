@@ -46,7 +46,7 @@ export async function setupBasemap(mapEl) {
   if (!gallery) return;
   gallery.source = new LocalBasemapsSource({
     basemaps: MAP.basemaps.map((id) => {
-      const basemap = Basemap.fromId(id);
+      const basemap = new Basemap({ style: { id } }); // Esri basemap style, e.g. "arcgis/topographic"
       basemap.id = id; // the gallery reports a pick by this id
       return basemap;
     }),

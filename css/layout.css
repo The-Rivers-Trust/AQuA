@@ -131,7 +131,7 @@ body {
   top: 64px;
   right: 64px;
   /* a calcite-panel sets its own 100% height, so top + bottom won't do */
-  height: calc(100% - 124px); /* leaves the bottom row (League table button, scale bar, attribution) clear */
+  height: calc(100% - 124px); /* leaves the bottom row (scale bar, attribution) clear */
   width: 380px;
   max-width: calc(100% - 76px);
   z-index: 5;
@@ -1350,7 +1350,7 @@ body {
 /* ---- Groups tab (js/tabs/groups-tab.js) ---- */
 .groupGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
   gap: var(--space-3);
   margin-bottom: var(--space-6);
 }
@@ -1361,15 +1361,25 @@ body {
   grid-auto-rows: 1fr;
 }
 
+/* On a wide screen, all the cards on one row (text wraps inside each). */
+@media (min-width: 1180px) {
+  .groupGrid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+}
+
 .groupCard {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  min-height: 132px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
   background: var(--surface-1);
   color: var(--text-primary);
   border: 1px solid var(--border);
@@ -1395,18 +1405,17 @@ body {
 }
 
 .groupCardName {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
 }
 
 .groupCardWhere {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .groupCardSites {
-  margin-top: var(--space-1);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -1483,6 +1492,17 @@ body {
   flex-wrap: wrap;
   gap: var(--space-3);
   margin-bottom: var(--space-3);
+}
+
+.catchmentButtons {
+  justify-content: flex-end;
+  margin-bottom: var(--space-3);
+}
+
+.groupDetailButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 
 .groupDetailHead h3 {
@@ -1737,7 +1757,7 @@ body {
 
 /* ---- League table (Citizen Science tab): a drawer taking the lower half
    of the map's column (the map shrinks to the upper half), opened by the
-   League table button at the map's bottom right ---- */
+   League table button, with the map buttons at its top right ---- */
 .leagueDrawer {
   position: relative;
   flex: 0 0 50%;
