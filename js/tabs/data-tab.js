@@ -1,22 +1,19 @@
 // =====================================================================
-// DATA TAB
-// Two sections, for the season and sites picked in the header:
-//   1. Sites tested - how many of the sites were sampled, and how many
-//      phosphate and E. coli tests that gave, by catchment.
-//   2. Quality assurance - the control blanks. Some samples are chosen for
-//      a control blank: clean water handled like a real sample, to check
-//      the kit and the process haven't added contamination. A blank can be
-//      for E. coli, for organic contaminants, or both. The E. coli blanks'
-//      results (expected: 0 cfu) and their plate photos are shown here; the
-//      organic contaminant blanks are only counted until their results are
-//      available.
+// QUALITY ASSURANCE TAB
+// The control blanks, for the season and sites picked in the header. Some
+// samples are chosen for a control blank: clean water handled like a real
+// sample, to check the kit and the process haven't added contamination. A
+// blank can be for E. coli, for organic contaminants, or both. The E. coli
+// blanks' results (expected: 0 cfu) and their plate photos are shown here;
+// the organic contaminant blanks are only counted until their results are
+// available.
 // =====================================================================
 
-import { METRICS, QUALITY_CONTROL } from "../config.js";
+import { QUALITY_CONTROL } from "../config.js";
 import { fetchSites, fetchCitizenScience, recordsBySite } from "../data/aqua-service.js";
 import { onFilterChange, matchesFilters, getSeason } from "../filters.js";
 import { openPhotos } from "../map/photo-viewer.js";
-import { escapeHtml, formatDate, formatNumber, formatSeason } from "../utils/format.js";
+import { escapeHtml, formatDate } from "../utils/format.js";
 
 let sites = [];
 let records = [];
@@ -32,22 +29,13 @@ export async function initDataTab({ containerEl: el }) {
       fetchCitizenScience(),
     ]);
   } catch (error) {
-    console.warn("AQuA dashboard: data tab unavailable:", error);
-    containerEl.innerHTML = `<h2>Data</h2><p class="muted">The data couldn't be loaded just now. Please try again later.</p>`;
+    console.warn("AQuA dashboard: quality assurance tab unavailable:", error);
+    containerEl.innerHTML = `<h2>Quality Assurance</h2><p class="muted">The data couldn't be loaded just now. Please try again later.</p>`;
     return;
   }
   containerEl.addEventListener("click", (event) => {
     const button = event.target.closest("[data-blank]");
     if (button) openBlankPhoto(Number(button.dataset.blank));
-    const header = event.target.closest("th[data-sort]");
-    if (header) sortCatchments(header.dataset.sort);
-  });
-  containerEl.addEventListener("keydown", (event) => {
-    const header = event.target.closest?.("th[data-sort]");
-    if (header && (event.key === "Enter" || event.key === " ")) {
-      event.preventDefault();
-      sortCatchments(header.dataset.sort);
-    }
   });
   onFilterChange(render);
   render();
@@ -59,110 +47,13 @@ const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 function render() {
   const season = getSeason();
-  const inFilters = sites.filter(matchesFilters);
   const bySite = recordsBySite(records, season);
-  const surveys = inFilters.filter((s) => bySite.has(s.site_name)).map((s) => ({ site: s, record: bySite.get(s.site_name) }));
+  const surveys = sites
+    .filter(matchesFilters)
+    .filter((s) => bySite.has(s.site_name))
+    .map((s) => ({ site: s, record: bySite.get(s.site_name) }));
 
-  containerEl.innerHTML = `
-    <h2>Data</h2>
-    <p class="dataIntro">What was tested in ${escapeHtml(formatSeason(season) || "the chosen season")}, and the checks that show the results can be trusted. It follows the filters at the top.</p>
-    ${sitesTestedHtml(inFilters, surveys)}
-    ${qualityAssuranceHtml(surveys)}`;
-}
-
-// ---------------------------------------------------------------------
-// 1. Sites tested
-// ---------------------------------------------------------------------
-
-// The catchment table's columns. Averages are the mean of the readings
-// from the sites tested in that catchment.
-const CATCHMENT_COLUMNS = [
-  { field: "catchment", label: "Catchment", type: "text" },
-  { field: "sites", label: "Sites", type: "number" },
-  { field: "tested", label: "Sites tested", type: "number" },
-  { field: "phosphateTests", label: "Phosphate tests", type: "number" },
-  { field: "ecoliTests", label: "E. coli tests", type: "number" },
-  { field: "phosphateAverage", label: `Average phosphate (${METRICS.phosphate.unit})`, type: "number", decimals: METRICS.phosphate.decimals },
-  { field: "ecoliAverage", label: `Average E. coli (${METRICS.ecoli.unit})`, type: "number", decimals: 1 },
-];
-
-let catchmentRows = [];
-let catchmentSort = { field: "catchment", direction: "asc" };
-
-const mean = (values) => (values.length ? values.reduce((sum, v) => sum + Number(v), 0) / values.length : null);
-
-function sitesTestedHtml(inFilters, surveys) {
-  const phosphate = surveys.filter((x) => x.record.phosphate_ppm != null).length;
-  const ecoli = surveys.filter((x) => x.record.ecoli_cfu != null).length;
-  const catchments = new Set(surveys.map((x) => x.site.Catchment));
-
-  catchmentRows = [...new Set(inFilters.map((s) => s.Catchment))].map((catchment) => {
-    const tested = surveys.filter((x) => x.site.Catchment === catchment);
-    const phosphateValues = tested.map((x) => x.record.phosphate_ppm).filter((v) => v != null);
-    const ecoliValues = tested.map((x) => x.record.ecoli_cfu).filter((v) => v != null);
-    return {
-      catchment: catchment ?? "–",
-      sites: inFilters.filter((s) => s.Catchment === catchment).length,
-      tested: tested.length,
-      phosphateTests: phosphateValues.length,
-      ecoliTests: ecoliValues.length,
-      phosphateAverage: mean(phosphateValues),
-      ecoliAverage: mean(ecoliValues),
-    };
-  });
-
-  return `
-    <section class="dataSection" aria-labelledby="sitesTestedHeading">
-      <h3 id="sitesTestedHeading">Sites tested</h3>
-      <div class="dataStats">
-        ${stat(`${surveys.length}<small> of ${inFilters.length}</small>`, "Sites tested")}
-        ${stat(catchments.size, catchments.size === 1 ? "Catchment covered" : "Catchments covered")}
-        ${stat(phosphate, "Phosphate tests")}
-        ${stat(ecoli, "E. coli tests")}
-      </div>
-      <div class="dataTableScroll" id="catchmentTable">${catchmentTableHtml()}</div>
-    </section>`;
-}
-
-// The table, sorted by the chosen column (text A-Z, numbers highest first
-// to begin with; click a header again to flip). A catchment with no
-// average (no readings) always sorts last.
-function catchmentTableHtml() {
-  if (!catchmentRows.length) return `<p class="muted">No sites match the current filters.</p>`;
-  const { field, direction } = catchmentSort;
-  const sorted = catchmentRows.slice().sort((a, b) => {
-    const missingA = a[field] == null;
-    const missingB = b[field] == null;
-    if (missingA || missingB) return missingA === missingB ? 0 : missingA ? 1 : -1;
-    const cmp = typeof a[field] === "string" ? byName(a[field], b[field]) : a[field] - b[field];
-    return (direction === "asc" ? cmp : -cmp) || byName(a.catchment, b.catchment);
-  });
-
-  const header = CATCHMENT_COLUMNS.map((col) => {
-    const active = col.field === field;
-    const ariaSort = active ? (direction === "asc" ? "ascending" : "descending") : "none";
-    return `<th data-sort="${col.field}" tabindex="0" role="button" aria-sort="${ariaSort}">${escapeHtml(col.label)}${active ? `<span class="sortArrow" aria-hidden="true">${direction === "asc" ? " ▲" : " ▼"}</span>` : ""}</th>`;
-  }).join("");
-
-  const body = sorted.map((row) => `<tr>${CATCHMENT_COLUMNS.map((col, i) => {
-    const value = row[col.field];
-    const text = value == null ? "–" : col.decimals != null ? formatNumber(value, col.decimals) : value;
-    return i === 0 ? `<th scope="row">${escapeHtml(text)}</th>` : `<td>${escapeHtml(text)}</td>`;
-  }).join("")}</tr>`).join("");
-
-  return `<table class="dataTable dataTable--equal"><thead><tr>${header}</tr></thead><tbody>${body}</tbody></table>`;
-}
-
-function sortCatchments(field) {
-  // A new column starts highest first for numbers, A-Z for text; clicking
-  // the same column again flips it.
-  const column = CATCHMENT_COLUMNS.find((c) => c.field === field);
-  catchmentSort = catchmentSort.field === field
-    ? { field, direction: catchmentSort.direction === "asc" ? "desc" : "asc" }
-    : { field, direction: column.type === "number" ? "desc" : "asc" };
-  const holder = containerEl.querySelector("#catchmentTable");
-  holder.innerHTML = catchmentTableHtml();
-  holder.querySelector(`th[data-sort="${field}"]`)?.focus();
+  containerEl.innerHTML = qualityAssuranceHtml(surveys);
 }
 
 function stat(value, label, tone = "") {
@@ -170,7 +61,7 @@ function stat(value, label, tone = "") {
 }
 
 // ---------------------------------------------------------------------
-// 2. Quality assurance: control blanks
+// Quality assurance: control blanks
 // ---------------------------------------------------------------------
 
 // A control blank's status field lists what it was collected for, e.g.
@@ -204,7 +95,7 @@ function qualityAssuranceHtml(surveys) {
 
   return `
     <section class="dataSection" aria-labelledby="qaHeading">
-      <h3 id="qaHeading">Quality assurance</h3>
+      <h2 id="qaHeading">Quality Assurance</h2>
       <p class="dataExplain">Some samples are chosen for a <strong>control blank</strong>: clean water that is collected and tested in the same way as a real sample. If anything grows or is detected in a blank, the kit or the way samples were handled may have added contamination, so a good blank gives confidence in the real results. A blank can be for <strong>E. coli</strong>, for <strong>organic contaminants</strong>, or both.</p>
       <div class="dataStats">
         ${stat(`${blanks.length}<small> of ${surveys.length}</small>`, "Samples with a control blank")}

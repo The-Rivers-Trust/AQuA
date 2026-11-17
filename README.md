@@ -36,8 +36,8 @@ js/
   map/
     map-common.js     shared map setup (basemap/theme, focus fix, pop-up docking, zoom),
                       legend + pop-up helpers used by every map tab
-    tool-panels.js    the right-hand Map layers / Basemap / Legend panels: a button on each map
-                      opens its panel, only one open at a time
+    tool-panels.js    the Map layers / Basemap / Legend panels: a button on each map opens its
+                      panel over the map (the map and buttons don't move), only one open at a time
     basemaps.js       one basemap choice shared by every map (gallery in the Basemap panel);
                       follows the theme until a basemap is picked
     layers-panel.js   the right-hand "Map layers" panel on every map (closed by default):
@@ -61,6 +61,10 @@ js/
     league-table.js         sortable site league table (phosphate + E. coli readings)
     catchment-summaries.js  AI-assisted catchment summaries read from data/catchment-summaries.json
                             (approved ones only; add ?drafts to the address to review the rest)
+    catchment-table.js      the all-catchments table (sortable) on that tab; the catchment picked in
+                            the header is highlighted and a panel shows how it ranks against the others
+    groups-tab.js           a card per citizen science group (with its site count), and the picked
+                            group's profile from data/organisations.json, with a static map of its sites over the Open River Network
     downstream-plots.js     one chart per catchment, sites upstream -> downstream by the
                             sites layer's Number field; phosphate, E. coli or any metal
   charts/
@@ -75,8 +79,8 @@ js/
                             in config.js
     metals-map.js           sites joined to lab metals results, sized by value, hollow
                             ring = below limit of detection, clickable legend filter
-    data-tab.js       sites tested (by catchment) and quality assurance: control blank
-                      counts and the E. coli blanks' results with their plate photos
+    data-tab.js       the Quality Assurance tab: control blank counts and the E. coli
+                      blanks' results with their plate photos
   utils/
     format.js         escapeHtml, formatNumber, formatDate
 data/                 any static data files (GeoJSON, lookups)
@@ -95,7 +99,7 @@ Add an entry to `LAYERS` in `js/config.js` with an `id`, `title` and `url`. It'l
 
 ## Catchment summaries
 
-The **Catchment Summaries** tab shows a short plain-English summary of each catchment's citizen science results for the season picked in the header. The text is written ahead of time with AI and checked by a person before the public sees it - nothing is generated while someone is using the dashboard, and no API key is ever in the browser.
+The **Catchment Explorer** tab (the summaries, the all-catchments table and the comparison panel) shows a short plain-English summary of each catchment's citizen science results for the season picked in the header. The text is written ahead of time with AI and checked by a person before the public sees it - nothing is generated while someone is using the dashboard, and no API key is ever in the browser.
 
 Each new season:
 
@@ -107,6 +111,10 @@ Each new season:
 Each summary also has a **metals** note (the lab results, which have no season) with its own `"approved"` flag inside `"metals"` - review and approve it the same way. The metals have no agreed thresholds yet and their units aren't confirmed in the data, so the note only says what was detected and where the highest results were, never whether they are high or safe.
 
 The wording rules the model is given (public audience, no blame, no causes, no health advice, only the supplied numbers) are in `scripts/generate-catchment-summaries.mjs`.
+
+## Organisation profiles
+
+The **Groups** tab shows a card for every group and, once one is picked, a drill-down. Every organisation has the same profile, with three sections - **About**, **Catchment Concerns and Questions** and **Links and Socials** (website, Instagram, Bluesky, X, Facebook) - and all of it lives in one file, **`data/organisations.json`**. Entries are keyed by the group's name exactly as it is in the sites layer (e.g. `"River Foss Society"`) and every group already has an empty entry to fill in. Edit it on GitHub and commit; leave a field empty (`[]` or `null`) until it is known and that section is simply not shown. A group with nothing filled in shows its numbers and a "profile coming soon" note. Only the River Foss Society has one so far, and only its website and Instagram are filled in so far. The logos are in `img/social/` (from Simple Icons).
 
 ## Thresholds
 

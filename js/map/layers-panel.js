@@ -27,12 +27,12 @@
 // its own site layer, so these sit underneath the sites.
 // =====================================================================
 
-import { WFD_CATCHMENTS, RIVER_NETWORK, EDM_2025 } from "../config.js";
+import { WFD_CATCHMENTS, RIVER_NETWORK, EDM_2025, SOIL_MAP, LAND_COVER } from "../config.js";
 import { escapeHtml } from "../utils/format.js";
 import { addRiverNetwork } from "./river-network.js";
 import { isSiteLayer, hasSitePanel, selectSite } from "./site-panel.js";
 import {
-  createWfdLayer, wfdRenderer, wfdTitle, createSoilLayer, createStormOverflowLayers, createEdmLayer,
+  createLandCoverLayer, createWfdLayer, wfdRenderer, wfdTitle, createSoilLayer, createStormOverflowLayers, createEdmLayer,
   riverPopupTemplate, RIVER_POPUP_FIELDS,
 } from "./contextual-layers.js";
 
@@ -44,20 +44,22 @@ const state = {
   wfd: false,
   wfdField: WFD_CATCHMENTS.fields[0].field,
   soil: false,
+  landcover: false,
   network: false,
   flow: false, // animated flow direction (needs the network)
   storm: false,
   recent: false, // storm overflows: only discharging / discharged lately
   edm: false,
 };
+const BACKGROUNDS = ["wfd", "soil", "landcover"];
 const maps = new Set(); // each map's { apply, view, canFlow }
 
 // A switch changed in one panel: update the shared state, keep it
 // consistent, and have every map follow.
 function change(patch) {
   Object.assign(state, patch);
-  if (patch.wfd === true) state.soil = false; // backgrounds: one at a time
-  if (patch.soil === true) state.wfd = false;
+  // backgrounds: one at a time
+  for (const key of BACKGROUNDS) if (patch[key] === true) for (const other of BACKGROUNDS) if (other !== key) state[other] = false;
   if (patch.network === false) state.flow = false;
   if (patch.flow === true) state.network = true;
   maps.forEach((m) => m.apply());
@@ -68,7 +70,11 @@ function change(patch) {
 // ---------------------------------------------------------------------
 
 // The keys that switch overlays (js/shortcuts.js) are noted in the rows.
-const DESCRIPTIONS = { network: "Width by stream order · key R", soil: "Soilscapes, LandIS" };
+const DESCRIPTIONS = {
+  network: "Width by stream order · key R",
+  soil: "Soilscapes, LandIS",
+  landcover: "UKCEH, 10 m, Great Britain",
+};
 const ZOOM_IN = "Zoom in to view";
 const FLOW_LABEL = "Animate flow direction (key F)";
 
@@ -91,6 +97,9 @@ function panelMarkup() {
           </calcite-list-item>
           <calcite-list-item data-soil-item label="National Soil Map" description="${DESCRIPTIONS.soil}">
             <calcite-switch slot="content-end" data-soil scale="s" label="National Soil Map"></calcite-switch>
+          </calcite-list-item>
+          <calcite-list-item data-landcover-item label="${escapeHtml(LAND_COVER.title)}" description="${DESCRIPTIONS.landcover}">
+            <calcite-switch slot="content-end" data-landcover scale="s" label="${escapeHtml(LAND_COVER.title)}"></calcite-switch>
           </calcite-list-item>
         </calcite-list-item-group>
 
@@ -131,14 +140,14 @@ export async function setupLayersPanel(mapEl) {
   if (!panel) return;
 
   const [reactiveUtils] = await $arcgis.import(["@arcgis/core/core/reactiveUtils.js"]);
-  const [soil, wfd, storm, edm] = await Promise.all([createSoilLayer(), createWfdLayer(), createStormOverflowLayers(), createEdmLayer()]);
+  const [soil, wfd, landcover, storm, edm] = await Promise.all([createSoilLayer(), createWfdLayer(), createLandCoverLayer(), createStormOverflowLayers(), createEdmLayer()]);
 
   // Bottom to top: backgrounds, river network (+ flow), EDM, storm overflows -
   // all under whatever the tab adds afterwards (the sites).
-  mapEl.map.addMany([soil, wfd], 0);
-  const { network, flow } = await addRiverNetwork(mapEl, 2);
-  mapEl.map.add(edm, flow ? 4 : 3);
-  mapEl.map.addMany(storm.layers, flow ? 5 : 4);
+  mapEl.map.addMany([landcover, soil, wfd], 0);
+  const { network, flow } = await addRiverNetwork(mapEl, 3);
+  mapEl.map.add(edm, flow ? 5 : 4);
+  mapEl.map.addMany(storm.layers, flow ? 6 : 5);
 
   // ---- panel ----
   panel.innerHTML = panelMarkup();
@@ -149,6 +158,8 @@ export async function setupLayersPanel(mapEl) {
     wfdField: q("[data-wfd-field]"),
     soil: q("[data-soil]"),
     soilItem: q("[data-soil-item]"),
+    landcover: q("[data-landcover]"),
+    landcoverItem: q("[data-landcover-item]"),
     network: q("[data-network]"),
     networkItem: q("[data-network-item]"),
     flow: q("[data-flow]"),
@@ -163,9 +174,20 @@ export async function setupLayersPanel(mapEl) {
     legendEmpty: view.querySelector("[data-legend-empty]"),
   };
 
+  // Land cover has no legend from its service: a hand-drawn one sits under
+  // the ArcGIS legend in the Legend panel.
+  el.landcoverLegend = document.createElement("div");
+  el.landcoverLegend.className = "landcoverLegend";
+  el.landcoverLegend.hidden = true;
+  el.landcoverLegend.innerHTML = `<h4>${escapeHtml(LAND_COVER.title)}</h4>` + LAND_COVER.classes
+    .map(([name, color]) => `<div class="landcoverRow"><span class="landcoverSwatch" style="background:${color}"></span>${escapeHtml(name)}</div>`)
+    .join("");
+  el.legend.after(el.landcoverLegend);
+
   const on = (target, event, fn) => target.addEventListener(event, fn);
   on(el.wfd, "calciteSwitchChange", () => change({ wfd: el.wfd.checked }));
   on(el.soil, "calciteSwitchChange", () => change({ soil: el.soil.checked }));
+  on(el.landcover, "calciteSwitchChange", () => change({ landcover: el.landcover.checked }));
   on(el.network, "calciteSwitchChange", () => change({ network: el.network.checked }));
   on(el.flow, "calciteCheckboxChange", () => change({ flow: el.flow.checked }));
   on(el.storm, "calciteSwitchChange", () => change({ storm: el.storm.checked }));
@@ -187,6 +209,8 @@ export async function setupLayersPanel(mapEl) {
     const ok = inRange();
     el.network.disabled = !ok || !network;
     el.soil.disabled = !ok;
+    el.landcover.disabled = !ok;
+    el.landcoverItem.description = ok ? DESCRIPTIONS.landcover : ZOOM_IN;
     el.networkItem.description = ok ? DESCRIPTIONS.network : ZOOM_IN;
     el.soilItem.description = ok ? DESCRIPTIONS.soil : ZOOM_IN;
     el.flowOptions.hidden = !(ok && state.network && flow);
@@ -210,13 +234,15 @@ export async function setupLayersPanel(mapEl) {
       el.legend.layerInfos = infos;
     }
     el.legend.hidden = !infos.length;
-    el.legendEmpty.hidden = infos.length > 0;
+    el.landcoverLegend.hidden = !state.landcover;
+    el.legendEmpty.hidden = infos.length > 0 || state.landcover;
   }
 
   function apply() {
     // layers
     wfd.visible = state.wfd;
     soil.visible = state.soil;
+    landcover.visible = state.landcover;
     if (wfd.title !== wfdTitle(state.wfdField)) {
       wfd.renderer = wfdRenderer(state.wfdField);
       wfd.title = wfdTitle(state.wfdField);
@@ -242,6 +268,7 @@ export async function setupLayersPanel(mapEl) {
     el.wfdOptions.hidden = !state.wfd;
     el.wfdField.value = state.wfdField;
     el.soil.checked = state.soil;
+    el.landcover.checked = state.landcover;
     el.network.checked = state.network;
     el.flow.checked = state.flow;
     el.storm.checked = state.storm;
@@ -256,6 +283,67 @@ export async function setupLayersPanel(mapEl) {
   reactiveUtils.watch(() => mapEl.view.scale, applyScaleGating);
   apply();
   initMapClicks(mapEl, network);
+  initBackgroundHover(mapEl, soil, landcover);
+}
+
+// ---------------------------------------------------------------------
+// Background type on hover: while the National Soil Map or the Land Cover
+// Map is showing, a small label next to the pointer names the soil / land
+// cover under it. Land cover is a WMS, so it asks the service (GetFeatureInfo).
+// ---------------------------------------------------------------------
+
+async function landCoverAt(view, point) {
+  const e = view.extent;
+  const params = new URLSearchParams({
+    service: "WMS", version: "1.3.0", request: "GetFeatureInfo",
+    layers: LAND_COVER.sublayer, query_layers: LAND_COVER.sublayer, styles: "",
+    crs: "EPSG:3857", bbox: [e.xmin, e.ymin, e.xmax, e.ymax].join(","),
+    width: Math.round(view.width), height: Math.round(view.height),
+    i: Math.round(point.x), j: Math.round(point.y), info_format: "text/plain",
+  });
+  const text = await (await fetch(`${LAND_COVER.url}?${params}`)).text();
+  return /^\s*class = '([^']*)'/m.exec(text)?.[1] ?? "";
+}
+
+function initBackgroundHover(mapEl, soil, landcover) {
+  const tip = document.createElement("div");
+  tip.className = "mapHoverTip";
+  tip.hidden = true;
+  mapEl.parentElement.append(tip);
+  let latest = 0;
+  let shown = "";
+
+  const hide = () => { latest++; tip.hidden = true; shown = ""; };
+
+  mapEl.addEventListener("arcgisViewPointerMove", async (event) => {
+    const useSoil = soil.visible && mapEl.view.scale <= soil.minScale;
+    const useLandCover = landcover.visible && mapEl.view.scale <= landcover.minScale;
+    if (!useSoil && !useLandCover) { if (!tip.hidden) hide(); return; }
+    const point = event.detail;
+    const request = ++latest;
+    let name = "";
+    if (!useSoil) await new Promise((r) => setTimeout(r, 120)); // don't hit the service on every pixel moved
+    if (request !== latest) return;
+    try {
+      if (useSoil) {
+        const { results } = await mapEl.hitTest(point, { include: [soil] });
+        name = results.find((r) => r.type === "graphic")?.graphic.attributes?.[SOIL_MAP.field] ?? "";
+      } else {
+        name = await landCoverAt(mapEl.view, point);
+      }
+    } catch { return; }
+    if (request !== latest) return;
+    if (!name) { hide(); return; }
+    if (name !== shown) { tip.textContent = name; shown = name; }
+    const box = mapEl.getBoundingClientRect();
+    const parent = tip.parentElement.getBoundingClientRect();
+    tip.hidden = false;
+    // beside the pointer, flipped to the left near the right-hand edge
+    const flip = point.x + tip.offsetWidth + 24 > box.width;
+    tip.style.left = `${box.left - parent.left + point.x + (flip ? -tip.offsetWidth - 14 : 14)}px`;
+    tip.style.top = `${box.top - parent.top + point.y + 14}px`;
+  });
+  mapEl.addEventListener("pointerleave", hide);
 }
 
 // ---------------------------------------------------------------------

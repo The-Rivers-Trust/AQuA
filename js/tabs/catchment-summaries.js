@@ -14,32 +14,61 @@
 // =====================================================================
 
 import { METRICS } from "../config.js";
-import { fetchSites } from "../data/aqua-service.js";
-import { onFilterChange, matchesFilters, getSeason } from "../filters.js";
+import { fetchSites, fetchCitizenScience } from "../data/aqua-service.js";
+import { onFilterChange, matchesFilters, getFilters, getSeason } from "../filters.js";
 import { escapeHtml, formatDate, formatSeason } from "../utils/format.js";
+import { computeCatchments, catchmentTableHtml, comparisonHtml, sortCatchmentsBy } from "./catchment-table.js";
 
 const SUMMARIES_URL = "data/catchment-summaries.json";
 const showDrafts = new URLSearchParams(location.search).has("drafts");
 
 let summaries = [];
 let siteAttributes = [];
+let records = [];
 let containerEl = null;
 
 export async function initCatchmentSummaries({ containerEl: el }) {
   containerEl = el;
   containerEl.innerHTML = `<p class="muted">Loading summaries…</p>`;
   try {
-    const [response, sites] = await Promise.all([fetch(SUMMARIES_URL, { cache: "no-cache" }), fetchSites()]);
+    const [response, sites, citizenScience] = await Promise.all([
+      fetch(SUMMARIES_URL, { cache: "no-cache" }),
+      fetchSites(),
+      fetchCitizenScience(),
+    ]);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     summaries = (await response.json()).summaries ?? [];
     siteAttributes = sites.map((f) => f.attributes);
+    records = citizenScience;
   } catch (error) {
     console.warn("AQuA dashboard: catchment summaries unavailable:", error);
-    containerEl.innerHTML = `<h2>Catchment summaries</h2><p class="muted">The summaries couldn't be loaded just now. Please try again later.</p>`;
+    containerEl.innerHTML = `<h2>Catchment Explorer</h2><p class="muted">The summaries couldn't be loaded just now. Please try again later.</p>`;
     return;
   }
+  // Sorting the catchment table redraws just the table, in place.
+  containerEl.addEventListener("click", (event) => {
+    const header = event.target.closest("th[data-sort]");
+    if (header) resortTable(header.dataset.sort);
+  });
+  containerEl.addEventListener("keydown", (event) => {
+    const header = event.target.closest?.("th[data-sort]");
+    if (header && (event.key === "Enter" || event.key === " ")) {
+      event.preventDefault();
+      resortTable(header.dataset.sort);
+    }
+  });
   onFilterChange(render);
   render();
+}
+
+let catchmentRows = [];
+
+function resortTable(field) {
+  sortCatchmentsBy(field);
+  const holder = containerEl.querySelector("#catchmentTable");
+  if (!holder) return;
+  holder.innerHTML = catchmentTableHtml(catchmentRows, getFilters().catchment);
+  holder.querySelector(`th[data-sort="${field}"]`)?.focus();
 }
 
 // Catchments with at least one site passing the header's site filters.
@@ -55,13 +84,25 @@ function render() {
     .sort((a, b) => a.catchment.localeCompare(b.catchment, "en-GB"));
 
   const intro = `
-    <h2>Catchment summaries</h2>
-    <p class="summaryIntro">A plain-English look at what volunteers found in each catchment in ${escapeHtml(formatSeason(season) || "the chosen season")}.
-      Each summary is written with AI from the volunteers' readings and checked by The Rivers Trust before it is published.
-      They are snapshots from single visits, not official classifications.</p>
+    <h2>Catchment Explorer</h2>
     ${showDrafts ? `<p class="summaryDraftNote">Review mode: unapproved summaries are shown and marked as drafts.</p>` : ""}`;
 
-  containerEl.innerHTML = `${intro}${
+  // The table lists every catchment: picking one highlights its row and
+  // shows how it compares, rather than filtering the table.
+  const selected = getFilters().catchment;
+  catchmentRows = computeCatchments(siteAttributes, records, season);
+  const overview = `
+    ${comparisonHtml(catchmentRows, selected)}
+    <section class="dataSection" aria-labelledby="catchmentTableHeading">
+      <h3 id="catchmentTableHeading">All catchments</h3>
+      <div class="dataTableScroll" id="catchmentTable">${catchmentTableHtml(catchmentRows, selected)}</div>
+    </section>`;
+
+  const aiNote = `
+    <h3 class="summariesTitle">AI summaries</h3>
+    <p class="summaryIntro">Each summary is written with AI from the volunteers' readings and checked by The Rivers Trust before it is published.</p>`;
+
+  containerEl.innerHTML = `${intro}${overview}${aiNote}${
     visible.length
       ? `<div class="summaryGrid">${visible.map(cardHtml).join("")}</div>`
       : `<p class="muted">${emptyMessage(season, inFilters)}</p>`
@@ -113,7 +154,7 @@ function cardHtml(s) {
   return `
     <article class="summaryCard${draft ? " summaryCard--draft" : ""}">
       <header class="summaryHead">
-        <h3>${escapeHtml(s.catchment)}</h3>
+        <h3>${escapeHtml(s.catchment)} Catchment</h3>
         <span class="summaryMeta">${f.sitesSurveyed} of ${f.sitesInCatchment} sites surveyed</span>
         ${draft ? `<span class="summaryDraftTag">Draft - not reviewed</span>` : ""}
       </header>

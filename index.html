@@ -63,8 +63,9 @@
         <calcite-tab-title data-view="map" selected>Citizen Science Map</calcite-tab-title>
         <calcite-tab-title data-view="metals">Metals Map</calcite-tab-title>
         <calcite-tab-title data-view="downstream">Downstream Plots</calcite-tab-title>
-        <calcite-tab-title data-view="catchments">Catchment Summaries</calcite-tab-title>
-        <calcite-tab-title data-view="data">Data</calcite-tab-title>
+        <calcite-tab-title data-view="catchments">Catchment Explorer</calcite-tab-title>
+        <calcite-tab-title data-view="groups">Groups</calcite-tab-title>
+        <calcite-tab-title data-view="data">Quality Assurance</calcite-tab-title>
       </calcite-tab-nav>
 
       <main class="views">
@@ -88,7 +89,8 @@
             </div>
           </calcite-panel>
           <div class="mapColumn">
-            <arcgis-map id="mainMap" class="siteMap">
+            <div class="mapStage">
+              <arcgis-map id="mainMap" class="siteMap">
               <arcgis-zoom slot="top-left"></arcgis-zoom>
               <arcgis-home slot="top-left"></arcgis-home>
               <arcgis-search slot="top-right"></arcgis-search>
@@ -99,25 +101,26 @@
               <calcite-button id="leagueButton" class="mapButton" slot="bottom-right" icon-start="table" scale="s"
                 appearance="solid" kind="neutral" aria-expanded="false" aria-controls="csLeagueDrawer">League table</calcite-button>
             </arcgis-map>
+              <!-- Right-hand tool panels, closed until their button on the map is pressed; one open at a time (js/map/tool-panels.js). -->
+              <calcite-panel class="toolPanel layersPanel" heading="Map layers" closable closed></calcite-panel>
+              <calcite-panel class="toolPanel basemapPanel" heading="Basemap" closable closed>
+                <div class="sidePanelBody">
+                  <arcgis-basemap-gallery reference-element="mainMap"></arcgis-basemap-gallery>
+                </div>
+              </calcite-panel>
+              <calcite-panel class="toolPanel legendPanel" heading="Legend" closable closed>
+                <div class="sidePanelBody">
+                  <arcgis-legend data-legend reference-element="mainMap" hidden></arcgis-legend>
+                  <p class="muted hint" data-legend-empty>Switch on a layer in Map layers to see its legend here.</p>
+                </div>
+              </calcite-panel>
+            </div>
             <!-- Slides up over the lower half of the map from the League table button (js/tabs/citizen-science-map.js). -->
             <div class="leagueDrawer" id="csLeagueDrawer" hidden>
               <calcite-action class="leagueClose" id="leagueClose" icon="x" text="Close league table" scale="s"></calcite-action>
               <div class="leagueArea" id="csLeague"></div>
             </div>
           </div>
-          <!-- Right-hand tool panels, closed until their button on the map is pressed; one open at a time (js/map/tool-panels.js). -->
-          <calcite-panel class="toolPanel layersPanel" heading="Map layers" closable closed></calcite-panel>
-          <calcite-panel class="toolPanel basemapPanel" heading="Basemap" closable closed>
-            <div class="sidePanelBody">
-              <arcgis-basemap-gallery reference-element="mainMap"></arcgis-basemap-gallery>
-            </div>
-          </calcite-panel>
-          <calcite-panel class="toolPanel legendPanel" heading="Legend" closable closed>
-            <div class="sidePanelBody">
-              <arcgis-legend data-legend reference-element="mainMap" hidden></arcgis-legend>
-              <p class="muted hint" data-legend-empty>Switch on a layer in Map layers to see its legend here.</p>
-            </div>
-          </calcite-panel>
           <!-- Opens down the right of the map when a site is clicked (js/map/site-panel.js). -->
           <calcite-panel class="sitePanel" heading="Site" closable closed></calcite-panel>
         </section>
@@ -140,7 +143,8 @@
             </div>
           </calcite-panel>
           <div class="mapColumn">
-            <arcgis-map id="metalsMap" class="siteMap">
+            <div class="mapStage">
+              <arcgis-map id="metalsMap" class="siteMap">
               <arcgis-zoom slot="top-left"></arcgis-zoom>
               <arcgis-home slot="top-left"></arcgis-home>
               <arcgis-search slot="top-right"></arcgis-search>
@@ -149,20 +153,21 @@
               <calcite-action class="mapAction legendAction" slot="top-right" icon="legend" text="Legend" title="Legend"></calcite-action>
               <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
             </arcgis-map>
+              <!-- Right-hand tool panels, closed until their button on the map is pressed; one open at a time (js/map/tool-panels.js). -->
+              <calcite-panel class="toolPanel layersPanel" heading="Map layers" closable closed></calcite-panel>
+              <calcite-panel class="toolPanel basemapPanel" heading="Basemap" closable closed>
+                <div class="sidePanelBody">
+                  <arcgis-basemap-gallery reference-element="metalsMap"></arcgis-basemap-gallery>
+                </div>
+              </calcite-panel>
+              <calcite-panel class="toolPanel legendPanel" heading="Legend" closable closed>
+                <div class="sidePanelBody">
+                  <arcgis-legend data-legend reference-element="metalsMap" hidden></arcgis-legend>
+                  <p class="muted hint" data-legend-empty>Switch on a layer in Map layers to see its legend here.</p>
+                </div>
+              </calcite-panel>
+            </div>
           </div>
-          <!-- Right-hand tool panels, closed until their button on the map is pressed; one open at a time (js/map/tool-panels.js). -->
-          <calcite-panel class="toolPanel layersPanel" heading="Map layers" closable closed></calcite-panel>
-          <calcite-panel class="toolPanel basemapPanel" heading="Basemap" closable closed>
-            <div class="sidePanelBody">
-              <arcgis-basemap-gallery reference-element="metalsMap"></arcgis-basemap-gallery>
-            </div>
-          </calcite-panel>
-          <calcite-panel class="toolPanel legendPanel" heading="Legend" closable closed>
-            <div class="sidePanelBody">
-              <arcgis-legend data-legend reference-element="metalsMap" hidden></arcgis-legend>
-              <p class="muted hint" data-legend-empty>Switch on a layer in Map layers to see its legend here.</p>
-            </div>
-          </calcite-panel>
           <!-- Opens down the right of the map when a site is clicked (js/map/site-panel.js). -->
           <calcite-panel class="sitePanel" heading="Site" closable closed></calcite-panel>
         </section>
@@ -195,6 +200,10 @@
 
         <section class="view view--data" data-view="catchments" hidden>
           <div class="viewInner" id="catchmentSummaries"></div>
+        </section>
+
+        <section class="view view--data" data-view="groups" hidden>
+          <div class="viewInner" id="groupsView"></div>
         </section>
 
         <section class="view view--data" data-view="data" hidden>

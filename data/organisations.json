@@ -1,0 +1,104 @@
+{
+  "_about": "Everything the Groups tab shows about each organisation. One entry per group, keyed by the group's name exactly as it is in the sites layer (case_study_group). Every entry has the same fields: 'about' (paragraphs), 'concernsAndQuestions' (a list: the group's concerns about its catchment and the questions it wants AQuA to help answer), and 'links' - website, instagram, bluesky, x, facebook, each a full https:// address or null. Leave a field empty ([] or null) until it's known; a section with nothing in it is not shown. Edit this file on GitHub and commit; the dashboard reads it when the Groups tab opens.",
+  "organisations": {
+    "Friends of Gledhow Valley Woods": {
+      "about": [],
+      "concernsAndQuestions": [],
+      "links": {
+        "website": null,
+        "instagram": null,
+        "bluesky": null,
+        "x": null,
+        "facebook": null
+      }
+    },
+    "Friends of Roundhay Park": {
+      "about": [],
+      "concernsAndQuestions": [],
+      "links": {
+        "website": null,
+        "instagram": null,
+        "bluesky": null,
+        "x": null,
+        "facebook": null
+      }
+    },
+    "Nidd Action Group": {
+      "about": [],
+      "concernsAndQuestions": [],
+      "links": {
+        "website": null,
+        "instagram": null,
+        "bluesky": null,
+        "x": null,
+        "facebook": null
+      }
+    },
+    "Otley Clean Rivers Group": {
+      "about": [],
+      "concernsAndQuestions": [],
+      "links": {
+        "website": null,
+        "instagram": null,
+        "bluesky": null,
+        "x": null,
+        "facebook": null
+      }
+    },
+    "River Foss Society": {
+      "about": [
+        "The River Foss Society (RFS) was founded in 1973 with an aim of improving footpaths and access to the river for the benefit of naturalists, anglers, ramblers and local residents. In 2026 the RFS remains true to these aims and runs an active programme of themed walks, talks, and social events. We are also active in the monitoring and control of Invasive Non-Native Species (INNS). To better understand biodiversity, habitat and water quality we have been monitoring aquatic invertebrates at about 20 sites within the Foss Catchment Area for five years.",
+        "The RFS is active in several pollution-monitoring projects: with Freshwater Watch we have undertaken monthly chemical, temperature and turbidity measurements at five sites for a decade; we collaborated with the University of York on the ECOMIX project, hosting three autosamplers for a year of chemical sampling in 2024/25; for the AQuA project we sample 24 sites, with 20 in the Foss Catchment Area, including eight on tributaries, and four on the Ouse. For AQuA we work in close collaboration with volunteers from St Nicks, and Ouse It Or Lose It to undertake the sampling and analysis. Sample sites were chosen to address several Foss/Ouse-specific questions in addition to the overarching AQuA questions."
+      ],
+      "concernsAndQuestions": [
+        "What pollution impact do the tributaries have on the Foss?",
+        "What is the water quality at our aquatic invertebrate sites, and can we explain the observed variances in the invertebrate scores?",
+        "What is the impact of specific outfalls on pollution on the Foss?",
+        "Can we understand the impact of small sewage treatment plants on the Foss and its tributaries?",
+        "How does pollution change from the upstream to downstream sections of the Foss?",
+        "What pollution impact does the Foss have on the Ouse?",
+        "What is the pollution like in the Ouse near York?"
+      ],
+      "links": {
+        "website": "https://www.riverfosssociety.co.uk/",
+        "instagram": "https://www.instagram.com/riverfosssociety/",
+        "bluesky": null,
+        "x": null,
+        "facebook": null
+      }
+    },
+    "River Holme Connections": {
+      "about": [],
+      "concernsAndQuestions": [],
+      "links": {
+        "website": null,
+        "instagram": null,
+        "bluesky": null,
+        "x": null,
+        "facebook": null
+      }
+    },
+    "Ryedale Environmental Group": {
+      "about": [],
+      "concernsAndQuestions": [],
+      "links": {
+        "website": null,
+        "instagram": null,
+        "bluesky": null,
+        "x": null,
+        "facebook": null
+      }
+    },
+    "Yorkshire Dales Rivers Trust": {
+      "about": [],
+      "concernsAndQuestions": [],
+      "links": {
+        "website": null,
+        "instagram": null,
+        "bluesky": null,
+        "x": null,
+        "facebook": null
+      }
+    }
+  }
+}

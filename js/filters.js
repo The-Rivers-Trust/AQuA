@@ -70,6 +70,20 @@ export function matchesFilters(attributes) {
   return matchesExcept(attributes, null);
 }
 
+// Sets one site filter ("group", "catchment" or "river") from elsewhere on
+// the page, as if it had been picked in the header (null clears it).
+export function setSiteFilter(key, value) {
+  if (!SITE_FILTER_KEYS.includes(key)) return;
+  update({ [key]: value || null }, key);
+}
+
+// As matchesFilters, but ignoring one site filter ("river" for tabs that
+// show whole catchments). Picking a river fills in its catchment, so the
+// catchment filter still narrows things.
+export function matchesFiltersExcept(attributes, skipKey) {
+  return matchesExcept(attributes, skipKey);
+}
+
 // site_name values of every site passing the site filters - for
 // filtering the related tables (citizen science, metals, ...).
 export function filteredSiteNames() {

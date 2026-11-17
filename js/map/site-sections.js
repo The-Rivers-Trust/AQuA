@@ -5,8 +5,9 @@
 //   1. Site details - river, catchment, group, grid reference.
 //   2. A middle section the map tab chooses: on the Citizen Science map,
 //      phosphate and E. coli bar charts over every survey
-//      (trendsSection; click an E. coli bar to see that survey's plate
-//      photo); on the Metals map, the site's lab results.
+//      (trendsSection; a link under the E. coli chart opens the plate
+//      photo of the survey showing); on the Metals map, the site's lab
+//      results.
 //   3. Surveys (Citizen Science map only) - the site's individual surveys,
 //      one at a time, cycled with newer / older buttons like the NRS
 //      dashboard's "Recent surveys": date, weather, flow and level, the
@@ -93,24 +94,39 @@ export function trendsSection(view) {
     return el;
   }
   for (const metricKey of Object.keys(METRICS)) {
-    el.append(createSeasonBars({ metricKey, view, onBarClick: metricKey === "ecoli" ? platePhotoClick : undefined }));
+    el.append(createSeasonBars({ metricKey, view }));
+    if (metricKey === "ecoli") el.append(platePhotoLink(view));
   }
   return el;
 }
 
-// The E. coli chart: a survey's bar opens its plate photo, if it has one.
-const platePhotoClick = {
-  label: "View E. coli plate photo",
-  enabled: (survey) => isHttps(survey.ecoli_plate_photo),
-  open(survey) {
+// Text under the E. coli chart that opens the plate photo of the survey
+// showing (the one the Surveys section below is on). Hidden when that
+// survey has no plate photo.
+function platePhotoLink(view) {
+  const p = document.createElement("p");
+  p.className = "platePhotoLink";
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "platePhotoButton";
+  button.textContent = "Open E. coli plate photo";
+  p.append(button);
+
+  const update = () => { p.hidden = !isHttps(view.current?.ecoli_plate_photo); };
+  button.addEventListener("click", () => {
+    const survey = view.current;
+    if (!survey || !isHttps(survey.ecoli_plate_photo)) return;
     const when = survey.field_date ? ` on ${formatDate(survey.field_date)}` : "";
     openPhotos(
       [{ url: survey.ecoli_plate_photo, caption: "E. coli plate", alt: `E. coli plate, ${survey.site_name}${when}` }],
       0,
       `${survey.site_name}${survey.field_date ? ` · ${formatDate(survey.field_date)}` : ""}`
     );
-  },
-};
+  });
+  view.onChange(update);
+  update();
+  return p;
+}
 
 // Photo links come from the survey data, so only https ones are used.
 const isHttps = (url) => typeof url === "string" && /^https:\/\//i.test(url);
@@ -271,7 +287,7 @@ function readingRow(metricKey, value, qa) {
 
 // The survey's three site photos, as thumbnails that enlarge in the page
 // (photo-viewer.js), where the others can be stepped through. (The E. coli
-// plate photo isn't here - it opens from the E. coli chart's bar.) Only
+// plate photo isn't here - it opens from the link under the E. coli chart.) Only
 // https links are used, and one that won't load says so rather than
 // leaving a hole.
 function photoStrip(s) {

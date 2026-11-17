@@ -25,6 +25,13 @@ const themeDefault = () => MAP.basemap[getTheme()];
 // The basemap id every map should be showing right now.
 export const currentBasemapId = () => choice ?? themeDefault();
 
+// For a map with no gallery of its own (e.g. the small map on the Groups
+// tab): it starts with, and follows, the shared basemap choice.
+export function followBasemap(mapEl) {
+  mapEl.basemap = currentBasemapId();
+  maps.add(mapEl);
+}
+
 // Gives a map its starting basemap and wires up its gallery.
 export async function setupBasemap(mapEl) {
   const [Basemap, LocalBasemapsSource] = await $arcgis.import([

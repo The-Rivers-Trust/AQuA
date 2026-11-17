@@ -23,6 +23,9 @@ export const MAP = {
   // The selector's choices, in gallery order: Esri basemap ids (all load
   // without an API key; the gallery shows Esri's own name and thumbnail
   // for each). Keep the two theme defaults above in the list.
+  // The basemaps that are dark: the river flow trails are drawn white on
+  // these and dark on every other (light) one.
+  darkBasemaps: ["dark-gray-vector", "satellite", "hybrid"],
   basemaps: [
     "gray-vector",
     "dark-gray-vector",
@@ -82,7 +85,7 @@ export const NO_DATA = { key: "noData", label: "No reading", color: "#8a8a8a" };
 // a mistake in the file stops it with a message saying what's wrong).
 export const METRICS = await loadThresholds();
 
-// Quality control (the Data tab): an E. coli control blank is clean water
+// Quality control (the Quality Assurance tab): an E. coli control blank is clean water
 // tested like a real sample, so it should grow nothing - more than this many
 // cfu is flagged.
 export const QUALITY_CONTROL = {
@@ -153,7 +156,9 @@ export const RIVER_NETWORK = {
   url: "https://services3.arcgis.com/Bb8lfThdhugyc4G3/arcgis/rest/services/OpenRiverNetwork_CaBA_ID/FeatureServer/0",
   title: "Open River Network",
   flowTitle: "River flow direction",
-  color: "#0277bd",
+  // A soft, partly see-through blue-grey and thin lines, so the rivers sit
+  // behind the sites and the other layers (a [r, g, b, alpha] colour).
+  color: [110, 150, 180, 0.6],
   minScale: 1000000,
   // The flow animation is heavier (it draws every section in view), so it
   // only runs zoomed in much further - roughly city / river-reach level.
@@ -166,13 +171,15 @@ export const RIVER_NETWORK = {
   // the main river 150 m away).
   snapDistance: 250,
   otherNameSnapMax: 100,
+  // Line width (points) by Strahler stream order; the flow-direction trail
+  // is drawn from the same widths.
   widthByStrahler: [
-    { value: 1, size: 0.4 },
-    { value: 2, size: 0.8 },
-    { value: 3, size: 1.3 },
-    { value: 4, size: 2 },
-    { value: 5, size: 3 },
-    { value: 7, size: 5 },
+    { value: 1, size: 0.2 },
+    { value: 2, size: 0.45 },
+    { value: 3, size: 0.7 },
+    { value: 4, size: 1.1 },
+    { value: 5, size: 1.65 },
+    { value: 7, size: 2.75 },
   ],
 };
 
@@ -206,6 +213,27 @@ export const SOIL_MAP = {
   url: "https://utility.arcgis.com/usrsvcs/servers/608cab5c64ae44789d65582007fb2350/rest/services/NationalSoilMap/FeatureServer/0",
   title: "National Soil Map",
   field: "SOILSCAPE",
+};
+
+// UKCEH Land Cover Map 2024 (10 m), a WMS served by the UK Centre for
+// Ecology & Hydrology. Great Britain, traditional colour scheme.
+export const LAND_COVER = {
+  url: "https://catalogue.ceh.ac.uk/maps/688492ef-d9db-43b7-8107-3675c6150568",
+  title: "Land Cover Map 2024",
+  sublayer: "LC.10m.GB",
+  copyright: "Based upon LCM2024 © UKCEH 2025",
+  opacity: 0.75,
+  // The service publishes no legend, so this one is drawn by hand from
+  // UKCEH's published colours for the 21 classes.
+  classes: [
+    ["Broadleaved, mixed & yew woodland", "#ff0000"], ["Coniferous woodland", "#006600"], ["Arable and horticulture", "#732600"],
+    ["Improved grassland", "#00ff00"], ["Neutral grassland", "#7fe57f"], ["Calcareous grassland", "#70a800"],
+    ["Acid grassland", "#998100"], ["Fen, marsh & swamp", "#ffff00"], ["Heather", "#801a80"],
+    ["Heather grassland", "#e68ca6"], ["Bog", "#008073"], ["Inland rock", "#d2d2ff"],
+    ["Saltwater", "#000080"], ["Freshwater", "#0000ff"], ["Supralittoral rock", "#cccc00"],
+    ["Supralittoral sediment", "#cc9900"], ["Littoral rock", "#ffff80"], ["Littoral sediment", "#ccb300"],
+    ["Saltmarsh", "#8080ff"], ["Urban", "#000000"], ["Suburban", "#808080"],
+  ],
 };
 
 export const STORM_OVERFLOWS = {

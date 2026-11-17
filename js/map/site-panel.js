@@ -5,13 +5,10 @@
 // tab from site-sections.js), and the site is highlighted on the map. It
 // replaces the site pop-up on both maps.
 //
-// A map's panel lives beside it in its tab's <section>, after the map
-// and the Layers panel:
+// A map's panel lives beside it in its tab's <section>, after the map:
 //   <calcite-panel class="sitePanel" closable closed>   (filled in here)
-//
-// Both right-hand panels can be open together, but if that would leave the
-// map too narrow the one opened first makes way (they tell each other with
-// "sitepanelopen" / "layerspanelopen" events on the map).
+// The map's tool panels (Map layers, Basemap, Legend) open over the map, so
+// they don't compete with it for width.
 //
 // A tab sets it up with initSitePanel(mapEl, { render }) and registers
 // each sites layer it creates with registerSiteLayer(layer); the map's
@@ -47,21 +44,6 @@ export function clearSite(mapEl) {
   panels.get(mapEl)?.clear();
 }
 
-// Narrower than this and the map isn't much use - see the header comment.
-export const MIN_MAP_WIDTH = 480;
-
-// Resolves once a calcite panel whose open/closed state was just changed
-// has actually been laid out (it re-renders a moment after the change), so
-// the map's width can be measured.
-export async function afterLayout(panelEl) {
-  try {
-    await panelEl?.updateComplete;
-  } catch (error) {
-    // not a component that reports it - the frame below will do
-  }
-  await new Promise((resolve) => requestAnimationFrame(resolve));
-}
-
 // Re-draws the open panel (or closes it if the site is gone).
 // findGraphic(siteName) returns the site's graphic in the current layer.
 export function refreshSite(mapEl, findGraphic) {
@@ -83,7 +65,6 @@ export function initSitePanel(mapEl, { render }) {
     panelEl.heading = graphic.attributes.site_name;
     panelEl.description = graphic.attributes.Description ?? "";
     panelEl.closed = false;
-    afterLayout(panelEl).then(() => mapEl.dispatchEvent(new CustomEvent("sitepanelopen")));
     highlightSite(graphic);
     if (pan) keepInView(graphic);
 
@@ -131,10 +112,6 @@ export function initSitePanel(mapEl, { render }) {
   }
 
   panelEl.addEventListener("calcitePanelClose", clear);
-  // The Layers panel was opened and there isn't room for both.
-  mapEl.addEventListener("layerspanelopen", () => {
-    if (selected && mapEl.closest(".mapColumn").clientWidth < MIN_MAP_WIDTH) clear();
-  });
   // A site the filters have now hidden shouldn't stay selected.
   onFilterChange(() => {
     if (selected && !matchesFilters(selected.attributes)) clear();

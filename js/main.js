@@ -18,6 +18,7 @@ import { initCitizenScienceMap } from "./tabs/citizen-science-map.js";
 import { initMetalsMap } from "./tabs/metals-map.js";
 import { initDownstreamPlots } from "./tabs/downstream-plots.js";
 import { initCatchmentSummaries } from "./tabs/catchment-summaries.js";
+import { initGroupsTab } from "./tabs/groups-tab.js";
 import { initDataTab } from "./tabs/data-tab.js";
 
 // data-view -> that tab's init.
@@ -44,6 +45,7 @@ const TAB_INITS = {
     tooltipEl: document.getElementById("downstreamTooltip"),
   }),
   catchments: () => initCatchmentSummaries({ containerEl: document.getElementById("catchmentSummaries") }),
+  groups: () => initGroupsTab({ containerEl: document.getElementById("groupsView") }),
   data: () => initDataTab({ containerEl: document.getElementById("dataView") }),
 };
 

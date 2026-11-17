@@ -7,7 +7,7 @@
 // dashboard.
 // =====================================================================
 
-import { WFD_CATCHMENTS, SOIL_MAP, RIVER_NETWORK, STORM_OVERFLOWS, EDM_2025 } from "../config.js";
+import { WFD_CATCHMENTS, SOIL_MAP, LAND_COVER, RIVER_NETWORK, STORM_OVERFLOWS, EDM_2025 } from "../config.js";
 import { escapeHtml, formatNumber, sqlTimestamp } from "../utils/format.js";
 import { POPUP_STYLESHEET } from "./map-common.js";
 
@@ -52,6 +52,25 @@ export async function createWfdLayer() {
     popupEnabled: false,
     renderer: wfdRenderer(field),
     title: wfdTitle(field),
+  });
+}
+
+// ---------------------------------------------------------------------
+// UKCEH Land Cover Map (WMS)
+// ---------------------------------------------------------------------
+
+export async function createLandCoverLayer() {
+  const [WMSLayer] = await $arcgis.import(["@arcgis/core/layers/WMSLayer.js"]);
+  return new WMSLayer({
+    url: LAND_COVER.url,
+    sublayers: [{ name: LAND_COVER.sublayer }],
+    imageFormat: "image/png", // this server wants the full MIME type
+    version: "1.3.0",
+    visible: false,
+    opacity: LAND_COVER.opacity,
+    minScale: RIVER_NETWORK.minScale, // same zoom limit as the soil map
+    copyright: LAND_COVER.copyright,
+    title: LAND_COVER.title,
   });
 }
 

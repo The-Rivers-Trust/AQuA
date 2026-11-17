@@ -15,10 +15,11 @@
 // at MAX_SEGMENTS.
 // =====================================================================
 
-import { RIVER_NETWORK } from "../config.js";
+import { MAP, RIVER_NETWORK } from "../config.js";
 
 const FLOW_EXTRA_WIDTH = 3; // trail is a bit wider than the river line
-const FLOW_COLOR = [255, 255, 255, 255];
+const FLOW_COLOR_ON_DARK = [255, 255, 255, 255]; // light trails on a dark basemap...
+const FLOW_COLOR_ON_LIGHT = [20, 30, 45, 255]; // ...dark ones on a light basemap, where white would vanish
 const TRAIL_SPEED = 120; // map units (metres) per second
 const TRAIL_LENGTH = 250;
 const TRAIL_CYCLE = 900;
@@ -47,8 +48,6 @@ export async function addRiverNetwork(mapEl, index) {
       symbol: { type: "simple-line", color: RIVER_NETWORK.color, cap: "round", join: "round" },
       visualVariables: [{ type: "size", field: "Strahler", stops: RIVER_NETWORK.widthByStrahler }],
     },
-    // A soft shadow lifts the lines off either basemap.
-    effect: "drop-shadow(0px, 0px, 3px, #000000)",
   });
   mapEl.map.add(network, index);
 
@@ -86,6 +85,11 @@ export async function addRiverNetwork(mapEl, index) {
   // Re-query the segments in view whenever the map settles.
   let requestToken = 0;
   const view = mapEl.view;
+
+  // The trail colour follows the basemap showing (theme switch or a pick
+  // from the gallery); the trails are redrawn in the new colour.
+  const flowColor = () => (MAP.darkBasemaps.includes(mapEl.map.basemap?.id) ? FLOW_COLOR_ON_DARK : FLOW_COLOR_ON_LIGHT);
+  reactiveUtils.watch(() => mapEl.map.basemap?.id, () => { if (flow.visible) refresh(); });
   reactiveUtils.when(() => view.stationary, refresh);
   // The network's tiles arrive a moment after the map settles - re-read
   // the segments once they have.
@@ -147,7 +151,7 @@ export async function addRiverNetwork(mapEl, index) {
     if (token !== requestToken || !features) return; // superseded by a newer refresh
     flow.graphics.removeAll();
     flow.graphics.addMany(features.map((f) => ({
-      attributes: { color: FLOW_COLOR, halfWidth: flowHalfWidth(f.attributes.Strahler) },
+      attributes: { color: flowColor(), halfWidth: flowHalfWidth(f.attributes.Strahler) },
       geometry: { type: "polyline", paths: f.geometry.paths, spatialReference: f.geometry.spatialReference },
     })));
   }

@@ -14,7 +14,7 @@
 import { AQUA, METRICS, METALS, NO_DATA } from "../config.js";
 import { classify } from "../metrics.js";
 import { fetchSites, fetchCitizenScience, fetchMetals, recordsBySite, hasSeasons } from "../data/aqua-service.js";
-import { onFilterChange, matchesFilters, getSeason } from "../filters.js";
+import { onFilterChange, matchesFiltersExcept, getSeason } from "../filters.js";
 import { escapeHtml, formatNumber, formatSeason, formatSignificant } from "../utils/format.js";
 import { renderDownstreamChart } from "../charts/downstream-chart.js";
 import { renderRiverSchematic } from "../charts/river-schematic.js";
@@ -179,7 +179,9 @@ function render() {
 
   const spec = measureSpec();
   const byCatchment = new Map();
-  for (const site of state.sites.filter(matchesFilters)) {
+  // A river filter only picks the catchment (filled in by the filters), so
+  // each chart still shows the whole catchment.
+  for (const site of state.sites.filter((s) => matchesFiltersExcept(s, "river"))) {
     const list = byCatchment.get(site.Catchment) ?? [];
     list.push(site);
     byCatchment.set(site.Catchment, list);

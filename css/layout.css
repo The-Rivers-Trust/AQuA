@@ -121,13 +121,26 @@ body {
   padding: var(--space-4);
 }
 
-/* ---- Tool panels (Map layers, Basemap, Legend): on the right of the map,
-   closed until their button on the map is pressed, one open at a time
-   (js/map/tool-panels.js) ---- */
+/* ---- Tool panels (Map layers, Basemap, Legend): closed until their button
+   on the map is pressed, one open at a time (js/map/tool-panels.js). They
+   open OVER the map (the map doesn't resize, so the buttons stay where
+   they are): a floating card to the left of the button column, below the
+   search box. ---- */
 .toolPanel {
-  flex: 0 0 320px;
-  min-height: 0;
-  border-inline-start: 1px solid var(--border);
+  position: absolute;
+  top: 64px;
+  right: 64px;
+  /* a calcite-panel sets its own 100% height, so top + bottom won't do */
+  height: calc(100% - 124px); /* leaves the bottom row (League table button, scale bar, attribution) clear */
+  width: 380px;
+  max-width: calc(100% - 76px);
+  z-index: 5;
+  box-sizing: border-box;
+  background: var(--bg-page);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
 }
 
 .toolPanel[closed] {
@@ -144,11 +157,70 @@ body {
   flex-direction: column;
 }
 
+/* Hand-drawn land cover legend (layers-panel.js) */
+.landcoverLegend h4 {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: 13px;
+}
+
+.landcoverLegend[hidden] {
+  display: none;
+}
+
+.landcoverRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 2px 0;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.landcoverSwatch {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+}
+
+/* Label that follows the pointer over the soil map (layers-panel.js) */
+.mapColumn {
+  position: relative;
+}
+
+.mapHoverTip {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  max-width: 260px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  font-size: 12px;
+}
+
+.mapHoverTip[hidden] {
+  display: none;
+}
+
 .mapColumn[hidden] {
   display: none;
 }
 
-.mapColumn > .siteMap {
+/* The map and its tool panels: the panels are positioned over the map. */
+.mapStage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapStage > .siteMap {
   flex: 1;
   min-height: 0;
 }
@@ -484,19 +556,33 @@ body {
   stroke-width: 1;
 }
 
-/* A clickable survey column (season-bars.js onBarClick). */
-.barHit {
-  fill: transparent;
-  cursor: pointer;
-  outline: none; /* the bar itself shows hover / keyboard focus */
-  -webkit-tap-highlight-color: transparent;
+/* "Open E. coli plate photo" under the E. coli chart (site-sections.js) */
+.platePhotoLink {
+  margin: var(--space-1) 0 0;
 }
 
-.barFill.barFill--hover {
-  opacity: 1;
-  stroke: var(--accent);
-  stroke-opacity: 1;
-  stroke-width: 2;
+.platePhotoLink[hidden] {
+  display: none;
+}
+
+.platePhotoButton {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.platePhotoButton:hover {
+  color: var(--accent-hover);
+}
+
+.platePhotoButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* Surveys other than the one showing, when there are several. */
@@ -882,7 +968,7 @@ body {
   fill-opacity: 0.18;
 }
 
-/* ---- Data tab: sites tested and quality assurance ---- */
+/* ---- Quality Assurance tab ---- */
 .dataIntro {
   max-width: 70ch;
   margin: 0 0 var(--space-4);
@@ -1022,6 +1108,222 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* The picked catchment's row in the catchment table */
+.dataTable tbody tr.dataRow--selected th,
+.dataTable tbody tr.dataRow--selected td {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.dataTable tbody tr.dataRow--selected th:first-child {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+/* How the picked catchment compares (catchment-table.js) */
+.compare {
+  margin-bottom: var(--space-6);
+}
+
+.summariesTitle {
+  margin: var(--space-6) 0 var(--space-2);
+}
+
+/* Readings strip chart (js/charts/readings-strip.js) */
+.readingsStrip {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+.readingsStrip figcaption {
+  margin-bottom: var(--space-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.readingsStrip svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.stripGrid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.stripLimit {
+  stroke: var(--text-muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.7;
+}
+
+.stripTick {
+  fill: var(--text-secondary);
+  font-size: 11px;
+}
+
+.stripName {
+  fill: var(--text-secondary);
+  font-size: 12px;
+}
+
+.stripRow--sel .stripName {
+  fill: var(--text-primary);
+  font-weight: 700;
+}
+
+.stripBand {
+  fill: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.stripDot {
+  fill: var(--text-muted);
+  fill-opacity: 0.55;
+}
+
+.stripDot--sel {
+  fill: var(--accent);
+  fill-opacity: 1;
+  stroke: var(--bg-page);
+  stroke-width: 1.5;
+}
+
+.stripAvg {
+  stroke: var(--text-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.stripKey {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.stripKey span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stripKeyDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  opacity: 0.6;
+}
+
+.stripKeyDot--sel {
+  background: var(--accent);
+  opacity: 1;
+}
+
+.stripKeyAvg {
+  width: 2px;
+  height: 12px;
+  background: var(--text-primary);
+}
+
+.stripKeyLimit {
+  width: 12px;
+  border-top: 1px dashed var(--text-muted);
+}
+
+.compareHint {
+  margin: var(--space-3) 0;
+}
+
+.compareGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-4);
+}
+
+.compareCard {
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.compareCard h4 {
+  margin: 0 0 var(--space-3);
+}
+
+.compareList {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.compareTile {
+  display: grid;
+  gap: 2px;
+}
+
+.compareHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Rank beside a tile's title: red = among the worst, green = among the best */
+.rankBadge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.rankBadge--bad {
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
+}
+
+.rankBadge--mid {
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+}
+
+.rankBadge--good {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+}
+
+.compareLabel {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.compareValue {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.compareValue small {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.compareNote {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
 .dataResult {
   display: inline-block;
   padding: 1px var(--space-2);
@@ -1042,6 +1344,219 @@ body {
 .dataResult--wait {
   background: var(--status-neutral-bg);
   color: var(--text-secondary);
+}
+
+/* ---- Groups tab (js/tabs/groups-tab.js) ---- */
+.groupGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+/* Every row the height of the tallest card, every card filling its cell,
+   so all the group cards are the same width and height. */
+.groupGrid {
+  grid-auto-rows: 1fr;
+}
+
+.groupCard {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.groupCard:hover {
+  border-color: var(--accent);
+}
+
+.groupCard:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.groupCard--selected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.groupCardName {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.groupCardWhere {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.groupCardSites {
+  margin-top: var(--space-1);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.groupDetail[hidden] {
+  display: none;
+}
+
+/* Profile on the left, the group's sites on a static map on the right that
+   fills the screen height available (stacked, map first, on a narrow screen). */
+.groupBody {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+.groupMapPanel {
+  order: -1;
+}
+
+@media (min-width: 900px) {
+  .groupBody {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .groupMapPanel {
+    order: 0;
+    position: sticky;
+    top: var(--space-4);
+  }
+
+  .groupMapPanel .groupMap {
+    height: max(360px, calc(100dvh - 190px));
+  }
+}
+
+.groupMap {
+  display: block;
+  width: 100%;
+  height: 360px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  pointer-events: none; /* static: the page scrolls over it, nothing on it is clickable */
+}
+
+.groupDetailSub {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.groupTag {
+  align-self: flex-start;
+  margin-top: var(--space-1);
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.groupDetail {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  scroll-margin-top: var(--space-4);
+}
+
+.groupDetailHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.groupDetailHead h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+/* An organisation's profile: About, Concerns and Questions, Links and Socials */
+.profile {
+  display: grid;
+  gap: var(--space-6);
+  max-width: 90ch;
+  margin: var(--space-6) 0;
+}
+
+.profileSection h4 {
+  margin: 0 0 var(--space-2);
+  font-size: 15px;
+}
+
+.profileSection p {
+  margin: 0 0 var(--space-3);
+  line-height: 1.5;
+}
+
+.profileEmpty {
+  margin: var(--space-6) 0;
+}
+
+.profileList {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.profileList li {
+  margin-bottom: var(--space-2);
+  line-height: 1.4;
+}
+
+.socialLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.socialLink:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.socialLink:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The brand logos are SVG files used as a mask, so they take the text colour */
+.socialIcon {
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
 }
 
 /* ---- Catchment summaries tab ---- */
@@ -1369,17 +1884,11 @@ body {
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
   }
 
-  /* Floats over the map's part of the screen (the side panel's 40% below
-     it stays usable). */
+  /* On a phone the panel takes the map's width below the search box (it
+     covers the buttons; its own close icon closes it). */
   .toolPanel {
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 60%; /* a calcite-panel sets its own 100% height, so not top + bottom */
-    z-index: 5;
-    width: min(320px, 90%);
-    background: var(--bg-page);
-    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
+    right: 8px;
+    max-width: calc(100% - 16px);
   }
 
   .view--map {

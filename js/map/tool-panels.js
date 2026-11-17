@@ -8,19 +8,16 @@
 //
 // A map's markup, in its tab's <section>:
 //   <calcite-action class="mapAction layersAction"> (+ basemapAction,
-//   legendAction) inside the <arcgis-map>, and after the map
+//   legendAction) inside the <arcgis-map>, and after the map, inside the
+//   same <div class="mapStage">,
 //   <calcite-panel class="toolPanel layersPanel" closable closed> (+
 //   basemapPanel, legendPanel). What fills each is set up elsewhere:
 //   layers-panel.js, basemaps.js (the gallery) and layers-panel.js again
 //   (the legend).
 //
-// Opening one tells the site panel ("layerspanelopen" on the map, see
-// site-panel.js), which makes way if the map would be left too narrow;
-// and if a site panel opens when there isn't room for both, the tool
-// panel closes.
+// A panel opens over the map (css: .toolPanel), so the map doesn't resize
+// and the buttons stay where they are.
 // =====================================================================
-
-import { afterLayout, MIN_MAP_WIDTH } from "./site-panel.js";
 
 const TOOLS = [
   { panel: ".layersPanel", action: ".layersAction" },
@@ -40,7 +37,6 @@ export function setupToolPanels(mapEl) {
   function open(tool) {
     tools.forEach((t) => { t.panel.closed = t !== tool; });
     sync();
-    afterLayout(tool.panel).then(() => mapEl.dispatchEvent(new CustomEvent("layerspanelopen")));
   }
 
   for (const tool of tools) {
@@ -54,12 +50,4 @@ export function setupToolPanels(mapEl) {
     });
     tool.panel.addEventListener("calcitePanelClose", sync);
   }
-
-  // A site was selected and there isn't room for it beside the open panel.
-  mapEl.addEventListener("sitepanelopen", () => {
-    if (mapEl.closest(".mapColumn").clientWidth < MIN_MAP_WIDTH) {
-      tools.forEach((t) => { t.panel.closed = true; });
-      sync();
-    }
-  });
 }
